@@ -1,6 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/top_border"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/blue"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/back_arrow_icon">
+        </androidx.appcompat.widget.AppCompatButton>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/event_details_button"
+        android:layout_width="400dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/event_details_text"
+        android:textSize="20sp"
+        android:drawableEnd="@drawable/forward_arrow_icon"
+        android:textAllCaps="false"
+        android:gravity="start|center_vertical"
+        android:padding="10dp"
+        android:background="@drawable/button_outline_grey"
+        app:layout_constraintTop_toBottomOf="@id/top_border"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </androidx.appcompat.widget.AppCompatButton>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/attendees_button"
+        android:layout_width="400dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/attendees_text"
+        android:textSize="20sp"
+        android:drawableEnd="@drawable/forward_arrow_icon"
+        android:textAllCaps="false"
+        android:gravity="start|center_vertical"
+        android:padding="10dp"
+        android:background="@drawable/button_outline_grey"
+        app:layout_constraintTop_toBottomOf="@id/event_details_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </androidx.appcompat.widget.AppCompatButton>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/QR_code_info_button"
+        android:layout_width="400dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/qr_code_text"
+        android:textSize="20sp"
+        android:drawableEnd="@drawable/forward_arrow_icon"
+        android:textAllCaps="false"
+        android:gravity="start|center_vertical"
+        android:padding="10dp"
+        android:background="@drawable/button_outline_grey"
+        app:layout_constraintTop_toBottomOf="@id/attendees_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </androidx.appcompat.widget.AppCompatButton>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/announcements_button"
+        android:layout_width="400dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/announcements_text"
+        android:textSize="20sp"
+        android:drawableEnd="@drawable/forward_arrow_icon"
+        android:textAllCaps="false"
+        android:gravity="start|center_vertical"
+        android:padding="10dp"
+        android:background="@drawable/button_outline_grey"
+        app:layout_constraintTop_toBottomOf="@id/QR_code_info_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </androidx.appcompat.widget.AppCompatButton>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/location_tracking_button"
+        android:layout_width="400dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/location_tracking_text"
+        android:textSize="20sp"
+        android:drawableEnd="@drawable/forward_arrow_icon"
+        android:textAllCaps="false"
+        android:gravity="start|center_vertical"
+        android:padding="10dp"
+        android:background="@drawable/button_outline_grey"
+        app:layout_constraintTop_toBottomOf="@id/announcements_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </androidx.appcompat.widget.AppCompatButton>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/milestones_button"
+        android:layout_width="400dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/milestones_text"
+        android:textSize="20sp"
+        android:drawableEnd="@drawable/forward_arrow_icon"
+        android:textAllCaps="false"
+        android:gravity="start|center_vertical"
+        android:padding="10dp"
+        android:background="@drawable/button_outline_grey"
+        app:layout_constraintTop_toBottomOf="@id/location_tracking_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </androidx.appcompat.widget.AppCompatButton>
+
+    <RelativeLayout
+        android:id="@+id/button_menu"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:background="@color/blue"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/home_button"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/home_button_image">
+        </androidx.appcompat.widget.AppCompatButton>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/QR_button"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="65dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_toEndOf="@+id/home_button"
+            android:background="@drawable/QR_button_image">
+        </androidx.appcompat.widget.AppCompatButton>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/browse_button"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="65dp"
+            android:layout_marginTop="23dp"
+            android:layout_marginBottom="23dp"
+            android:layout_toStartOf="@+id/notification_button"
+            android:background="@drawable/browse_button_image">
+        </androidx.appcompat.widget.AppCompatButton>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/notification_button"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="23dp"
+            android:layout_marginBottom="23dp"
+            android:background="@drawable/notification_button_image">
+        </androidx.appcompat.widget.AppCompatButton>
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
