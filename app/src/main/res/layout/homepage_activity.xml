@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/profile_info"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:background="@color/blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profile_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="120dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/guest_default_image">
+            </ImageView>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/edit_profile_button"
+            style="inter"
+            android:layout_width="130dp"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="70dp"
+            android:layout_marginBottom="24dp"
+            android:layout_toStartOf="@id/create_event_button"
+            android:background="@drawable/button_outline"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/edit_profile_text"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold">
+        </androidx.appcompat.widget.AppCompatButton>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/create_event_button"
+            android:layout_width="130dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/button_outline"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:text="@string/create_event_text"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textAllCaps="false">
+        </androidx.appcompat.widget.AppCompatButton>
+
+        <View
+            android:id="@+id/homepage_profile_line"
+            android:layout_width="265dp"
+            android:layout_height="2dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="63dp"
+            android:layout_toEndOf="@+id/profile_image"
+            android:background="@color/white"
+            app:layout_constraintStart_toStartOf="@id/profile_image">
+        </View>
+
+        <TextView
+            android:id="@+id/homepage_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="164dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/guest_text"
+            android:textColor="@color/white"
+            android:textSize="40sp"
+            android:textStyle="bold">
+        </TextView>
+    </RelativeLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/profile_info"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tabTextColor="@color/black"
+        app:tabBackground="@drawable/tab_colour_selector"
+        app:tabIndicatorColor="@color/blue">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/my_events_text"
+            android:background="@color/blue">
+        </com.google.android.material.tabs.TabItem>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/attending_events_text"
+            android:background="@color/blue">
+        </com.google.android.material.tabs.TabItem>
+    </com.google.android.material.tabs.TabLayout>
+
+    <RelativeLayout
+        android:id="@+id/button_menu"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:background="@color/blue"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/home_button"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/home_button_image">
+        </androidx.appcompat.widget.AppCompatButton>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/QR_button"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="65dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_toEndOf="@+id/home_button"
+            android:background="@drawable/QR_button_image">
+        </androidx.appcompat.widget.AppCompatButton>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/browse_button"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="65dp"
+            android:layout_marginTop="23dp"
+            android:layout_marginBottom="23dp"
+            android:layout_toStartOf="@+id/notification_button"
+            android:background="@drawable/browse_button_image">
+        </androidx.appcompat.widget.AppCompatButton>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/notification_button"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="23dp"
+            android:layout_marginBottom="23dp"
+            android:background="@drawable/notification_button_image">
+        </androidx.appcompat.widget.AppCompatButton>
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
