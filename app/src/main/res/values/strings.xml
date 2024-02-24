@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">scANDROID</string>
+    <string name="edit_profile_text">Edit Profile</string>
+    <string name="create_event_text">Create Event</string>
+    <string name="guest_text">Guest</string>
+    <string name="my_events_text">My Events</string>
+    <string name="attending_events_text">Attending Events</string>
 </resources>
