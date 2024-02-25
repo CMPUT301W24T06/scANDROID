@@ -234,10 +234,10 @@ public class Event {
      * Attendees see Announcements for Events they attend if desired.
      */
     public class EventAnnouncement {
-        String AnnouncementTitle;
-        String AnnouncementAbout;
-        String AnnouncementOrganizer;
-        Time AnnouncementTime;
+        private String AnnouncementTitle;
+        private String AnnouncementAbout;
+        private String AnnouncementOrganizer;
+        private Time AnnouncementTime;
 
         /**
          * Sole constructor for an <code>EventAnnouncement</code> object, specifying a
@@ -247,11 +247,39 @@ public class Event {
          * @param about     Context to what the announcement is about
          * @param time      The time that the announcement is visible to an attendee
          */
-        private EventAnnouncement(String title, String about, Time time) {
+        public EventAnnouncement(String title, String about, Time time) {
             this.AnnouncementTitle = title;
             this.AnnouncementAbout = about;
             this.AnnouncementOrganizer = EventOrganizerID;
             this.AnnouncementTime = time;
+        }
+
+        /**
+         * @return The name of the announcement
+         */
+        public String getAnnouncementTitle() {
+            return AnnouncementTitle;
+        }
+
+        /**
+         * @return Context to what the announcement is about
+         */
+        public String getAnnouncementAbout() {
+            return AnnouncementAbout;
+        }
+
+        /**
+         * @return The name of the User that created the Event
+         */
+        public String getAnnouncementOrganizer() {
+            return AnnouncementOrganizer;
+        }
+
+        /**
+         * @return The time that the announcement is visible to an attendee
+         */
+        public Time getAnnouncementTime() {
+            return AnnouncementTime;
         }
     }
 
