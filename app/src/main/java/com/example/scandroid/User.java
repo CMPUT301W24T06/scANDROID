@@ -15,6 +15,9 @@ import java.util.Random;
  * @author Jordan Beaubien & Moyo Dawodu
  */
 public class User {
+    /* ------------------- *
+     * ATTRIBUTES / FIELDS *
+     * ------------------- */
     private String userName;
     private String userEmail;
     private String userPhoneNumber;
@@ -26,11 +29,11 @@ public class User {
     private String userID;
     private ArrayList<UUID> eventsAttending;
     private ArrayList<UUID> eventsOrganized;
+    public ArrayList<UUID> notifiedBy;
 
     /* ----------- *
      * CONSTRUCTOR *
      * ----------- */
-
     /**
      * Sole constructor for the <code>User</code> object, specifying user attributes.
      *
@@ -125,34 +128,53 @@ public class User {
         return notifiedBy;
     }
 
-    //setters
+
+    /* ------- *
+     * SETTERS *
+     * ------- */
+    /**
+     * @param userName a name inputted by the user.
+     */
     public void setUserName(String userName) {
         this.userName = userName;
     }
 
+    /**
+     * @param userEmail the email inputted by the user.
+     */
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
 
+    /**
+     * @param userPhoneNumber the phone number inputted by the user.
+     */
     public void setUserPhoneNumber(String userPhoneNumber) {
         this.userPhoneNumber = userPhoneNumber;
     }
 
+    /**
+     * @param userAboutMe the about-me section the user inputs in their profile.
+     */
     public void setUserAboutMe(String userAboutMe) {
         this.userAboutMe = userAboutMe;
     }
 
+    /**
+     * @param userProfileImage the profile picture the user adds to their profile.
+     */
     public void setUserProfileImage(Image userProfileImage) {
         this.userProfileImage = userProfileImage;
     }
 
+    /**
+     * @param totalAttended The total number of times a user has attended an event
+     */
     public void setTotalAttended(int totalAttended) {
         this.totalAttended = totalAttended;
     }
-
-    public ArrayList<UUID> notifiedBy;
     //TODO - scanQRCode
     //TODO - createEvent - i think create event should be linked to a button, not the user class, as we will not know any of the instantiated values for the event within the user class.
     //TODO - UserDB
-    //TODO - javadocs
+    //DONE - javadocs
 }
