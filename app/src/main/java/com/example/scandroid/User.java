@@ -4,6 +4,7 @@ import android.media.Image;
 import android.provider.Settings;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.Random;
@@ -24,12 +25,13 @@ public class User {
     //TODO - (FRONT END) set character limit for userAboutMe.
     private String userAboutMe;
     public Image userProfileImage;
-    private int totalAttended;
     private String adminKey;
     private String userID;
     private ArrayList<UUID> eventsAttending;
     private ArrayList<UUID> eventsOrganized;
     public ArrayList<UUID> notifiedBy;
+
+    private HashMap<UUID, Integer> timesAttended = new HashMap<>() ;
 
     /* ----------- *
      * CONSTRUCTOR *
@@ -37,14 +39,15 @@ public class User {
     /**
      * Sole constructor for the <code>User</code> object, specifying user attributes.
      *
+     * @param userID The user's ID generated upon boot. Accessed via Settings.Secure.ANDROID_ID
      * @param userName The name of the User object you want to instantiate. This is set to a random guest name if none is provided.
      * @param userPhoneNumber The phone number of a user object. May be null.
      * @param userAboutMe The about-me section of a user's profile. May be null.
      * @param userProfileImage The profile image of a user object. This is randomized if none is provided.
      * @param userEmail The email address of a user object. May be null.
      */
-    public User(String userName, String userPhoneNumber, String userAboutMe, Image userProfileImage, String userEmail) {
-        this.userID = Settings.Secure.ANDROID_ID;
+    public User(String userID, String userName, String userPhoneNumber, String userAboutMe, Image userProfileImage, String userEmail) {
+        this.userID = userID;
         this.eventsAttending = new ArrayList<UUID>();
         this.eventsOrganized = new ArrayList<UUID>();
         //set the default value of a user's name to a Guest name if no name is provided.
@@ -74,6 +77,29 @@ public class User {
         return Objects.equals(userAdminKey, adminKey);
     }
 
+    /**
+     * Adds an event to the user's list of events they are attending.
+     * @param event An eventID.
+     */
+    public void addEventToEventsAttending(UUID event){
+        if(eventsAttending.contains(event)){
+            Integer timesAttendedValue = timesAttended.get(event);
+            timesAttended.replace(event,timesAttendedValue+1);
+        }
+        else{
+            eventsAttending.add(event);
+            timesAttended.put(event,1);
+        }
+    }
+
+    /**
+     * Adds an event to the user's list of events they have organized.
+     * @param event An eventID.
+     */
+    public void addEventToEventsOrganized(UUID event){
+        eventsOrganized.add(event);
+    }
+
     /* ------- *
      * GETTERS *
      * ------- */
@@ -100,12 +126,6 @@ public class User {
     }
 
     //TODO - figure out how to calculate total number of times a user has checked in. May have to use some sort of button and track how many times it is  hit.
-    /**
-     * @return the total number of times a user has attended a given event
-     */
-    public int getTotalAttended() {
-        return totalAttended;
-    }
 
     /**
      * @return the user's email.
@@ -142,9 +162,18 @@ public class User {
         return eventsOrganized;
     }
 
+    /**
+     * @param event an eventID
+     * @return The number of times a User has attended a given event.
+     */
+    public Integer getTimesAttended(UUID event){
+        return timesAttended.get(event);
+    }
+
     /* ------- *
      * SETTERS *
      * ------- */
+    
     /**
      * @param userName a name inputted by the user.
      */
@@ -178,13 +207,6 @@ public class User {
      */
     public void setUserProfileImage(Image userProfileImage) {
         this.userProfileImage = userProfileImage;
-    }
-
-    /**
-     * @param totalAttended The total number of times a user has attended an event
-     */
-    public void setTotalAttended(int totalAttended) {
-        this.totalAttended = totalAttended;
     }
 
     /**
