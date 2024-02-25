@@ -48,7 +48,7 @@ public class Event {
      *
      * @param eventOrganizerID UserID of User that created Event
      * @param eventName        Name of Event
-     * @param eventDescription
+     * @param eventDescription Description with related information of Event
      * @param eventPoster      Profile image for Event
      * @param eventDate        Day that Event will take place
      * @param eventLocation    Geographical place of Event
@@ -68,6 +68,7 @@ public class Event {
         this.EventMilestoneList = new ArrayList<>();
         this.addEventMilestone();   // adds first milestone of threshold of one attendee check-in
     }
+
 
     /* ------- *
      * METHODS *
@@ -96,6 +97,7 @@ public class Event {
         this.MilestoneSeries.set(0, pastGreatest);
         this.MilestoneSeries.set(1, nextGreatest);                                      // i.e. [2,3] becomes [3,5]
     }
+
 
     /* ------- *
      * GETTERS *
@@ -153,10 +155,10 @@ public class Event {
      */
     public Image getEventPosterImage() { return this.EventPosterImage; }
 
+
     /* ------- *
      * SETTERS *
      * ------- */
-
     /**
      * @param dateOfEvent   The Calendar date that the Event takes place on.
      */
@@ -250,7 +252,6 @@ public class Event {
             this.AnnouncementOrganizer = EventOrganizerID;
             this.AnnouncementTime = time;
         }
-
     }
 
     /**
