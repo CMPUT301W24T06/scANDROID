@@ -17,7 +17,7 @@ public class User {
     private String userAboutMe;
     public Image userProfileImage;
     private int totalAttended;
-    private Boolean isAdmin;
+    public Boolean isAdmin;
     private ArrayList<UUID> eventsAttending;
     private ArrayList<UUID> eventsOrganized;
 
@@ -28,6 +28,48 @@ public class User {
     }
 
     //TODO - getters and setters
+    //getters
+    public String getUserID() {
+        return userID;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public Image getUserProfileImage() {
+        return userProfileImage;
+    }
+
+    public int getTotalAttended() {
+        return totalAttended;
+    }
+
+    //setters
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public void setUserPhoneNumber(String userPhoneNumber) {
+        this.userPhoneNumber = userPhoneNumber;
+    }
+
+    public void setUserAboutMe(String userAboutMe) {
+        this.userAboutMe = userAboutMe;
+    }
+
+    public void setUserProfileImage(Image userProfileImage) {
+        this.userProfileImage = userProfileImage;
+    }
+
+    public void setTotalAttended(int totalAttended) {
+        this.totalAttended = totalAttended;
+    }
+
     //TODO - notifiedBy setup
     //TODO - scanQRCode and createEvent
     //TODO - UserDB

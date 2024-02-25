@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="339dp"
+        android:layout_gravity="center"
+        android:background="#FFF"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <TextView
+            android:id="@+id/ChooseImageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:text="Choose an image"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+
+        <Button
+            android:id="@+id/removeImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remove Image"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:layout_marginTop="225dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onRemoveImageClick" />
+
+        <ImageView
+            android:layout_width="219dp"
+            android:layout_height="175dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="-250dp"
+            android:src="@drawable/image_camera_roll" />
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="left"
+            android:layout_marginTop="-240dp"
+            android:src="@drawable/blacl_back_button" />
+
+
+
+    </LinearLayout>
+</FrameLayout>

@@ -153,7 +153,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:layout_toEndOf="@+id/home_button"
-            android:background="@drawable/QR_button_image">
+            android:background="@drawable/qr_button_image">
         </androidx.appcompat.widget.AppCompatButton>
 
         <androidx.appcompat.widget.AppCompatButton
