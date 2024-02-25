@@ -59,26 +59,70 @@ public class User {
         this.userEmail = userEmail;
     }
 
+    /* ------- *
+     * METHODS *
+     * ------- */
+    /**
+     * Determines whether a user is an Admin based on a key they have entered.
+     * @param userAdminKey The admin key the user entered.
+     * @return boolean value indicating if a user is an admin(true) or if they are not(false)
+     */
     public boolean isAdmin(String userAdminKey){
         return Objects.equals(userAdminKey, adminKey);
     }
 
-    //TODO - getters and setters
-    //getters
+    /* ------- *
+     * GETTERS *
+     * ------- */
+
+    /**
+     * @return the user's userID
+     */
     public String getUserID() {
         return userID;
     }
 
+    /**
+     * @return the user's name
+     */
     public String getUserName() {
         return userName;
     }
 
+    /**
+     * @return the user's profile picture
+     */
     public Image getUserProfileImage() {
         return userProfileImage;
     }
 
+    //TODO - figure out how to calculate total number of times a user has checked in. May have to use some sort of button and track how many times it is  hit.
+    /**
+     * @return the total number of times a user has attended a given event
+     */
     public int getTotalAttended() {
         return totalAttended;
+    }
+
+    /**
+     * @return the user's email.
+     */
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    /**
+     * @return the user's phone number
+     */
+    public String getUserPhoneNumber() {
+        return userPhoneNumber;
+    }
+
+    /**
+     * @return A list of eventIDs that the user may be notified by.
+     */
+    public ArrayList<UUID> getNotifiedBy() {
+        return notifiedBy;
     }
 
     //setters
@@ -106,12 +150,9 @@ public class User {
         this.totalAttended = totalAttended;
     }
 
-
-    //TODO - notifiedBy setup
-
-    //contains a list of eventIDs
     public ArrayList<UUID> notifiedBy;
-    //TODO - scanQRCode and createEvent
+    //TODO - scanQRCode
+    //TODO - createEvent - i think create event should be linked to a button, not the user class, as we will not know any of the instantiated values for the event within the user class.
     //TODO - UserDB
     //TODO - javadocs
 }
