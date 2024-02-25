@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class Event {
     private String EventName;
     private String EventDescription;
     private Image EventPosterImage;
-    private Date EventDate; // NEEDS G&S FOR TIME AS WELL DATE
+    private Calendar EventDate; // NEEDS G&S FOR TIME AS WELL DATE
     /* TODO ?? private Time EventTime ?? */
     private Location EventLocation;
     private ArrayList<CheckIn> EventAttendeeList;
@@ -53,7 +54,7 @@ public class Event {
      * @param eventDate        Day that Event will take place
      * @param eventLocation    Geographical place of Event
      */
-    public Event(@NonNull String eventOrganizerID, @NonNull String eventName, String eventDescription, Image eventPoster, @NonNull Date eventDate, @NonNull Location eventLocation) {
+    public Event(@NonNull String eventOrganizerID, @NonNull String eventName, String eventDescription, Image eventPoster, @NonNull Calendar eventDate, @NonNull Location eventLocation) {
         EventDescription = eventDescription;
         EventID = UUID.randomUUID();
         this.EventOrganizerID = eventOrganizerID;
@@ -126,7 +127,7 @@ public class Event {
     /**
      * @return Calendar date that the Event takes place on.
      */
-    public Date getEventDate() { return this.EventDate; }
+    public Calendar getEventDate() { return this.EventDate; }
 
     /**
      * @return Location that the Event takes place at.
@@ -162,7 +163,7 @@ public class Event {
     /**
      * @param dateOfEvent   The Calendar date that the Event takes place on.
      */
-    public void setEventDate(Date dateOfEvent) { this.EventDate = dateOfEvent; }
+    public void setEventDate(Calendar dateOfEvent) { this.EventDate = dateOfEvent; }
 
     /**
      * @param locationOfEvent Location that the Event takes place at.
