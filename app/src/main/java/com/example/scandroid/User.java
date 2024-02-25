@@ -128,6 +128,19 @@ public class User {
         return notifiedBy;
     }
 
+    /**
+     * @return the list of events (eventIDs) a user is attending
+     */
+    public ArrayList<UUID> getEventsAttending() {
+        return eventsAttending;
+    }
+
+    /**
+     * @return the list of events a user is organizing.
+     */
+    public ArrayList<UUID> getEventsOrganized() {
+        return eventsOrganized;
+    }
 
     /* ------- *
      * SETTERS *
@@ -172,6 +185,27 @@ public class User {
      */
     public void setTotalAttended(int totalAttended) {
         this.totalAttended = totalAttended;
+    }
+
+    /**
+     * @param eventsAttending the new list of events a user may be attending.
+     */
+    public void setEventsAttending(ArrayList<UUID> eventsAttending) {
+        this.eventsAttending = eventsAttending;
+    }
+
+    /**
+     * @param eventsOrganized the new list of events a user is organizing.
+     */
+    public void setEventsOrganized(ArrayList<UUID> eventsOrganized) {
+        this.eventsOrganized = eventsOrganized;
+    }
+
+    /**
+     * @param notifiedBy the new list of events a user may be notified by.
+     */
+    public void setNotifiedBy(ArrayList<UUID> notifiedBy) {
+        this.notifiedBy = notifiedBy;
     }
     //TODO - scanQRCode
     //TODO - createEvent - i think create event should be linked to a button, not the user class, as we will not know any of the instantiated values for the event within the user class.
