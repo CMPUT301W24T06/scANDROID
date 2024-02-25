@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/blue_background"
+        android:layout_width="420dp"
+        android:layout_height="250dp"
+        android:background="@drawable/blue_box"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/add_poster_icon"
+        android:layout_width="149dp"
+        android:layout_height="120dp"
+        android:background="@drawable/add_poster_icon"
+        android:contentDescription="@string/app_name"
+        app:layout_constraintBottom_toBottomOf="@+id/blue_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="@+id/blue_background"
+        app:layout_constraintTop_toTopOf="@+id/blue_background"
+        app:layout_constraintVertical_bias="0.715" />
+
+    <TextView
+        android:id="@+id/create_event_page_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Event"
+        android:textColor="@color/white"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toTopOf="@+id/add_poster_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/blue_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/back_arrow"
+        android:layout_width="48dp"
+        android:layout_height="52dp"
+        android:background="@drawable/back_arrow_icon"
+        android:backgroundTint="@color/white"
+        android:contentDescription="@string/app_name"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/create_event_page_title"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/create_event_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Event Name"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.084"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/blue_background" />
+
+    <EditText
+        android:id="@+id/event_name_edit_text"
+        android:layout_width="360dp"
+        android:layout_height="48dp"
+        android:autofillHints="AUTOFILL_TYPE_TEXT"
+        android:background="@drawable/box_border"
+        android:hint="Enter Event Name"
+        android:inputType="text"
+        android:textColorHint="#757575"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_name_text" />
+
+    <TextView
+        android:id="@+id/create_event_location_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Event Location"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.084"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_name_edit_text" />
+
+    <EditText
+        android:id="@+id/event_location_edit_text"
+        android:layout_width="360dp"
+        android:layout_height="48dp"
+        android:autofillHints="AUTOFILL_TYPE_TEXT"
+        android:background="@drawable/box_border"
+        android:hint="Enter Event Location"
+        android:inputType="text"
+        android:textColorHint="#757575"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_location_text" />
+
+    <TextView
+        android:id="@+id/create_event_date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Event Date"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.078"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_location_edit_text" />
+
+    <EditText
+        android:id="@+id/event_date_edit_text"
+        android:layout_width="360dp"
+        android:layout_height="48dp"
+        android:autofillHints="AUTOFILL_TYPE_DATE"
+        android:background="@drawable/box_border"
+        android:hint="Enter Event Date"
+        android:inputType="date"
+        android:textColorHint="#757575"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_date_text" />
+
+    <TextView
+        android:id="@+id/create_event_description_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Event Description"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.084"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_date_edit_text" />
+
+    <EditText
+        android:id="@+id/event_description_edit_text"
+        android:layout_width="360dp"
+        android:layout_height="75dp"
+        android:background="@drawable/box_border"
+        android:hint="Enter Event Description"
+        android:importantForAutofill="no"
+        android:textColorHint="#757575"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_description_text"
+        android:inputType="textMultiLine" />
+
+    <CheckBox
+        android:id="@+id/receive_milestones_checkbox"
+        android:layout_width="339dp"
+        android:layout_height="48dp"
+        android:text="Do you want to receive alerts for important milestones?"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.638"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_description_edit_text" />
+
+    <Button
+        android:id="@+id/create_event_button"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/black"
+        android:text="Create My Event"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/receive_milestones_checkbox" />
+
+    <TextView
+        android:id="@+id/create_event_note_text"
+        android:layout_width="232dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="3dp"
+        android:text="Note: Creating an event will generate a shareable QR code that users can scan for attendance"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_button"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="SmallSp" />
+
+    <Button
+        android:id="@+id/cancel_update_event_button"
+        android:layout_width="232dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="3dp"
+        android:text="Cancel"
+        android:textSize="10sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_button"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="SmallSp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
