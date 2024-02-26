@@ -1,5 +1,6 @@
 package com.example.scandroid;
 
+import android.location.Location;
 import android.media.Image;
 import android.provider.Settings;
 
@@ -32,6 +33,8 @@ public class User {
     public ArrayList<UUID> notifiedBy;
 
     private HashMap<UUID, Integer> timesAttended = new HashMap<>() ;
+    private Location userLocation;
+
 
     /* ----------- *
      * CONSTRUCTOR *
@@ -230,7 +233,5 @@ public class User {
         this.notifiedBy = notifiedBy;
     }
     //TODO - scanQRCode
-    //TODO - createEvent - i think create event should be linked to a button, not the user class, as we will not know any of the instantiated values for the event within the user class.
     //TODO - UserDB
-    //DONE - javadocs
 }
