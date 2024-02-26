@@ -11,4 +11,12 @@
     <string name="announcements_text">Announcements</string>
     <string name="location_tracking_text">Location Tracking</string>
     <string name="milestones_text">Milestones</string>
+    <string name="share_button_text">Share</string>
+    <string name="event_qr_codes_title_text">Event\'s QR Codes</string>
+    <string name="check_in_qr_code_text">Check-In QR Code</string>
+    <string name="promotion_qr_code_text">Promotion QR Code</string>
+    <string name="notification_send_text">Send to all attendees</string>
+    <string name="notification_title_text">Notification Title</string>
+    <string name="notification_info_text">Notification Info</string>
+    <string name="notification_schedule_text">Notification Schedule</string>
 </resources>
