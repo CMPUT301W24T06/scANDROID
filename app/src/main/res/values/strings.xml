@@ -19,4 +19,6 @@
     <string name="notification_title_text">Notification Title</string>
     <string name="notification_info_text">Notification Info</string>
     <string name="notification_schedule_text">Notification Schedule</string>
+    <string name="camera_roll_confirm">Confirm</string>
+    <string name="camera_roll_cancel">Cancel</string>
 </resources>
