@@ -9,7 +9,6 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -54,7 +53,10 @@ public class Event {
      * @param eventDate        Day that Event will take place
      * @param eventLocation    Geographical place of Event
      */
-    public Event(@NonNull String eventOrganizerID, @NonNull String eventName, String eventDescription, Image eventPoster, @NonNull Calendar eventDate, @NonNull Location eventLocation) {
+    public Event(
+            @NonNull String eventOrganizerID, @NonNull String eventName,
+            String eventDescription, Image eventPoster,
+            @NonNull Calendar eventDate, Location eventLocation) {
         EventDescription = eventDescription;
         EventID = UUID.randomUUID();
         this.EventOrganizerID = eventOrganizerID;
@@ -74,6 +76,17 @@ public class Event {
     /* ------- *
      * METHODS *
      * ------- */
+
+    /**
+     * Add a new announcement to an Event as an Organizer.
+     * @param announcementTitle A name for the announcement
+     * @param announcementAbout Context to what the announcement is about
+     * @param announcementTime  The time that the announcement is visible to an attendee
+     */
+    public void addEventAnnouncement(String announcementTitle, String announcementAbout, Time announcementTime) {
+        this.EventAnnouncementList.add(new EventAnnouncement(announcementTitle, announcementAbout, announcementTime));
+    }
+
     /**
      * Add a User to an Event as an attendee.
      * @param userID            UserID of attendee that is checking-in to the Event
@@ -82,7 +95,7 @@ public class Event {
      */
     public void addEventAttendee(String userID, Time checkInTime, Location checkInLocation) {
         this.EventAttendeeList.add(new CheckIn(userID, checkInTime, checkInLocation));
-        if (this.EventAttendeeList.size() == this.MilestoneSeries.get(1)) {
+        if (this.EventAttendeeList.size() == this.MilestoneSeries.get(0)) {
             this.addEventMilestone();       // add next fibonacci milestone when current max is reached
         }
     }
@@ -93,8 +106,8 @@ public class Event {
      */
     private void addEventMilestone() {
         int pastGreatest = this.MilestoneSeries.get(1);                                 // current greatest milestone threshold
+        this.EventMilestoneList.add(new EventMilestone(pastGreatest));
         int nextGreatest = this.MilestoneSeries.get(0) + this.MilestoneSeries.get(1);   // next milestone threshold
-        this.EventMilestoneList.add(new EventMilestone(nextGreatest));
         this.MilestoneSeries.set(0, pastGreatest);
         this.MilestoneSeries.set(1, nextGreatest);                                      // i.e. [2,3] becomes [3,5]
     }
@@ -189,9 +202,9 @@ public class Event {
      * Organizers use a list of CheckIn's when viewing Users attending their Event.
      */
     public static class CheckIn {
-        String UserID;
-        Time CheckInTime;
-        Location CheckInLocation;
+        private String UserID;
+        private Time CheckInTime;
+        private Location CheckInLocation;
 
         /**
          * Sole constructor for <code>CheckIn</code> object, specifying which User checked in,
@@ -200,7 +213,7 @@ public class Event {
          * @param checkInTime       The HrMin time that the attendee is checking-in
          * @param checkInLocation   The location that the attendee is checking-in from
          */
-        private CheckIn(String userID, Time checkInTime, Location checkInLocation) {
+        public CheckIn(String userID, Time checkInTime, Location checkInLocation) {
             this.UserID = userID;
             this.CheckInTime = checkInTime;
             this.CheckInLocation = checkInLocation;
@@ -216,8 +229,8 @@ public class Event {
         /**
          * @return HrMin time that the User checked-in at.
          */
-        public long getCheckInTime() {
-            return this.CheckInTime.getTime();
+        public Time getCheckInTime() {
+            return this.CheckInTime;
         }
 
         /**
@@ -236,7 +249,7 @@ public class Event {
     public class EventAnnouncement {
         private String AnnouncementTitle;
         private String AnnouncementAbout;
-        private String AnnouncementOrganizer;
+        private String AnnouncementOrganizerID;
         private Time AnnouncementTime;
 
         /**
@@ -247,10 +260,10 @@ public class Event {
          * @param about     Context to what the announcement is about
          * @param time      The time that the announcement is visible to an attendee
          */
-        public EventAnnouncement(String title, String about, Time time) {
+        private EventAnnouncement(String title, String about, Time time) {
             this.AnnouncementTitle = title;
             this.AnnouncementAbout = about;
-            this.AnnouncementOrganizer = EventOrganizerID;
+            this.AnnouncementOrganizerID = EventOrganizerID;
             this.AnnouncementTime = time;
         }
 
@@ -271,8 +284,8 @@ public class Event {
         /**
          * @return The name of the User that created the Event
          */
-        public String getAnnouncementOrganizer() {
-            return AnnouncementOrganizer;
+        public String getAnnouncementOrganizerID() {
+            return AnnouncementOrganizerID;
         }
 
         /**
