@@ -1,7 +1,10 @@
 package com.example.scandroid;
 
+import android.location.Location;
 import android.media.Image;
 import android.provider.Settings;
+
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +35,9 @@ public class User {
     public ArrayList<UUID> notifiedBy;
 
     private HashMap<UUID, Integer> timesAttended = new HashMap<>() ;
+    //TODO - make the user's location optional
+    @Nullable private Location userLocation;
+
 
     /* ----------- *
      * CONSTRUCTOR *
@@ -50,6 +56,7 @@ public class User {
         this.userID = userID;
         this.eventsAttending = new ArrayList<UUID>();
         this.eventsOrganized = new ArrayList<UUID>();
+        this.notifiedBy = new ArrayList<UUID>();
         //set the default value of a user's name to a Guest name if no name is provided.
         if(userName == null){
             Random random_num = new Random();
@@ -142,6 +149,13 @@ public class User {
     }
 
     /**
+     * @return The information in the user's 'About Me' section of their profile.
+     */
+    public String getUserAboutMe() {
+        return userAboutMe;
+    }
+
+    /**
      * @return A list of eventIDs that the user may be notified by.
      */
     public ArrayList<UUID> getNotifiedBy() {
@@ -230,7 +244,5 @@ public class User {
         this.notifiedBy = notifiedBy;
     }
     //TODO - scanQRCode
-    //TODO - createEvent - i think create event should be linked to a button, not the user class, as we will not know any of the instantiated values for the event within the user class.
     //TODO - UserDB
-    //DONE - javadocs
 }
