@@ -1,6 +1,7 @@
 package com.example.scandroid;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 
 import android.graphics.ImageDecoder;
 import android.graphics.drawable.Drawable;
@@ -111,6 +112,12 @@ public class EventTest {
         assertEquals(8, eventDate.get(Calendar.DATE));
         assertEquals(16, eventDate.get(Calendar.HOUR_OF_DAY));
         assertEquals(0, eventDate.get(Calendar.MINUTE));
+    }
+
+    @Test
+    public void testGetEventID() {
+        Event mockEvent = mockEvent(dateValues, locationValues);
+        assertNotNull(mockEvent.getEventID());
     }
 
     // TODO testGetEventLocation

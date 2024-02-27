@@ -21,7 +21,7 @@ public class Event {
     /* ------------------- *
      * ATTRIBUTES / FIELDS *
      * ------------------- */
-    private static UUID EventID;
+    private static String EventID;
     private String EventOrganizerID;
     private String EventName;
     private String EventDescription;
@@ -58,7 +58,7 @@ public class Event {
             String eventDescription, Image eventPoster,
             @NonNull Calendar eventDate, Location eventLocation) {
         EventDescription = eventDescription;
-        EventID = UUID.randomUUID();
+        EventID = UUID.randomUUID().toString();
         this.EventOrganizerID = eventOrganizerID;
         this.EventName = eventName;
         this.EventDescription = eventDescription;
@@ -141,6 +141,12 @@ public class Event {
      * @return Calendar date that the Event takes place on.
      */
     public Calendar getEventDate() { return this.EventDate; }
+
+
+    /**
+     * @return Strong pseudo random number generator that belongs to this Event.
+     */
+    public String getEventID() { return EventID ; }
 
     /**
      * @return Location that the Event takes place at.
