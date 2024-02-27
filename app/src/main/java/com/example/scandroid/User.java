@@ -4,6 +4,8 @@ import android.location.Location;
 import android.media.Image;
 import android.provider.Settings;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -33,7 +35,8 @@ public class User {
     public ArrayList<UUID> notifiedBy;
 
     private HashMap<UUID, Integer> timesAttended = new HashMap<>() ;
-    private Location userLocation;
+    //TODO - make the user's location optional
+    @Nullable private Location userLocation;
 
 
     /* ----------- *
@@ -53,6 +56,7 @@ public class User {
         this.userID = userID;
         this.eventsAttending = new ArrayList<UUID>();
         this.eventsOrganized = new ArrayList<UUID>();
+        this.notifiedBy = new ArrayList<UUID>();
         //set the default value of a user's name to a Guest name if no name is provided.
         if(userName == null){
             Random random_num = new Random();
@@ -142,6 +146,13 @@ public class User {
      */
     public String getUserPhoneNumber() {
         return userPhoneNumber;
+    }
+
+    /**
+     * @return The information in the user's 'About Me' section of their profile.
+     */
+    public String getUserAboutMe() {
+        return userAboutMe;
     }
 
     /**

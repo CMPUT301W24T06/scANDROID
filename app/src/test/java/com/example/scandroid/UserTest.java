@@ -1,11 +1,17 @@
 package com.example.scandroid;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import android.location.Location;
+
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.UUID;
 
 /**
  * User test cases for all methods
@@ -14,7 +20,7 @@ import java.util.Locale;
 public class UserTest {
     //TODO - initialize mock Event and User for testing
     ArrayList<Integer> dateValues = new ArrayList<>(Arrays.asList(2024, 12, 24, 16, 0));
-    //location: Fiarmont Hotel Macdonald
+    //location: Fairmont Hotel Macdonald
     ArrayList<Double> locationValues = new ArrayList<>(Arrays.asList(53.540349083363616, -113.48952321566745));
 
 
@@ -50,10 +56,72 @@ public class UserTest {
                 ballLocation
         );
     }
+    /* -------------- *
+     * TEST : METHODS *
+     * -------------- */
     //TODO - Test isAdmin
     //TODO - Test addEventToEventsAttending
     //TODO - Test addEventToEventsOrganized
+
+
+    /* -------------- *
+     * TEST : GETTERS *
+     * -------------- */
     //TODO - Test getters
+    @Test
+    public void testGetUserID(){
+        User mockUser = mockUser();
+        assertEquals("6754", mockUser.getUserID());
+    }
+    @Test
+    public void testGetUserName(){
+        User mockUser = mockUser();
+        assertEquals("John Doe", mockUser.getUserName());
+    }
+
+    @Test
+    public void testGetUserEmail(){
+        User mockUser = mockUser();
+        assertEquals("email@domain.com",mockUser.getUserEmail());
+    }
+
+    @Test
+    public void testGetUSerPhoneNumber(){
+        User mockUser = mockUser();
+        assertEquals("7801234567",mockUser.getUserPhoneNumber());
+    }
+    @Test
+    public void testGetUserAboutMe(){
+        User mockUser = mockUser();
+        assertEquals("About John Doe", mockUser.getUserAboutMe());
+    }
+    //TODO - test event UUIDS remain constant and change accordingly within the list of events
+    @Test
+    public void testGetEventsAttending(){
+        User mockUser = mockUser();
+        ArrayList<UUID> shouldBeEmpty = mockUser.getEventsAttending();
+        assertTrue(shouldBeEmpty.isEmpty());
+    }
+    //TODO - test that event UUIDS remain constant and change accordingly within this list of events
+    @Test
+    public void testGetNotifiedBy(){
+        User mock = mockUser();
+        ArrayList<UUID> shouldBeEmpty = mock.getNotifiedBy();
+        assertTrue((shouldBeEmpty.isEmpty()));
+    }
+    //TODO - test event UUIDS remain constant and change accordingly within the list of events
+    @Test
+    public void testGetEventsOrganized(){
+        User mockUser = mockUser();
+        ArrayList<UUID> shouldBeEmpty = mockUser.getEventsOrganized();
+        assertTrue(shouldBeEmpty.isEmpty());
+    }
+    //TODO - Test getTimesAttended method. Need to have access to event uuid.
+
+
+    /* -------------- *
+     * TEST : SETTERS *
+     * -------------- */
     //TODO - Test setters
 
 }
