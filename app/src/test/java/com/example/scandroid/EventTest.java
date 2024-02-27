@@ -3,19 +3,10 @@ package com.example.scandroid;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
-import android.graphics.ImageDecoder;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.media.Image;
-import android.media.ImageReader;
-import android.widget.ImageView;
 
 import org.junit.Test;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +43,7 @@ public class EventTest {
         return new Event.CheckIn(
                 "1234",
                 new Time(checkInTime),
-                checkInLocation);
+                locationValues);
     }
 
     private Event mockEvent(ArrayList<Integer> dateValues, ArrayList<Double> locationValues) {
@@ -64,7 +55,9 @@ public class EventTest {
                 dateValues.get(3),  // hour   = 16
                 dateValues.get(4)); // minute = 0
 
-        Location projectLocation = new Location("building_ETLC");
+        Location projectLocation;
+        projectLocation = new Location("building_ETLC");
+        projectLocation.setLongitude(1.1234456);
         projectLocation.setLatitude(locationValues.get(0));  // Lat  = 53.52726211381912
         projectLocation.setLongitude(locationValues.get(1)); // Long = -113.53023539331814
 
@@ -74,7 +67,7 @@ public class EventTest {
                 "EventDescription",
                 null,
                 projectDueDate,
-                projectLocation
+                locationValues
                 );
     }
 
@@ -120,16 +113,13 @@ public class EventTest {
         assertNotNull(mockEvent.getEventID());
     }
 
-    // TODO testGetEventLocation
-    // Location is not being set properly in Event.
-    // setLatitude() & setLongitude() are not being called.
-    // Sort out why.
-//    @Test
-//    public void testGetEventLocation() {
-//        Event mockEvent = mockEvent(dateValues, locationValues);
-//        Location eventLocation = mockEvent.getEventLocation();
-//        assertEquals(locationValues.get(0), mockEvent.getEventLocation().getLatitude());
-//    }
+    @Test
+    public void testGetEventLocation() {
+        Event mockEvent = mockEvent(dateValues, locationValues);
+        ArrayList<Double> mockEventLocation = mockEvent.getEventLocation();
+        assertEquals(locationValues.get(0), mockEventLocation.get(0));
+        assertEquals(locationValues.get(1), mockEventLocation.get(1));
+    }
 
     // TODO testGetEventMilestones
 
@@ -152,6 +142,8 @@ public class EventTest {
      * -------------- */
 
     // TODO testSetEventDate
+    // TODO testSetEventLatitude
+    // TODO testSetEventLongitude
     // TODO testSetEventLocation
     // TODO testSetEventName
     // TODO testSetEventPosterImage
@@ -174,11 +166,9 @@ public class EventTest {
     @Test
     public void testCheckInGetLocation() {
         Event.CheckIn mockCheckIn = mockCheckIn(locationValues);
-        Location checkInLocation = new Location("getCheckInLocationTest");
-        checkInLocation.setLatitude(locationValues.get(0));
-        checkInLocation.setLongitude(locationValues.get(1));
-        assertEquals(checkInLocation.getLatitude(), mockCheckIn.getCheckInLocation().getLatitude());
-        assertEquals(checkInLocation.getLongitude(), mockCheckIn.getCheckInLocation().getLongitude());
+        ArrayList<Double> mockCheckInLocation = mockCheckIn.getCheckInLocation();
+        assertEquals(locationValues.get(0), mockCheckInLocation.get(0));
+        assertEquals(locationValues.get(1), mockCheckInLocation.get(1));
     }
 
     @Test
@@ -218,17 +208,17 @@ public class EventTest {
         Location checkInLocation = new Location("MilestoneThresholdIterationTest");
         checkInLocation.setLatitude(locationValues.get(0));
         checkInLocation.setLongitude(locationValues.get(1));
-        mockEvent.addEventAttendee("Threshold1", new Time(0), checkInLocation);
+        mockEvent.addEventAttendee("Threshold1", new Time(0), locationValues);
         assertEquals(
                 Integer.valueOf(2),     // next milestone threshold is 2
                 mockEvent.getEventMilestones().get( // get last element from array of milestones
                         mockEvent.getEventMilestones().size() - 1).getThreshold());
-        mockEvent.addEventAttendee("Threshold2", new Time(0), checkInLocation);
+        mockEvent.addEventAttendee("Threshold2", new Time(0), locationValues);
         assertEquals(
                 Integer.valueOf(3),     // next milestone threshold is 3
                 mockEvent.getEventMilestones().get( // get last element from array of milestones
                         mockEvent.getEventMilestones().size() - 1).getThreshold());
-        mockEvent.addEventAttendee("Threshold3", new Time(0), checkInLocation);
+        mockEvent.addEventAttendee("Threshold3", new Time(0), locationValues);
         assertEquals(
                 Integer.valueOf(5),     // next milestone threshold is 5
                 mockEvent.getEventMilestones().get( // get last element from array of milestones

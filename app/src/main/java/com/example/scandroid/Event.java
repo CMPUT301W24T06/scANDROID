@@ -1,6 +1,5 @@
 package com.example.scandroid;
 
-import android.location.Location;
 import android.media.Image;
 
 import androidx.annotation.NonNull;
@@ -28,7 +27,7 @@ public class Event {
     private Image EventPosterImage;
     private Calendar EventDate; // NEEDS G&S FOR TIME AS WELL DATE
     /* TODO ?? private Time EventTime ?? */
-    private Location EventLocation;
+    private ArrayList<Double> EventLocation;
     private ArrayList<CheckIn> EventAttendeeList;
     private ArrayList<EventAnnouncement> EventAnnouncementList;
     private ArrayList<EventMilestone> EventMilestoneList;
@@ -51,12 +50,12 @@ public class Event {
      * @param eventDescription Description with related information of Event
      * @param eventPoster      Profile image for Event
      * @param eventDate        Day that Event will take place
-     * @param eventLocation    Geographical place of Event
+     * @param eventLocation    Geographical coordinates of Event {latitude, longitude}
      */
     public Event(
             @NonNull String eventOrganizerID, @NonNull String eventName,
             String eventDescription, Image eventPoster,
-            @NonNull Calendar eventDate, Location eventLocation) {
+            @NonNull Calendar eventDate, ArrayList<Double> eventLocation) {
         EventDescription = eventDescription;
         EventID = UUID.randomUUID().toString();
         this.EventOrganizerID = eventOrganizerID;
@@ -91,9 +90,9 @@ public class Event {
      * Add a User to an Event as an attendee.
      * @param userID            UserID of attendee that is checking-in to the Event
      * @param checkInTime       The HrMin time that the attendee is checking-in
-     * @param checkInLocation   The location that the attendee is checking-in from
+     * @param checkInLocation   Geographical coordinates of Event {latitude, longitude}
      */
-    public void addEventAttendee(String userID, Time checkInTime, Location checkInLocation) {
+    public void addEventAttendee(String userID, Time checkInTime, ArrayList<Double> checkInLocation) {
         this.EventAttendeeList.add(new CheckIn(userID, checkInTime, checkInLocation));
         if (this.EventAttendeeList.size() == this.MilestoneSeries.get(0)) {
             this.addEventMilestone();       // add next fibonacci milestone when current max is reached
@@ -149,9 +148,9 @@ public class Event {
     public String getEventID() { return EventID ; }
 
     /**
-     * @return Location that the Event takes place at.
+     * @return Geographical coordinates of Event {latitude, longitude}
      */
-    public Location getEventLocation() { return this.EventLocation; }
+    public ArrayList<Double> getEventLocation() { return this.EventLocation; }
 
     /**
      * @return List of all accomplished milestones for the Event.
@@ -185,9 +184,21 @@ public class Event {
     public void setEventDate(Calendar dateOfEvent) { this.EventDate = dateOfEvent; }
 
     /**
-     * @param locationOfEvent Location that the Event takes place at.
+     * @param latitudeOfEvent Latitude that the Event takes place at.
      */
-    public void setEventLocation(Location locationOfEvent) { this.EventLocation = locationOfEvent; }
+    public void setEventLatitude(Double latitudeOfEvent) { this.EventLocation.set(0, latitudeOfEvent); }
+
+    /**
+     * @param longitudeOfEvent Longitude that the Event takes place at.
+     */
+    public void setEventLongitude(Double longitudeOfEvent) { this.EventLocation.set(1, longitudeOfEvent); }
+
+    /**
+     * @param locationOfEvent Coordinates that the Event takes place at.
+     */
+    public void setEventLocation(ArrayList<Double> locationOfEvent) {
+        this.EventLocation.set(0, locationOfEvent.get(0));
+        this.EventLocation.set(1, locationOfEvent.get(1)); }
 
     /**
      * @param nameOfEvent Name that the organizer has given the Event.
@@ -210,16 +221,16 @@ public class Event {
     public static class CheckIn {
         private String UserID;
         private Time CheckInTime;
-        private Location CheckInLocation;
+        private ArrayList<Double> CheckInLocation;
 
         /**
          * Sole constructor for <code>CheckIn</code> object, specifying which User checked in,
          * as well as when and where they checked-in.
          * @param userID            UserID of attendee that is checking-in to the Event
          * @param checkInTime       The HrMin time that the attendee is checking-in
-         * @param checkInLocation   The location that the attendee is checking-in from
+         * @param checkInLocation   Geographical coordinates of Event {latitude, longitude}
          */
-        public CheckIn(String userID, Time checkInTime, Location checkInLocation) {
+        public CheckIn(String userID, Time checkInTime, ArrayList<Double> checkInLocation) {
             this.UserID = userID;
             this.CheckInTime = checkInTime;
             this.CheckInLocation = checkInLocation;
@@ -240,9 +251,9 @@ public class Event {
         }
 
         /**
-         * @return Where the User checked in from.
+         * @return Geographical coordinates of User checkIn {latitude, longitude}
          */
-        public Location getCheckInLocation() {
+        public ArrayList<Double> getCheckInLocation() {
             return this.CheckInLocation;
         }
     }
