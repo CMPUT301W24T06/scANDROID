@@ -9,14 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import java.io.Serializable;
-
 public class EventAttendeesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_attendees);
+        setContentView(R.layout.event_attendees_activity);
         Button backButton = findViewById(R.id.event_attendees_list_back_arrow);
         Button searchButton = findViewById(R.id.event_attendees_list_search_icon);
         EditText searchNameEdit = findViewById(R.id.event_attendees_list_search_bar);
