@@ -18,7 +18,7 @@ public class EventDBAccessor {
     /* ------------------- *
      * ATTRIBUTES / FIELDS *
      * ------------------- */
-    private FirebaseFirestore EventDB;
+    private FirebaseFirestore db;
 
     private static CollectionReference EventRef;
 
@@ -31,11 +31,11 @@ public class EventDBAccessor {
      * ----------- */
     public EventDBAccessor() {
 
-        EventDB = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-        EventRef = EventDB.collection("Events");
-        EventPosterImageRef = EventDB.collection("PosterImages");
-        EventQRCodeRef = EventDB.collection("QRCodeImages");
+        EventRef = db.collection("Events");
+        EventPosterImageRef = db.collection("PosterImages");
+        EventQRCodeRef = db.collection("QRCodeImages");
     }
 
     /* ------- *
