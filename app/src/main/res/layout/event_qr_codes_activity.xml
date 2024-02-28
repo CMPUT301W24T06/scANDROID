@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/top_border"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/blue"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="35dp"
+            android:layout_height="36dp"
+            android:background="@drawable/back_arrow_icon">
+        </androidx.appcompat.widget.AppCompatButton>
+
+        <TextView
+            android:id="@+id/event_qr_codes_bar"
+            android:layout_width="342dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_semibold"
+            android:text="@string/event_qr_codes_title_text"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="34sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/check_in_qr_code_textview"
+        android:layout_width="200dp"
+        android:layout_height="25dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/check_in_qr_code_text"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.236"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.113" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/share_check_in_qr_button"
+        android:layout_width="280dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="356dp"
+        android:background="@drawable/rectangle_button"
+        android:fontFamily="@font/inter_bold"
+        android:text="@string/share_button_text"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/share_check_in_qr_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/check_in_qr_code_textview">
+
+        <ImageView
+            android:id="@+id/check_in_qr_code_img"
+            android:layout_width="214dp"
+            android:layout_height="214dp"
+            app:srcCompat="@android:drawable/progress_indeterminate_horizontal" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/promo_in_qr_code_textview"
+        android:layout_width="200dp"
+        android:layout_height="25dp"
+        android:fontFamily="@font/inter_medium"
+        android:text="@string/promotion_qr_code_text"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.236"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.558" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/share_promo_qr_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/promo_in_qr_code_textview"
+        app:layout_constraintVertical_bias="0.541">
+
+        <ImageView
+            android:id="@+id/promo_qr_code_img"
+            android:layout_width="214dp"
+            android:layout_height="214dp"
+            app:srcCompat="@android:drawable/progress_indeterminate_horizontal" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/share_promo_qr_button"
+        android:layout_width="280dp"
+        android:layout_height="35dp"
+        android:background="@drawable/rectangle_button"
+        android:fontFamily="@font/inter_bold"
+        android:text="@string/share_button_text"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/top_border"
+        app:layout_constraintVertical_bias="0.943" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
