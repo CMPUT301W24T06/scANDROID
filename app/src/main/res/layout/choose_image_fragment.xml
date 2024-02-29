@@ -18,7 +18,7 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/ChooseImageTextView"
+            android:id="@+id/choose_image_text_view"
             android:layout_width="303dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -29,7 +29,7 @@
             android:textAlignment="center"
             android:textSize="28sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/removeImageButton"
+            app:layout_constraintBottom_toTopOf="@+id/camera_roll_access_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -37,7 +37,7 @@
         </TextView>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/removeImageButton"
+            android:id="@+id/camera_roll_access_button"
             android:layout_width="219dp"
             android:layout_height="175dp"
             android:layout_gravity="center"
@@ -50,6 +50,21 @@
         </androidx.appcompat.widget.AppCompatButton>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/remove_picture_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="transparent"
+            android:text="@string/remove_picture_text"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/camera_roll_access_button"
+            app:layout_constraintVertical_bias="1.0"></androidx.appcompat.widget.AppCompatButton>
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/back_arrow"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -57,7 +72,7 @@
             android:layout_marginEnd="4dp"
             android:background="@drawable/back_arrow_icon"
             android:backgroundTint="@color/black"
-            app:layout_constraintEnd_toStartOf="@+id/ChooseImageTextView"
+            app:layout_constraintEnd_toStartOf="@+id/choose_image_text_view"
             app:layout_constraintTop_toTopOf="parent">
         </androidx.appcompat.widget.AppCompatButton>
 

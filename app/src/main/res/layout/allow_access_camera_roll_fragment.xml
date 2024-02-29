@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="175dp"
-    android:background="@drawable/rectangle_fragment">
+    android:background="@drawable/rectangle_fragment"
+    android:layout_gravity="center">
 
     <TextView
         android:id="@+id/camera_roll_access"
@@ -11,7 +12,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_bold"
         android:padding="10dp"
-        android:text="Allow scANDROID to access your Camera Roll?"
+        android:text="@string/allow_scandroid_to_access_your_camera_roll_text"
         android:textAlignment="textStart"
         android:textColor="@color/black"
         android:textSize="25sp"

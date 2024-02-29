@@ -12,7 +12,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/milestone_image"
             android:layout_width="74dp"
             android:layout_height="74dp"
             android:layout_marginStart="20dp"
@@ -28,7 +28,7 @@
             android:layout_marginEnd="6dp"
             android:fontFamily="@font/poppins_medium"
             android:gravity="start"
-            android:text="00"
+            android:text="@string/zero_counter_text"
             android:textAllCaps="false"
             android:textColor="#000000"
             android:textSize="18sp" />
@@ -40,7 +40,7 @@
             android:layout_gravity="center_vertical"
             android:fontFamily="@font/poppins_medium"
             android:gravity="center_vertical"
-            android:text="users have checked into your event!"
+            android:text="@string/users_have_checked_into_your_event_text"
             android:textAllCaps="false"
             android:textColor="#000000"
             android:textSize="18sp" />
