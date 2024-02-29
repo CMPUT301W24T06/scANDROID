@@ -49,6 +49,7 @@ public class EventDBAccessor {
      * @param event Event object to be added or updated.
      */
     public void storeEvent(Event event) {
+        // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
         // Store an Event with EventID as key
         EventRef.document(event.getEventID()).set(event)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -42,11 +42,12 @@ public class UserDBAccessor {
      * METHODS *
      * ------- */
     /**
-     * Store or update User in Firestore Database
+     * Store or update a User in Firestore Database
      * @param user User object to be added or updated.
      */
-    public void storeEvent(User user) {
-        // Store an Event with EventID as key
+    public void storeUser(User user) {
+        // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
+        // Store a User with userID as key
         UserRef.document(user.getUserID()).set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
