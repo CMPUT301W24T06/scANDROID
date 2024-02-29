@@ -64,8 +64,27 @@ public class UserTest {
         assertFalse(mockUser.isAdmin("UserAdminKey"));
     }
     //TODO - Test addEventToEventsAttending
-    //TODO - Test addEventToEventsOrganized
+    @Test
+    public void testAddEventToEventsAttending(){
+        Event mockEvent = mockEvent(dateValues,locationValues);
+        String eventID = mockEvent.getEventID();
+        User mockUser = mockUser();
+        mockUser.addEventToEventsAttending(eventID);
 
+        assertEquals(eventID,mockUser.getEventsAttending().get(0));
+        assertEquals(1, mockUser.getEventsAttending().size());
+    }
+    //TODO - Test addEventToEventsOrganized
+    @Test
+    public void testAddEventToEventsOrganized(){
+        Event mockEvent = mockEvent(dateValues,locationValues);
+        String eventID = mockEvent.getEventID();
+        User mockUser = mockUser();
+        mockUser.addEventToEventsOrganized(eventID);
+
+        assertEquals(eventID,mockUser.getEventsOrganized().get(0));
+        assertEquals(mockUser.getEventsOrganized().size(),1);
+    }
 
     /* -------------- *
      * TEST : GETTERS *
@@ -102,24 +121,28 @@ public class UserTest {
     @Test
     public void testGetEventsAttending(){
         User mockUser = mockUser();
-        ArrayList<UUID> shouldBeEmpty = mockUser.getEventsAttending();
+        ArrayList<String> shouldBeEmpty = mockUser.getEventsAttending();
         assertTrue(shouldBeEmpty.isEmpty());
     }
     //TODO - test that event UUIDS remain constant and change accordingly within this list of events
     @Test
     public void testGetNotifiedBy(){
         User mock = mockUser();
-        ArrayList<UUID> shouldBeEmpty = mock.getNotifiedBy();
+        ArrayList<String> shouldBeEmpty = mock.getNotifiedBy();
         assertTrue((shouldBeEmpty.isEmpty()));
     }
     //TODO - test event UUIDS remain constant and change accordingly within the list of events
     @Test
     public void testGetEventsOrganized(){
         User mockUser = mockUser();
-        ArrayList<UUID> shouldBeEmpty = mockUser.getEventsOrganized();
+        ArrayList<String> shouldBeEmpty = mockUser.getEventsOrganized();
         assertTrue(shouldBeEmpty.isEmpty());
     }
     //TODO - Test getTimesAttended method. Need to have access to event uuid.
+    @Test
+    public void testGetTimesAttended(){
+
+    }
 
 
     /* -------------- *

@@ -30,11 +30,11 @@ public class User {
     public Image userProfileImage;
     private final String adminKey = "ThisPersonIsAnAdmin1298";
     private String userID;
-    private ArrayList<UUID> eventsAttending;
-    private ArrayList<UUID> eventsOrganized;
-    public ArrayList<UUID> notifiedBy;
+    private ArrayList<String> eventsAttending;
+    private ArrayList<String> eventsOrganized;
+    public ArrayList<String> notifiedBy;
 
-    private HashMap<UUID, Integer> timesAttended = new HashMap<>() ;
+    private HashMap<String, Integer> timesAttended = new HashMap<>() ;
     //TODO - make the user's location optional
     @Nullable private Location userLocation;
 
@@ -54,9 +54,9 @@ public class User {
      */
     public User(String userID, String userName, String userPhoneNumber, String userAboutMe, Image userProfileImage, String userEmail) {
         this.userID = userID;
-        this.eventsAttending = new ArrayList<UUID>();
-        this.eventsOrganized = new ArrayList<UUID>();
-        this.notifiedBy = new ArrayList<UUID>();
+        this.eventsAttending = new ArrayList<String>();
+        this.eventsOrganized = new ArrayList<String>();
+        this.notifiedBy = new ArrayList<String>();
         //set the default value of a user's name to a Guest name if no name is provided.
         if(userName == null){
             Random random_num = new Random();
@@ -88,7 +88,7 @@ public class User {
      * Adds an event to the user's list of events they are attending.
      * @param event An eventID.
      */
-    public void addEventToEventsAttending(UUID event){
+    public void addEventToEventsAttending(String event){
         if(eventsAttending.contains(event)){
             Integer timesAttendedValue = timesAttended.get(event);
             timesAttended.replace(event,timesAttendedValue+1);
@@ -103,7 +103,7 @@ public class User {
      * Adds an event to the user's list of events they have organized.
      * @param event An eventID.
      */
-    public void addEventToEventsOrganized(UUID event){
+    public void addEventToEventsOrganized(String event){
         eventsOrganized.add(event);
     }
 
@@ -158,21 +158,21 @@ public class User {
     /**
      * @return A list of eventIDs that the user may be notified by.
      */
-    public ArrayList<UUID> getNotifiedBy() {
+    public ArrayList<String> getNotifiedBy() {
         return notifiedBy;
     }
 
     /**
      * @return the list of events (eventIDs) a user is attending
      */
-    public ArrayList<UUID> getEventsAttending() {
+    public ArrayList<String> getEventsAttending() {
         return eventsAttending;
     }
 
     /**
      * @return the list of events a user is organizing.
      */
-    public ArrayList<UUID> getEventsOrganized() {
+    public ArrayList<String> getEventsOrganized() {
         return eventsOrganized;
     }
 
@@ -226,21 +226,21 @@ public class User {
     /**
      * @param eventsAttending the new list of events a user may be attending.
      */
-    public void setEventsAttending(ArrayList<UUID> eventsAttending) {
+    public void setEventsAttending(ArrayList<String> eventsAttending) {
         this.eventsAttending = eventsAttending;
     }
 
     /**
      * @param eventsOrganized the new list of events a user is organizing.
      */
-    public void setEventsOrganized(ArrayList<UUID> eventsOrganized) {
+    public void setEventsOrganized(ArrayList<String> eventsOrganized) {
         this.eventsOrganized = eventsOrganized;
     }
 
     /**
      * @param notifiedBy the new list of events a user may be notified by.
      */
-    public void setNotifiedBy(ArrayList<UUID> notifiedBy) {
+    public void setNotifiedBy(ArrayList<String> notifiedBy) {
         this.notifiedBy = notifiedBy;
     }
     //TODO - scanQRCode
