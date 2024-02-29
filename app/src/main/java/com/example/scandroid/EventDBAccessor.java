@@ -88,17 +88,15 @@ public class EventDBAccessor {
                 });
     }
 
-
-    /* ------- *
-     * GETTERS *
-     * ------- */
     /**
      * Get Event stored in Firestore Database
      * @param eventID Unique identifier for Event to be accessed
+     * @return Event that matches EventID if exists in Firestore Database
      */
-    public void getEvent(String eventID) {
+    public Event accessEvent(String eventID) {
         // Source: https://firebase.google.com/docs/firestore/query-data/get-data
         // Get an Event via EventID
+        final Event[] storedEvent = new Event[1];
         EventRef.document(eventID).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -107,14 +105,19 @@ public class EventDBAccessor {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
+                                storedEvent[0] = task.getResult().toObject(Event.class);
                             } else {
                                 Log.d("Firestore", "No such document");
+                                storedEvent[0] = null;
                             }
                         } else {
                             Log.d("Firestore", "get failed with ", task.getException());
+                            storedEvent[0] = null;
                         }
                     }
                 });
+
+        return storedEvent[0];
     }
 
 

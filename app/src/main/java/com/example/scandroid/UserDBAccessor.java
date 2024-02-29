@@ -88,10 +88,12 @@ public class UserDBAccessor {
     /**
      * Get User stored in Firestore Database
      * @param userID Unique identifier for Event
+     * @return User that matches UserID if exists in Firestore Database
      */
-    public void getUser(String userID) {
+    public User accessUser(String userID) {
         // Source: https://firebase.google.com/docs/firestore/query-data/get-data
         // Get a User via UserID
+        final User[] storedUser = new User[1];
         UserRef.document(userID).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -100,13 +102,18 @@ public class UserDBAccessor {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
+                                storedUser[0] = task.getResult().toObject(User.class);
                             } else {
                                 Log.d("Firestore", "No such document");
+                                storedUser[0] = null;
                             }
                         } else {
                             Log.d("Firestore", "get failed with ", task.getException());
+                            storedUser[0] = null;
                         }
                     }
                 });
+
+        return storedUser[0];
     }
 }
