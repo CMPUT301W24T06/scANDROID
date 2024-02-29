@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/home_text"
+        android:icon="@drawable/home_button_image">
+    </item>
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/qr_text"
+        android:icon="@drawable/qr_button_image">
+    </item>
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/browse_text"
+        android:icon="@drawable/browse_button_image">
+    </item>
+    <item
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/notification_text"
+        android:icon="@drawable/notification_button_image">
+    </item>
+</menu>
