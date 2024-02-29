@@ -25,25 +25,47 @@ public class EventDBAccessor {
 
     private static CollectionReference EventRef;
 
-    private static CollectionReference EventPosterImageRef;
-
-    private static CollectionReference EventQRCodeRef;
+//    private static CollectionReference EventPosterImageRef;
+//
+//    private static CollectionReference EventQRCodeRef;
 
     /* ----------- *
      * CONSTRUCTOR *
      * ----------- */
     public EventDBAccessor() {
 
+        // Access Event collection of Firestore
         db = FirebaseFirestore.getInstance();
-
         EventRef = db.collection("Events");
-        EventPosterImageRef = db.collection("PosterImages");
-        EventQRCodeRef = db.collection("QRCodeImages");
+//        EventPosterImageRef = db.collection("PosterImages");
+//        EventQRCodeRef = db.collection("QRCodeImages");
     }
 
     /* ------- *
      * METHODS *
      * ------- */
+    /**
+     * Delete an Event in Firestore Database
+     * @param eventID Unique identifier for Event to be deleted
+     */
+    public void deleteEvent(String eventID) {
+        // Source: https://firebase.google.com/docs/firestore/manage-data/delete-data
+        // Delete an Event via EventID
+        EventRef.document(eventID).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Firestore", "Event successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Firestore", "Error deleting Event", e);
+                    }
+                });
+    }
+
     /**
      * Store or update Event in Firestore Database
      * @param event Event object to be added or updated.
@@ -66,12 +88,17 @@ public class EventDBAccessor {
                 });
     }
 
+
+    /* ------- *
+     * GETTERS *
+     * ------- */
     /**
      * Get Event stored in Firestore Database
-     * @param eventID Unique identifier for Event
+     * @param eventID Unique identifier for Event to be accessed
      */
     public void getEvent(String eventID) {
         // Source: https://firebase.google.com/docs/firestore/query-data/get-data
+        // Get an Event via EventID
         EventRef.document(eventID).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -90,9 +117,7 @@ public class EventDBAccessor {
                 });
     }
 
-    /* ------- *
-     * GETTERS *
-     * ------- */
+
     // TODO - .getEvent(String EventID)
     // TODO - .getEventPoster(String EventID)
     // TODO - .getEventQRCode(String EventID)
