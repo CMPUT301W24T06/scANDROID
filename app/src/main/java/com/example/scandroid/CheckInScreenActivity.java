@@ -14,6 +14,6 @@ public class CheckInScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_in_screen_activity);
         ImageView backgroundImageView = findViewById(R.id.backgroundImageView);
-        backgroundImageView.setBackgroundResource(R.drawable.img);
+        backgroundImageView.setBackgroundResource(R.drawable.check_in_image);
     }
 }
