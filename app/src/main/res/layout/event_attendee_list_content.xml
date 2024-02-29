@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/event_attendees_content_border"
@@ -21,7 +22,7 @@
         android:layout_marginStart="9dp"
         android:layout_marginTop="44dp"
         android:layout_marginEnd="148dp"
-        android:text="Check-in Time: 0:00"
+        android:text="@string/check_in_time_text"
 
         app:layout_constraintEnd_toEndOf="@+id/event_attendees_content_border"
         app:layout_constraintHorizontal_bias="0.0"
@@ -33,7 +34,7 @@
         android:layout_width="265dp"
         android:layout_height="24dp"
         android:layout_marginTop="16dp"
-        android:text="Attendee Name"
+        android:text="@string/attendee_name_text"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/event_attendees_content_border"
         app:layout_constraintHorizontal_bias="0.954"
@@ -53,7 +54,9 @@
             android:id="@+id/event_attendees_list_profile_picture"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@tools:sample/avatars" />
+            android:background="@drawable/guest_default_image"
+            android:padding="10dp">
+        </ImageView>
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -61,7 +64,7 @@
         android:layout_width="224dp"
         android:layout_height="20dp"
         android:layout_marginTop="8dp"
-        android:text="Attendance Count: 0"
+        android:text="@string/attendance_count_text"
         app:layout_constraintEnd_toEndOf="@+id/event_attendees_content_border"
         app:layout_constraintHorizontal_bias="0.16"
         app:layout_constraintStart_toEndOf="@+id/cardView"

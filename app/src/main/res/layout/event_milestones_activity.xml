@@ -16,8 +16,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="35dp"
-            android:layout_height="36dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/back_arrow_icon">
         </androidx.appcompat.widget.AppCompatButton>
 
