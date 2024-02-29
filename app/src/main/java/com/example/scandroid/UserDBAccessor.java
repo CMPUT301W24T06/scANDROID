@@ -25,22 +25,44 @@ public class UserDBAccessor {
 
     private static CollectionReference UserRef;
 
-    private static CollectionReference UserProfileImageRef;
+//    private static CollectionReference UserProfileImageRef;
 
     /* ----------- *
      * CONSTRUCTOR *
      * ----------- */
     public UserDBAccessor() {
 
+        // Access User collection of Firestore
         db = FirebaseFirestore.getInstance();
-
         UserRef = db.collection("Users");
-        UserProfileImageRef = db.collection("UserProfileImages");
+//        UserProfileImageRef = db.collection("UserProfileImages");
     }
 
     /* ------- *
      * METHODS *
      * ------- */
+    /**
+     * Delete a User in Firestore Database
+     * @param userID Unique identifier for Event to be deleted
+     */
+    public void deleteUser(String userID) {
+        // Source: https://firebase.google.com/docs/firestore/manage-data/delete-data
+        // Delete a User via UserID
+        UserRef.document(userID).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Firestore", "User successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Firestore", "Error deleting User", e);
+                    }
+                });
+    }
+
     /**
      * Store or update a User in Firestore Database
      * @param user User object to be added or updated.
@@ -69,6 +91,7 @@ public class UserDBAccessor {
      */
     public void getUser(String userID) {
         // Source: https://firebase.google.com/docs/firestore/query-data/get-data
+        // Get a User via UserID
         UserRef.document(userID).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
