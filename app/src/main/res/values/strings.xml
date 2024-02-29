@@ -49,4 +49,6 @@
     <string name="enter_your_email_text">Enter your email</string>
     <string name="email_text">Email</string>
     <string name="change_picture_text">Change Picture</string>
+    <string name="search_with_attendee_name_text">Search with attendee name</string>
+    <string name="total_attendees_text">Total Attendees:</string>
 </resources>

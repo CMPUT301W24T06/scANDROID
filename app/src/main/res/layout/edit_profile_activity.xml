@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <ImageView
+    <RelativeLayout
         android:id="@+id/blueBackgroundImageView"
         android:layout_width="match_parent"
         android:layout_height="237dp"
@@ -13,7 +13,8 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/blue_profile_bkg" />
+        android:background="@color/blue">
+    </RelativeLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/back_arrow"
@@ -75,7 +76,7 @@
         android:layout_height="147dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="160dp"
-        android:background="@drawable/guest_profile_pic"
+        android:background="@drawable/guest_default_image"
         android:clickable="false">
     </ImageView>
 
