@@ -1,6 +1,6 @@
 package com.example.scandroid;
 
-import android.media.Image;
+import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
@@ -24,7 +24,8 @@ public class Event {
     private String EventOrganizerID;
     private String EventName;
     private String EventDescription;
-    private Image EventPosterImage;
+//    private Image EventPosterImage;
+    private Bitmap EventPosterImage;
     private Calendar EventDate; // NEEDS G&S FOR TIME AS WELL DATE
     /* TODO ?? private Time EventTime ?? */
     private ArrayList<Double> EventLocation;
@@ -54,7 +55,7 @@ public class Event {
      */
     public Event(
             @NonNull String eventOrganizerID, @NonNull String eventName,
-            String eventDescription, Image eventPoster,
+            String eventDescription, Bitmap eventPoster,
             @NonNull Calendar eventDate, ArrayList<Double> eventLocation) {
         EventDescription = eventDescription;
         EventID = UUID.randomUUID().toString();
@@ -75,7 +76,6 @@ public class Event {
     /* ------- *
      * METHODS *
      * ------- */
-
     /**
      * Add a new announcement to an Event as an Organizer.
      * @param announcementTitle A name for the announcement
@@ -141,6 +141,11 @@ public class Event {
      */
     public Calendar getEventDate() { return this.EventDate; }
 
+    /**
+     * @return Description with related information of Event
+     */
+    public String getEventDescription() { return this.EventDescription; }
+
 
     /**
      * @return Strong pseudo random number generator that belongs to this Event.
@@ -172,7 +177,7 @@ public class Event {
     /**
      * @return The poster image provided for the Event.
      */
-    public Image getEventPosterImage() { return this.EventPosterImage; }
+    public Bitmap getEventPosterImage() { return this.EventPosterImage; }
 
 
     /* ------- *
@@ -208,7 +213,7 @@ public class Event {
     /**
      * @param posterForEvent The poster image provided for the Event.
      */
-    public void setEventPosterImage(Image posterForEvent) { this.EventPosterImage = posterForEvent; }
+    public void setEventPosterImage(Bitmap posterForEvent) { this.EventPosterImage = posterForEvent; }
 
 
     /* -------------- *
