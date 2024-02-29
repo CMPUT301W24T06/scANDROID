@@ -15,12 +15,20 @@
         android:scaleType="centerCrop"
         android:src="@drawable/blue_profile_bkg" />
 
-    <!-- Edit Profile text at the top -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/back_arrow"
+        android:layout_width="48dp"
+        android:layout_height="52dp"
+        android:background="@drawable/back_arrow_icon"
+        android:backgroundTint="@color/white"
+        android:contentDescription="@string/app_name"
+        android:textColor="@color/white" />
+
     <TextView
         android:id="@+id/editProfileTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Profile"
+        android:text="@string/edit_profile_text"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -42,89 +50,76 @@
             android:gravity="center"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:text="Guest1"
+            android:text="@string/guest_text"
             android:textColor="@color/white"
             android:textSize="40sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/pencilImageView"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/edit_name_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignBottom="@id/nameEditText"
-            android:layout_marginStart="-133dp"
-            android:layout_marginBottom="-4dp"
+            android:layout_marginStart="-143dp"
+            android:layout_marginBottom="7dp"
             android:layout_toEndOf="@id/nameEditText"
-            android:src="@drawable/edit_name_pencil" />
+            android:background="@drawable/edit_name_pencil">
+        </androidx.appcompat.widget.AppCompatButton>
 
     </RelativeLayout>
 
 
     <ImageView
-        android:id="@+id/profileImageView"
+        android:id="@+id/edit_profile_image"
         android:layout_width="159dp"
         android:layout_height="147dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="160dp"
-        android:src="@drawable/guest_profile_pic"
+        android:background="@drawable/guest_profile_pic"
         android:clickable="false">
-
     </ImageView>
 
-    <TextView
+    <Button
         android:id="@+id/changePictureTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Change Picture"
+        android:text="@string/change_picture_text"
         android:textColor="@android:color/black"
-        android:layout_below="@id/profileImageView"
+        android:layout_below="@+id/edit_profile_image"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:clickable="true"
-        android:onClick="onChangePictureClick"/>
+        android:background="@android:color/transparent">
+    </Button>
 
     <RelativeLayout
         android:id="@+id/emailLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/profileImageView"
+        android:layout_below="@+id/edit_profile_image"
         android:layout_marginTop="32dp">
-
-
 
         <TextView
             android:id="@+id/emailTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email"
+            android:text="@string/email_text"
             android:paddingStart="30dp"
             android:textStyle="bold"
             android:textSize="18sp"/>
 
         <EditText
             android:id="@+id/emailEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="360dp"
+            android:layout_height="48dp"
             android:layout_below="@id/emailTextView"
-            android:hint="Enter your email"
-            android:background="@android:color/transparent"
-            android:paddingStart="35dp"
+            android:hint="@string/enter_your_email_text"
+            android:background="@drawable/button_outline_grey"
+            android:paddingStart="10dp"
             android:paddingEnd="8dp"
-            android:layout_marginTop="10dp"/>
-
-        <ImageView
-            android:layout_width="352dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="11dp"
-            android:layout_marginTop="-28dp"
-            android:layout_marginEnd="30dp"
-            android:paddingStart="20dp"
-            android:clickable="false"
-            android:src="@drawable/edit_profile_outline_box">
-
-        </ImageView>
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="25.5dp"
+            android:layout_marginEnd="25.5dp">
+        </EditText>
     </RelativeLayout>
 
     <RelativeLayout
@@ -132,107 +127,90 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/emailLayout"
-        android:layout_marginTop="-30dp">
+        android:layout_marginTop="12dp">
 
         <TextView
             android:id="@+id/phoneTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Phone Number"
             android:paddingStart="30dp"
-            android:textStyle="bold"
-            android:textSize="18sp"/>
+            android:text="@string/phone_number_text"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/phoneEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="360dp"
+            android:layout_height="48dp"
             android:layout_below="@id/phoneTextView"
-            android:hint="Phone Number"
-            android:background="@android:color/transparent"
-            android:paddingStart="35dp"
-            android:paddingEnd="8dp"
-            android:layout_marginTop="10dp"/>
-        <ImageView
-            android:layout_width="352dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="11dp"
-            android:layout_marginTop="-28dp"
-            android:layout_marginEnd="30dp"
-            android:paddingStart="20dp"
-            android:clickable="false"
-            android:src="@drawable/edit_profile_outline_box">
-        </ImageView>
+            android:layout_marginStart="25.5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="25.5dp"
+            android:background="@drawable/button_outline_grey"
+            android:hint="@string/phone_number_text"
+            android:paddingStart="10dp"
+            android:paddingEnd="8dp">
+        </EditText>
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/aboutMeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/phoneLayout"
-        android:layout_marginTop="-30dp">
+        android:layout_marginTop="7dp">
 
         <TextView
             android:id="@+id/aboutMeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="About Me"
             android:paddingStart="30dp"
-            android:textStyle="bold"
-            android:textSize="18sp"/>
+            android:text="@string/about_me_text"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/aboutMeEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="360dp"
+            android:layout_height="48dp"
             android:layout_below="@id/aboutMeTextView"
-            android:hint="About me"
-            android:background="@android:color/transparent"
-            android:paddingStart="35dp"
-            android:paddingEnd="8dp"
-            android:layout_marginTop="10dp"/>
-
-        <ImageView
-            android:layout_width="346dp"
-            android:layout_height="146dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="11dp"
-            android:layout_marginTop="-28dp"
-            android:layout_marginEnd="30dp"
-            android:paddingStart="20dp"
-            android:src="@drawable/edit_profile_outline_box"
-            android:clickable="false"></ImageView>
+            android:layout_marginStart="25.5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="25.5dp"
+            android:background="@drawable/button_outline_grey"
+            android:hint="@string/about_me_text"
+            android:paddingStart="10dp"
+            android:paddingEnd="8dp">
+        </EditText>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_below="@id/aboutMeEditText"
-            android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/pushNotificationCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false"
                 android:buttonTint="@color/black"
-                />
+                android:checked="false">
+            </CheckBox>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="Would you like to receive push notifications about your event?"
+                android:layout_marginStart="-4dp"
+                android:text="@string/would_you_like_to_receive_push_notifications_about_your_event_text"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginStart="-4dp"/>
-
-
-
+                android:textStyle="bold">
+            </TextView>
         </LinearLayout>
 
         <Button
@@ -245,30 +223,20 @@
             android:layout_marginTop="175dp"
             android:layout_marginEnd="80dp"
             android:backgroundTint="@color/black"
-            android:text="Update" />
-
+            android:text="@string/update_text">
+        </Button>
 
     </RelativeLayout>
 
-    <ImageView
-        android:layout_width="32dp"
-        android:layout_height="36dp"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/admin_wrench_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentEnd="true"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:layout_marginEnd="4dp"
-        android:paddingRight="0dp"
-        android:src="@drawable/admin_wrench" />
-
-    <ImageView
-        android:layout_width="32dp"
-        android:layout_height="36dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="left"
-        android:layout_marginStart="9dp"
-        android:layout_marginEnd="352dp"
-        android:paddingRight="0dp"
-        android:src="@drawable/white_back_button" />
+        android:background="@drawable/admin_wrench">
+    </androidx.appcompat.widget.AppCompatButton>
 
 
 </RelativeLayout>

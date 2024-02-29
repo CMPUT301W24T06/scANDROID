@@ -1,14 +1,13 @@
 package com.example.scandroid;
 
-import android.location.Location;
-import android.media.Image;
+import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.UUID;
 
 /**
@@ -21,14 +20,15 @@ public class Event {
     /* ------------------- *
      * ATTRIBUTES / FIELDS *
      * ------------------- */
-    private static UUID EventID;
+    private static String EventID;
     private String EventOrganizerID;
     private String EventName;
     private String EventDescription;
-    private Image EventPosterImage;
-    private Date EventDate; // NEEDS G&S FOR TIME AS WELL DATE
+//    private Image EventPosterImage;
+    private Bitmap EventPosterImage;
+    private Calendar EventDate; // NEEDS G&S FOR TIME AS WELL DATE
     /* TODO ?? private Time EventTime ?? */
-    private Location EventLocation;
+    private ArrayList<Double> EventLocation;
     private ArrayList<CheckIn> EventAttendeeList;
     private ArrayList<EventAnnouncement> EventAnnouncementList;
     private ArrayList<EventMilestone> EventMilestoneList;
@@ -48,14 +48,17 @@ public class Event {
      *
      * @param eventOrganizerID UserID of User that created Event
      * @param eventName        Name of Event
-     * @param eventDescription
+     * @param eventDescription Description with related information of Event
      * @param eventPoster      Profile image for Event
      * @param eventDate        Day that Event will take place
-     * @param eventLocation    Geographical place of Event
+     * @param eventLocation    Geographical coordinates of Event {latitude, longitude}
      */
-    public Event(@NonNull String eventOrganizerID, @NonNull String eventName, String eventDescription, Image eventPoster, @NonNull Date eventDate, @NonNull Location eventLocation) {
+    public Event(
+            @NonNull String eventOrganizerID, @NonNull String eventName,
+            String eventDescription, Bitmap eventPoster,
+            @NonNull Calendar eventDate, ArrayList<Double> eventLocation) {
         EventDescription = eventDescription;
-        EventID = UUID.randomUUID();
+        EventID = UUID.randomUUID().toString();
         this.EventOrganizerID = eventOrganizerID;
         this.EventName = eventName;
         this.EventDescription = eventDescription;
@@ -69,18 +72,29 @@ public class Event {
         this.addEventMilestone();   // adds first milestone of threshold of one attendee check-in
     }
 
+
     /* ------- *
      * METHODS *
      * ------- */
     /**
+     * Add a new announcement to an Event as an Organizer.
+     * @param announcementTitle A name for the announcement
+     * @param announcementAbout Context to what the announcement is about
+     * @param announcementTime  The time that the announcement is visible to an attendee
+     */
+    public void addEventAnnouncement(String announcementTitle, String announcementAbout, Time announcementTime) {
+        this.EventAnnouncementList.add(new EventAnnouncement(announcementTitle, announcementAbout, announcementTime));
+    }
+
+    /**
      * Add a User to an Event as an attendee.
      * @param userID            UserID of attendee that is checking-in to the Event
      * @param checkInTime       The HrMin time that the attendee is checking-in
-     * @param checkInLocation   The location that the attendee is checking-in from
+     * @param checkInLocation   Geographical coordinates of Event {latitude, longitude}
      */
-    public void addEventAttendee(String userID, Time checkInTime, Location checkInLocation) {
+    public void addEventAttendee(String userID, Time checkInTime, ArrayList<Double> checkInLocation) {
         this.EventAttendeeList.add(new CheckIn(userID, checkInTime, checkInLocation));
-        if (this.EventAttendeeList.size() == this.MilestoneSeries.get(1)) {
+        if (this.EventAttendeeList.size() == this.MilestoneSeries.get(0)) {
             this.addEventMilestone();       // add next fibonacci milestone when current max is reached
         }
     }
@@ -91,11 +105,12 @@ public class Event {
      */
     private void addEventMilestone() {
         int pastGreatest = this.MilestoneSeries.get(1);                                 // current greatest milestone threshold
+        this.EventMilestoneList.add(new EventMilestone(pastGreatest));
         int nextGreatest = this.MilestoneSeries.get(0) + this.MilestoneSeries.get(1);   // next milestone threshold
-        this.EventMilestoneList.add(new EventMilestone(nextGreatest));
         this.MilestoneSeries.set(0, pastGreatest);
         this.MilestoneSeries.set(1, nextGreatest);                                      // i.e. [2,3] becomes [3,5]
     }
+
 
     /* ------- *
      * GETTERS *
@@ -124,12 +139,23 @@ public class Event {
     /**
      * @return Calendar date that the Event takes place on.
      */
-    public Date getEventDate() { return this.EventDate; }
+    public Calendar getEventDate() { return this.EventDate; }
 
     /**
-     * @return Location that the Event takes place at.
+     * @return Description with related information of Event
      */
-    public Location getEventLocation() { return this.EventLocation; }
+    public String getEventDescription() { return this.EventDescription; }
+
+
+    /**
+     * @return Strong pseudo random number generator that belongs to this Event.
+     */
+    public String getEventID() { return EventID ; }
+
+    /**
+     * @return Geographical coordinates of Event {latitude, longitude}
+     */
+    public ArrayList<Double> getEventLocation() { return this.EventLocation; }
 
     /**
      * @return List of all accomplished milestones for the Event.
@@ -151,21 +177,33 @@ public class Event {
     /**
      * @return The poster image provided for the Event.
      */
-    public Image getEventPosterImage() { return this.EventPosterImage; }
+    public Bitmap getEventPosterImage() { return this.EventPosterImage; }
+
 
     /* ------- *
      * SETTERS *
      * ------- */
-
     /**
      * @param dateOfEvent   The Calendar date that the Event takes place on.
      */
-    public void setEventDate(Date dateOfEvent) { this.EventDate = dateOfEvent; }
+    public void setEventDate(Calendar dateOfEvent) { this.EventDate = dateOfEvent; }
 
     /**
-     * @param locationOfEvent Location that the Event takes place at.
+     * @param latitudeOfEvent Latitude that the Event takes place at.
      */
-    public void setEventLocation(Location locationOfEvent) { this.EventLocation = locationOfEvent; }
+    public void setEventLatitude(Double latitudeOfEvent) { this.EventLocation.set(0, latitudeOfEvent); }
+
+    /**
+     * @param longitudeOfEvent Longitude that the Event takes place at.
+     */
+    public void setEventLongitude(Double longitudeOfEvent) { this.EventLocation.set(1, longitudeOfEvent); }
+
+    /**
+     * @param locationOfEvent Coordinates that the Event takes place at.
+     */
+    public void setEventLocation(ArrayList<Double> locationOfEvent) {
+        this.EventLocation.set(0, locationOfEvent.get(0));
+        this.EventLocation.set(1, locationOfEvent.get(1)); }
 
     /**
      * @param nameOfEvent Name that the organizer has given the Event.
@@ -175,7 +213,7 @@ public class Event {
     /**
      * @param posterForEvent The poster image provided for the Event.
      */
-    public void setEventPosterImage(Image posterForEvent) { this.EventPosterImage = posterForEvent; }
+    public void setEventPosterImage(Bitmap posterForEvent) { this.EventPosterImage = posterForEvent; }
 
 
     /* -------------- *
@@ -186,18 +224,18 @@ public class Event {
      * Organizers use a list of CheckIn's when viewing Users attending their Event.
      */
     public static class CheckIn {
-        String UserID;
-        Time CheckInTime;
-        Location CheckInLocation;
+        private String UserID;
+        private Time CheckInTime;
+        private ArrayList<Double> CheckInLocation;
 
         /**
          * Sole constructor for <code>CheckIn</code> object, specifying which User checked in,
          * as well as when and where they checked-in.
          * @param userID            UserID of attendee that is checking-in to the Event
          * @param checkInTime       The HrMin time that the attendee is checking-in
-         * @param checkInLocation   The location that the attendee is checking-in from
+         * @param checkInLocation   Geographical coordinates of Event {latitude, longitude}
          */
-        private CheckIn(String userID, Time checkInTime, Location checkInLocation) {
+        public CheckIn(String userID, Time checkInTime, ArrayList<Double> checkInLocation) {
             this.UserID = userID;
             this.CheckInTime = checkInTime;
             this.CheckInLocation = checkInLocation;
@@ -213,14 +251,14 @@ public class Event {
         /**
          * @return HrMin time that the User checked-in at.
          */
-        public long getCheckInTime() {
-            return this.CheckInTime.getTime();
+        public Time getCheckInTime() {
+            return this.CheckInTime;
         }
 
         /**
-         * @return Where the User checked in from.
+         * @return Geographical coordinates of User checkIn {latitude, longitude}
          */
-        public Location getCheckInLocation() {
+        public ArrayList<Double> getCheckInLocation() {
             return this.CheckInLocation;
         }
     }
@@ -231,10 +269,10 @@ public class Event {
      * Attendees see Announcements for Events they attend if desired.
      */
     public class EventAnnouncement {
-        String AnnouncementTitle;
-        String AnnouncementAbout;
-        String AnnouncementOrganizer;
-        Time AnnouncementTime;
+        private String AnnouncementTitle;
+        private String AnnouncementAbout;
+        private String AnnouncementOrganizerID;
+        private Time AnnouncementTime;
 
         /**
          * Sole constructor for an <code>EventAnnouncement</code> object, specifying a
@@ -247,10 +285,37 @@ public class Event {
         private EventAnnouncement(String title, String about, Time time) {
             this.AnnouncementTitle = title;
             this.AnnouncementAbout = about;
-            this.AnnouncementOrganizer = EventOrganizerID;
+            this.AnnouncementOrganizerID = EventOrganizerID;
             this.AnnouncementTime = time;
         }
 
+        /**
+         * @return The name of the announcement
+         */
+        public String getAnnouncementTitle() {
+            return AnnouncementTitle;
+        }
+
+        /**
+         * @return Context to what the announcement is about
+         */
+        public String getAnnouncementAbout() {
+            return AnnouncementAbout;
+        }
+
+        /**
+         * @return The name of the User that created the Event
+         */
+        public String getAnnouncementOrganizerID() {
+            return AnnouncementOrganizerID;
+        }
+
+        /**
+         * @return The time that the announcement is visible to an attendee
+         */
+        public Time getAnnouncementTime() {
+            return AnnouncementTime;
+        }
     }
 
     /**

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "519968753226",
+    "project_id": "scandroid-cmput301-w24-t06",
+    "storage_bucket": "scandroid-cmput301-w24-t06.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519968753226:android:6951d24f3e11074b42c8b3",
+        "android_client_info": {
+          "package_name": "com.example.scandroid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBngIZk-mFpJmcBBOu6c2yf4sqMt6MDzfI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
