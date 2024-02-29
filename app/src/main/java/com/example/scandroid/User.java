@@ -28,7 +28,7 @@ public class User {
     //TODO - (FRONT END) set character limit for userAboutMe.
     private String userAboutMe;
     public Image userProfileImage;
-    private String adminKey;
+    private final String adminKey = "ThisPersonIsAnAdmin1298";
     private String userID;
     private ArrayList<UUID> eventsAttending;
     private ArrayList<UUID> eventsOrganized;

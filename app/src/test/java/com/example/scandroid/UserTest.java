@@ -1,6 +1,7 @@
 package com.example.scandroid;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.location.Location;
@@ -43,9 +44,6 @@ public class UserTest {
                 dateValues.get(3),  // hour   = 16
                 dateValues.get(4)); // minute = 0
 
-        Location ballLocation = new Location("fairmont_hotel_macdonald");
-        ballLocation.setLatitude(locationValues.get(0));   // Lat  =  53.540349083363616
-        ballLocation.setLongitude(locationValues.get(1));  // Long = -113.48952321566745
 
         return new Event(
                 "EventOrganizerID",
@@ -53,13 +51,18 @@ public class UserTest {
                 "Balldance",
                 null,
                 christmasEveBallDate,
-                ballLocation
+                locationValues
         );
     }
     /* -------------- *
      * TEST : METHODS *
      * -------------- */
     //TODO - Test isAdmin
+    @Test
+    public void testIsAdmin(){
+        User mockUser = mockUser();
+        assertFalse(mockUser.isAdmin("UserAdminKey"));
+    }
     //TODO - Test addEventToEventsAttending
     //TODO - Test addEventToEventsOrganized
 
