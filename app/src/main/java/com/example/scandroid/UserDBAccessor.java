@@ -4,9 +4,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
@@ -39,11 +42,12 @@ public class UserDBAccessor {
      * METHODS *
      * ------- */
     /**
-     * Store or update User in Firestore Database
+     * Store or update a User in Firestore Database
      * @param user User object to be added or updated.
      */
-    public void storeEvent(User user) {
-        // Store an Event with EventID as key
+    public void storeUser(User user) {
+        // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
+        // Store a User with userID as key
         UserRef.document(user.getUserID()).set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -55,6 +59,30 @@ public class UserDBAccessor {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("Firestore", "Error writing User document", e);
+                    }
+                });
+    }
+
+    /**
+     * Get User stored in Firestore Database
+     * @param userID Unique identifier for Event
+     */
+    public void getUser(String userID) {
+        // Source: https://firebase.google.com/docs/firestore/query-data/get-data
+        UserRef.document(userID).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
+                            } else {
+                                Log.d("Firestore", "No such document");
+                            }
+                        } else {
+                            Log.d("Firestore", "get failed with ", task.getException());
+                        }
                     }
                 });
     }
