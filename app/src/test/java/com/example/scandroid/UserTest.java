@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -141,6 +142,13 @@ public class UserTest {
     //TODO - Test getTimesAttended method. Need to have access to event uuid.
     @Test
     public void testGetTimesAttended(){
+        Event mockEvent = mockEvent(dateValues,locationValues);
+        String eventID = mockEvent.getEventID();
+        User mockUser = mockUser();
+        Integer times = 0;
+        mockUser.addEventToEventsAttending(eventID);
+
+        assertEquals(times,mockUser.getTimesAttended(eventID));
 
     }
 

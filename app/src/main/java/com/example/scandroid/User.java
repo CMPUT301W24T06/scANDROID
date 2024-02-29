@@ -95,7 +95,7 @@ public class User {
         }
         else{
             eventsAttending.add(event);
-            timesAttended.put(event,1);
+            timesAttended.put(event,0);
         }
     }
 
@@ -180,7 +180,7 @@ public class User {
      * @param event an eventID
      * @return The number of times a User has attended a given event.
      */
-    public Integer getTimesAttended(UUID event){
+    public Integer getTimesAttended(String event){
         return timesAttended.get(event);
     }
 
