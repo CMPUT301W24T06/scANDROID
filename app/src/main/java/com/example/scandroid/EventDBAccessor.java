@@ -2,19 +2,13 @@ package com.example.scandroid;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * Represents interface between scANDROID and Firestore database. <br>
- * Allows storage of and access to Event objects, EventPosterImages and EventQRCodes.
+ * Allows storage and access of Event objects.
  * @author Jordan Beaubien
  */
 public class EventDBAccessor {
@@ -25,45 +19,36 @@ public class EventDBAccessor {
 
     private static CollectionReference EventRef;
 
-//    private static CollectionReference EventPosterImageRef;
-//
-//    private static CollectionReference EventQRCodeRef;
 
     /* ----------- *
      * CONSTRUCTOR *
      * ----------- */
+    /**
+     * Sole constructor of EventDBAccessor. <br>
+     * Allows access to Event's stored in a Firestore Database. <br>
+     * Actions permitted: Access(get), Delete, and Store
+     */
     public EventDBAccessor() {
 
         // Access Event collection of Firestore
         db = FirebaseFirestore.getInstance();
         EventRef = db.collection("Events");
-//        EventPosterImageRef = db.collection("PosterImages");
-//        EventQRCodeRef = db.collection("QRCodeImages");
     }
+
 
     /* ------- *
      * METHODS *
      * ------- */
     /**
      * Delete an Event in Firestore Database
-     * @param eventID Unique identifier for Event to be deleted
+     * @param EventID Unique identifier for Event to be deleted
      */
-    public void deleteEvent(String eventID) {
+    public void deleteEvent(String EventID) {
         // Source: https://firebase.google.com/docs/firestore/manage-data/delete-data
         // Delete an Event via EventID
-        EventRef.document(eventID).delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("Firestore", "Event successfully deleted!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("Firestore", "Error deleting Event", e);
-                    }
-                });
+        EventRef.document(EventID).delete()
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event successfully deleted!"))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error deleting Event", e));
     }
 
     /**
@@ -74,59 +59,36 @@ public class EventDBAccessor {
         // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
         // Store an Event with EventID as key
         EventRef.document(event.getEventID()).set(event)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("Firestore", "Event successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("Firestore", "Error writing Event document", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event successfully written!"))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error writing Event document", e));
     }
 
     /**
      * Get Event stored in Firestore Database
-     * @param eventID Unique identifier for Event to be accessed
+     * @param EventID Unique identifier for Event to be accessed
      * @return Event that matches EventID if exists in Firestore Database
      */
-    public Event accessEvent(String eventID) {
+    public Event accessEvent(String EventID) {
         // Source: https://firebase.google.com/docs/firestore/query-data/get-data
         // Get an Event via EventID
-        final Event[] storedEvent = new Event[1];
-        EventRef.document(eventID).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-                                storedEvent[0] = task.getResult().toObject(Event.class);
-                            } else {
-                                Log.d("Firestore", "No such document");
-                                storedEvent[0] = null;
-                            }
+        final Event[] retrievedEvent = new Event[1];
+        EventRef.document(EventID).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
+                            retrievedEvent[0] = task.getResult().toObject(Event.class);
                         } else {
-                            Log.d("Firestore", "get failed with ", task.getException());
-                            storedEvent[0] = null;
+                            Log.d("Firestore", "No such document");
+                            retrievedEvent[0] = null;
                         }
+                    } else {
+                        Log.d("Firestore", "get failed with ", task.getException());
+                        retrievedEvent[0] = null;
                     }
                 });
 
-        return storedEvent[0];
+        return retrievedEvent[0];
     }
-
-
-    // TODO - .getEvent(String EventID)
-    // TODO - .getEventPoster(String EventID)
-    // TODO - .getEventQRCode(String EventID)
-    // TODO - .getCollectionRefEvents
-    // TODO - .getCollectionRefEventPosterImages
-    // TODO - .getCollectionRefEventQRCodes
-
-
 }
