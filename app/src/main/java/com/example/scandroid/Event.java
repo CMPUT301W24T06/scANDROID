@@ -1,7 +1,5 @@
 package com.example.scandroid;
 
-import android.graphics.Bitmap;
-
 import androidx.annotation.NonNull;
 
 import java.sql.Time;
@@ -24,8 +22,6 @@ public class Event {
     private String EventOrganizerID;
     private String EventName;
     private String EventDescription;
-//    private Image EventPosterImage;
-    private Bitmap EventPosterImage;
     private Calendar EventDate; // NEEDS G&S FOR TIME AS WELL DATE
     /* TODO ?? private Time EventTime ?? */
     private ArrayList<Double> EventLocation;
@@ -33,11 +29,6 @@ public class Event {
     private ArrayList<EventAnnouncement> EventAnnouncementList;
     private ArrayList<EventMilestone> EventMilestoneList;
     private ArrayList<Integer> MilestoneSeries;
-
-    /* TODO - Attributes
-    * private QRCode EventQR
-    * private QRCode EventPromotionQR
-    * */
 
     /* ----------- *
      * CONSTRUCTOR *
@@ -49,20 +40,18 @@ public class Event {
      * @param eventOrganizerID UserID of User that created Event
      * @param eventName        Name of Event
      * @param eventDescription Description with related information of Event
-     * @param eventPoster      Profile image for Event
      * @param eventDate        Day that Event will take place
      * @param eventLocation    Geographical coordinates of Event {latitude, longitude}
      */
     public Event(
             @NonNull String eventOrganizerID, @NonNull String eventName,
-            String eventDescription, Bitmap eventPoster,
+            String eventDescription,
             @NonNull Calendar eventDate, ArrayList<Double> eventLocation) {
         EventDescription = eventDescription;
         EventID = UUID.randomUUID().toString();
         this.EventOrganizerID = eventOrganizerID;
         this.EventName = eventName;
         this.EventDescription = eventDescription;
-        this.EventPosterImage = eventPoster;
         this.EventDate = eventDate;
         this.EventLocation = eventLocation;
         this.EventAttendeeList = new ArrayList<>();
@@ -71,7 +60,6 @@ public class Event {
         this.EventMilestoneList = new ArrayList<>();
         this.addEventMilestone();   // adds first milestone of threshold of one attendee check-in
     }
-
 
     /* ------- *
      * METHODS *
@@ -111,7 +99,6 @@ public class Event {
         this.MilestoneSeries.set(1, nextGreatest);                                      // i.e. [2,3] becomes [3,5]
     }
 
-
     /* ------- *
      * GETTERS *
      * ------- */
@@ -146,7 +133,6 @@ public class Event {
      */
     public String getEventDescription() { return this.EventDescription; }
 
-
     /**
      * @return Strong pseudo random number generator that belongs to this Event.
      */
@@ -173,11 +159,6 @@ public class Event {
      * @return ANDROID_ID of organizer User to get current name from DB for User.
      */
     public String getEventOrganizerID() { return this.EventOrganizerID; }
-
-    /**
-     * @return The poster image provided for the Event.
-     */
-    public Bitmap getEventPosterImage() { return this.EventPosterImage; }
 
 
     /* ------- *
@@ -209,12 +190,6 @@ public class Event {
      * @param nameOfEvent Name that the organizer has given the Event.
      */
     public void setEventName(String nameOfEvent) { this.EventName = nameOfEvent; }
-    
-    /**
-     * @param posterForEvent The poster image provided for the Event.
-     */
-    public void setEventPosterImage(Bitmap posterForEvent) { this.EventPosterImage = posterForEvent; }
-
 
     /* -------------- *
      * NESTED CLASSES *
