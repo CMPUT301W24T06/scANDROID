@@ -46,61 +46,231 @@ public class DBAccessor {
      * Actions permitted: Access(get), Delete, and Store(update)
      */
     public DBAccessor() {
+        // Initialize access to Firebase
+        db = FirebaseFirestore.getInstance();
+
+        // Initialize access to Event storage
         EventRefName = "Events";
         this.EventDB = new EventDBAccessor(db, EventRefName);
 
+        // Initialize access to EventPoster storage
         EventPosterRefName = "EventPoster";
         this.EventPosterDB = new EventPosterDBAccessor(db, EventPosterRefName);
 
+        // Initialize access to ImageAsset storage
         ImageAssetRefName = "ImageAssets";
         this.ImageAssetDB = new ImageAssetDBAccessor(db, ImageAssetRefName);
 
+        // Initialize access to QRCode storage
         QRCodeMainRefName = "QRCodeMain";
         QRCodePromoRefName = "QRCodePromo";
         this.QRCodeDB = new QRCodeDBAccessor(db, QRCodeMainRefName, QRCodePromoRefName);
 
+        // Initialize access to User storage
         UserRefName = "Users";
         this.UserDB = new UserDBAccessor(db, UserRefName);
 
+        // Initialize access to UserProfileImage storage
         UserProfileImageRefName = "UserProfileImages";
         UserProfileImageDB = new UserProfileImageDBAccessor(db, UserProfileImageRefName);
     }
 
 
-
-
     /* -------------------------- *
      * METHODS : ACCESS[document] *
      * -------------------------- */
+    /**
+     * {@link EventDBAccessor#accessEvent(String)}
+     * @param EventID Unique identifier for Event to be accessed
+     * @return Event that matches EventID if exists in Firestore Database
+     */
+    public Event accessEvent(String EventID) {
+        return this.EventDB.accessEvent(EventID);
+    }
 
-    // EventDBAccessor
-    // EventPosterDBAccessor
-    // ImageAssetDBAccessor
-    // QRCodeDBAccessor x2
-    // UserDBAccessor
-    // UserProfileImageDBAccessor
+    /**
+     * {@link EventPosterDBAccessor#accessEventPoster(String)}
+     * @param EventID Unique identifier for EventPoster to be accessed
+     * @return Bitmap of EventPoster
+     */
+    public Bitmap accessEventPoster(String EventID) {
+        return this.EventPosterDB.accessEventPoster(EventID);
+    }
+
+    /**
+     * {@link ImageAssetDBAccessor#accessImageAsset(String)}
+     * @param imageAssetName Unique identifier for ImageAsset to be accessed
+     * @return Bitmap of ImageAsset
+     */
+    public Bitmap accessImageAsset(String imageAssetName) {
+        return this.ImageAssetDB.accessImageAsset(imageAssetName);
+    }
+
+    /**
+     * {@link QRCodeDBAccessor#accessQRMain(String)}
+     * @param EventID Unique identifier for QRMain to be accessed
+     * @return Bitmap of main QR code for Event
+     */
+    public Bitmap accessQRMain(String EventID) {
+        return this.QRCodeDB.accessQRMain(EventID);
+    }
+
+    /**
+     * {@link QRCodeDBAccessor#accessQRPromo(String)}
+     * @param EventID Unique identifier for QRPromo to be accessed
+     * @return Bitmap of promotional QR code for Event
+     */
+    public Bitmap accessQRPromo(String EventID) {
+        return this.QRCodeDB.accessQRPromo(EventID);
+    }
+
+    /**
+     * {@link UserDBAccessor#accessUser(String)}
+     * @param UserID Unique identifier for User to be accessed
+     * @return User that matches UserID if exists in Firestore Database
+     */
+    public User accessUser(String UserID) {
+        return this.UserDB.accessUser(UserID);
+    }
+
+    /**
+     * {@link UserProfileImageDBAccessor#accessUserProfileImage(String)}
+     * @param UserID Unique identifier for UserProfileImage to be accessed
+     * @return Bitmap of ProfileImage for User
+     */
+    public Bitmap accessUserProfileImage(String UserID) {
+        return this.UserProfileImageDB.accessUserProfileImage(UserID);
+    }
 
     /* -------------------------- *
      * METHODS : DELETE[document] *
      * -------------------------- */
+    /**
+     * {@link EventDBAccessor#deleteEvent(String)}
+     * As well, deletes respective QRMain, QRPromo and EventPosterImage
+     * associated with the EventID. <br>
+     * @param EventID Unique identifier for Event to be deleted <br>
+     */
+    public void deleteEvent(String EventID) {
+        // Delete items related to this EventID
+        this.QRCodeDB.deleteQRMain(EventID);
+        this.QRCodeDB.deleteQRPromo(EventID);
+        this.EventPosterDB.deleteEventPoster(EventID);
 
-    // EventDBAccessor
-    // EventPosterDBAccessor
-            // ImageAssets can only be deleted on Firebase with Owner privilege
-    // QRCodeDBAccessor x2 (need to implement in nested class)
-    // UserDBAccessor
-    // UserProfileImageDBAccessor
+        // Delete Event of EventID
+        this.EventDB.deleteEvent(EventID);
+    }
+
+    /**
+     * {@link EventPosterDBAccessor#deleteEventPoster(String)}
+     * @param EventID Unique identifier for EventPoster to be deleted
+     */
+    public void deleteEventPoster(String EventID) { this.EventPosterDB.deleteEventPoster(EventID); }
+
+    /* ******************************************************************
+     * ImageAssets can only be deleted on Firebase with Owner privilege *
+     * ******************************************************************/
+
+    /**
+     * {@link QRCodeDBAccessor#deleteQRMain(String)}
+     * @param EventID Unique identifier for QRMain to be deleted
+     */
+    public void deleteQRMain(String EventID) {
+        this.QRCodeDB.deleteQRMain(EventID);
+    }
+
+    /**
+     * {@link QRCodeDBAccessor#deleteQRPromo(String)}
+     * @param EventID Unique identifier for QRPromo to be deleted
+     */
+    public void deleteQRPromo(String EventID) {
+        this.QRCodeDB.deleteQRPromo(EventID);
+    }
+
+    /**
+     * {@link UserDBAccessor#deleteUser(String)}
+     * As well, deletes respective UserProfileImage associated with the UserID. <br>
+     * @param UserID Unique identifier for User
+     */
+    public void deleteUser(String UserID) {
+        // Delete UserProfileImage related to this UserID
+        this.UserProfileImageDB.deleteUserProfileImage(UserID);
+
+        // Delete User of UserID
+        this.UserDB.deleteUser(UserID);
+    }
+
+    /**
+     * {@link UserProfileImageDBAccessor#deleteUserProfileImage(String)}
+     * @param UserID Unique identifier for UserProfileImage to be deleted
+     */
+    public void deleteUserProfileImage(String UserID) {
+        this.UserProfileImageDB.deleteUserProfileImage(UserID);
+    }
 
     /* ------------------------- *
      * METHODS : STORE[document] *
      * ------------------------- */
+    /**
+     * {@link EventDBAccessor#storeEvent(Event)}
+     * @param event Event object to be added or updated.
+     */
+    public void storeEvent(Event event) {
+        this.EventDB.storeEvent(event);
+    }
 
-    // EventDBAccessor
-    // EventPosterDBAccessor
-    // ImageAssetDBAccessor
-    // QRCodeDBAccessor x2
-    // UserDBAccessor
-    // UserProfileImageDBAccessor
+    /**
+     * {@link EventPosterDBAccessor#storeEventPoster(String, Bitmap)}
+     * @param EventID Unique identifier for EventPoster to be accessed
+     * @param EventPoster Bitmap of EventPoster to be stored.
+     */
+    public void storeEventPoster(String EventID, Bitmap EventPoster) {
+        this.EventPosterDB.storeEventPoster(EventID, EventPoster);
+    }
+
+    /**
+     * {@link ImageAssetDBAccessor#storeImageAsset(String, Bitmap)}
+     * @param imageAssetName Name of ImageAsset to be added or updated.
+     * @param bitmap Bitmap of ImageAsset to be added or updated.
+     */
+    public void storeImageAsset(String imageAssetName, Bitmap bitmap) {
+        this.ImageAssetDB.storeImageAsset(imageAssetName, bitmap);
+    }
+
+    /**
+     * {@link QRCodeDBAccessor#storeQRMain(String, Bitmap)}
+     * @param EventID Unique identifier for QRCode to be accessed
+     * @param QRMain Bitmap of QRMain to be stored or updated
+     */
+    public void storeQRMain(String EventID, Bitmap QRMain) {
+        this.QRCodeDB.storeQRMain(EventID, QRMain);
+    }
+
+    /**
+     * {@link QRCodeDBAccessor#storeQRPromo(String, Bitmap)}
+     * @param EventID Unique identifier for QRCode to be accessed
+     * @param QRPromo Bitmap of QRPromo to be stored or update
+     */
+    public void storeQRPromo(String EventID, Bitmap QRPromo) {
+        this.QRCodeDB.storeQRPromo(EventID, QRPromo);
+    }
+
+    /**
+     * {@link UserDBAccessor#storeUser(User)}
+     * @param user User object to be added or updated.
+     */
+    public void storeUser(User user) {
+        this.UserDB.storeUser(user);
+    }
+
+    /**
+     * {@link UserProfileImageDBAccessor#storeUserProfileImage(String, Bitmap)}
+     * @param UserID Unique identifier for UserProfileImage to be stored or updated
+     * @param UserProfileImage Bitmap of UserProfileImage to be stored
+     */
+    public void storeUserProfileImage(String UserID, Bitmap UserProfileImage) {
+        this.UserProfileImageDB.storeUserProfileImage(UserID, UserProfileImage);
+    }
 
     /* -------------- *
      * NESTED CLASSES *
@@ -210,6 +380,7 @@ public class DBAccessor {
         /**
          * Get EventPoster stored in Firestore Database
          * @param EventID Unique identifier for EventPoster to be accessed
+         * @return Bitmap of EventPoster
          */
         private Bitmap accessEventPoster(String EventID) {
             final Bitmap[] retrievedPoster = new Bitmap[1];
@@ -289,6 +460,7 @@ public class DBAccessor {
         /**
          * Get ImageAsset stored in Firestore Database
          * @param imageAssetName Unique identifier for ImageAsset to be accessed
+         * @return Bitmap of ImageAsset
          */
         private Bitmap accessImageAsset(String imageAssetName) {
             final Bitmap[] retrievedImageAsset = new Bitmap[1];
@@ -318,6 +490,7 @@ public class DBAccessor {
         /**
          * Store or update ImageAsset in Firestore Database
          * @param imageAssetName Name of ImageAsset to be added or updated.
+         * @param bitmap Bitmap of ImageAsset to be added or updated.
          */
         private void storeImageAsset(String imageAssetName, Bitmap bitmap) {
             // Store an ImageAsset with imageAssetName as key
@@ -358,6 +531,7 @@ public class DBAccessor {
         /**
          * Get main QR code for an Event stored in Firestore Database
          * @param EventID Unique identifier for QRCode to be accessed
+         * @return Bitmap of main QR code for Event
          */
         private Bitmap accessQRMain(String EventID) {
             final Bitmap[] retrievedQRMain = new Bitmap[1];
@@ -387,6 +561,7 @@ public class DBAccessor {
         /**
          * Get promotional QR code for an Event stored in Firestore Database
          * @param EventID Unique identifier for promo QRCode to be accessed
+         * @return Bitmap of promotional QR code for Event
          */
         private Bitmap accessQRPromo(String EventID) {
             final Bitmap[] retrievedQRPromo = new Bitmap[1];
@@ -411,6 +586,30 @@ public class DBAccessor {
                     });
 
             return retrievedQRPromo[0];
+        }
+
+        /**
+         * Delete a QRMain in Firestore Database
+         * @param EventID Unique identifier for QRMain to be deleted
+         */
+        private void deleteQRMain(String EventID) {
+            // Delete a QRMain via EventID
+            // Source: https://firebase.google.com/docs/firestore/manage-data/delete-data
+            this.QRCodeMainRef.document(EventID).delete()
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "QRMain successfully deleted!"))
+                    .addOnFailureListener(e -> Log.w("Firestore", "Error deleting QRMain", e));
+        }
+
+        /**
+         * Delete a QRPromo in Firestore Database
+         * @param EventID Unique identifier for QRPromo to be deleted
+         */
+        private void deleteQRPromo(String EventID) {
+            // Delete a QRPromo via EventID
+            // Source: https://firebase.google.com/docs/firestore/manage-data/delete-data
+            this.QRCodePromoRef.document(EventID).delete()
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "QRPromo successfully deleted!"))
+                    .addOnFailureListener(e -> Log.w("Firestore", "Error deleting QRPromo", e));
         }
 
         /**
@@ -546,6 +745,7 @@ public class DBAccessor {
         /**
          * Get UserProfileImage stored in Firestore Database
          * @param UserID Unique identifier for UserProfileImage to be accessed
+         * @return Bitmap of ProfileImage for User
          */
         private Bitmap accessUserProfileImage(String UserID) {
             final Bitmap[] retrievedProfileImage = new Bitmap[1];
