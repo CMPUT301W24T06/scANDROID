@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.annotation:annotation:1.7.1")
 
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
