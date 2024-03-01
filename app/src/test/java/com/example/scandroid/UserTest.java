@@ -156,5 +156,32 @@ public class UserTest {
      * TEST : SETTERS *
      * -------------- */
     //TODO - Test setters
+    @Test
+    public void testSetUserName(){
 
+    }
+    @Test
+    public void testSetUserEmail(){
+
+    }
+    @Test
+    public void testSetUserPhoneNumber(){
+
+    }
+    @Test
+    public void testSetUserAboutMe(){
+
+    }
+    @Test
+    public void testSetEventsAttending(){
+
+    }
+    @Test
+    public void testSetEventsOrganized(){
+
+    }
+    @Test
+    public void testSetNotifiedBy(){
+
+    }
 }
