@@ -83,7 +83,17 @@ public class UserTest {
         mockUser.addEventToEventsOrganized(eventID);
 
         assertEquals(eventID,mockUser.getEventsOrganized().get(0));
-        assertEquals(mockUser.getEventsOrganized().size(),1);
+        assertEquals(1,mockUser.getEventsOrganized().size());
+    }
+    @Test
+    public void testAddEventToNotifiedBy(){
+        Event mockEvent = mockEvent(dateValues,locationValues);
+        String eventID = mockEvent.getEventID();
+        User mockUser = mockUser();
+
+        mockUser.addEventToNotifiedBy(eventID);
+        assertEquals(eventID,mockUser.getNotifiedBy().get(0));
+        assertEquals(1, mockUser.getNotifiedBy().size());
     }
 
     /* -------------- *
@@ -158,30 +168,26 @@ public class UserTest {
     //TODO - Test setters
     @Test
     public void testSetUserName(){
-
+        User mock = mockUser();
+        mock.setUserName("Cinderella");
+        assertEquals("Cinderella",mock.getUserName());
     }
     @Test
     public void testSetUserEmail(){
-
+        User mock = mockUser();
+        mock.setUserEmail("cindy@gmail.com");
+        assertEquals("cindy@gmail.com",mock.getUserEmail());
     }
     @Test
     public void testSetUserPhoneNumber(){
-
+        User mock = mockUser();
+        mock.setUserPhoneNumber("123-456-9987");
+        assertEquals("123-456-9987",mock.getUserPhoneNumber());
     }
     @Test
     public void testSetUserAboutMe(){
-
-    }
-    @Test
-    public void testSetEventsAttending(){
-
-    }
-    @Test
-    public void testSetEventsOrganized(){
-
-    }
-    @Test
-    public void testSetNotifiedBy(){
-
+        User mock = mockUser();
+        mock.setUserAboutMe("My name is Cinderella.");
+        assertEquals("My name is Cinderella.",mock.getUserAboutMe());
     }
 }

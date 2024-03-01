@@ -98,10 +98,19 @@ public class User {
 
     /**
      * Adds an event to the user's list of events they have organized.
-     * @param event An eventID.
+     * @param event An event's ID.
      */
     public void addEventToEventsOrganized(String event){
         eventsOrganized.add(event);
+    }
+
+    /**
+     * Adds an event to a user's list of events they wish to receive notifications from.
+     * @param event an event's ID.
+     */
+    public void addEventToNotifiedBy(String event){
+        notifiedBy.add(event);
+        //user will get notifications for this event.
     }
 
     /* ------- *
@@ -121,13 +130,6 @@ public class User {
     public String getUserName() {
         return userName;
     }
-
-   /* *//**
-     * @return the user's profile picture
-     *//*
-    public Image getUserProfileImage() {
-        return userProfileImage;
-    }*/
 
     //TODO - figure out how to calculate total number of times a user has checked in. May have to use some sort of button and track how many times it is  hit.
 
@@ -213,27 +215,7 @@ public class User {
         this.userAboutMe = userAboutMe;
     }
 
- 
-    /**
-     * @param eventsAttending the new list of events a user may be attending.
-     */
-    public void setEventsAttending(ArrayList<String> eventsAttending) {
-        this.eventsAttending = eventsAttending;
-    }
-
-    /**
-     * @param eventsOrganized the new list of events a user is organizing.
-     */
-    public void setEventsOrganized(ArrayList<String> eventsOrganized) {
-        this.eventsOrganized = eventsOrganized;
-    }
-
-    /**
-     * @param notifiedBy the new list of events a user may be notified by.
-     */
-    public void setNotifiedBy(ArrayList<String> notifiedBy) {
-        this.notifiedBy = notifiedBy;
-    }
+    //removed setNotifiedBy, setEventAttending, setEventOrganizing, not necessary atm.
     //TODO - scanQRCode
     //TODO - UserDB
 }

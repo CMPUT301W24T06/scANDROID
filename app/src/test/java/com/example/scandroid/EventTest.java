@@ -77,7 +77,6 @@ public class EventTest {
             "Person1",
             "123-456-7890",
             "Details",
-            null,
             "email@domain.com");
     }
 
