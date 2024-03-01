@@ -27,7 +27,6 @@ public class User {
     private String userPhoneNumber;
     //TODO - (FRONT END) set character limit for userAboutMe.
     private String userAboutMe;
-    public Image userProfileImage;
     private final String adminKey = "ThisPersonIsAnAdmin1298";
     private String userID;
     private ArrayList<String> eventsAttending;
@@ -49,10 +48,9 @@ public class User {
      * @param userName The name of the User object you want to instantiate. This is set to a random guest name if none is provided.
      * @param userPhoneNumber The phone number of a user object. May be null.
      * @param userAboutMe The about-me section of a user's profile. May be null.
-     * @param userProfileImage The profile image of a user object. This is randomized if none is provided.
      * @param userEmail The email address of a user object. May be null.
      */
-    public User(String userID, String userName, String userPhoneNumber, String userAboutMe, Image userProfileImage, String userEmail) {
+    public User(String userID, String userName, String userPhoneNumber, String userAboutMe, String userEmail) {
         this.userID = userID;
         this.eventsAttending = new ArrayList<String>();
         this.eventsOrganized = new ArrayList<String>();
@@ -67,7 +65,6 @@ public class User {
             this.userName = userName;
         }
         this.userAboutMe = userAboutMe;
-        this.userProfileImage = userProfileImage;
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
     }
@@ -125,12 +122,12 @@ public class User {
         return userName;
     }
 
-    /**
+   /* *//**
      * @return the user's profile picture
-     */
+     *//*
     public Image getUserProfileImage() {
         return userProfileImage;
-    }
+    }*/
 
     //TODO - figure out how to calculate total number of times a user has checked in. May have to use some sort of button and track how many times it is  hit.
 
@@ -216,13 +213,7 @@ public class User {
         this.userAboutMe = userAboutMe;
     }
 
-    /**
-     * @param userProfileImage the profile picture the user adds to their profile.
-     */
-    public void setUserProfileImage(Image userProfileImage) {
-        this.userProfileImage = userProfileImage;
-    }
-
+ 
     /**
      * @param eventsAttending the new list of events a user may be attending.
      */

@@ -32,7 +32,6 @@ public class UserTest {
                 "John Doe",
                 "7801234567",
                 "About John Doe",
-                null,
                 "email@domain.com"
         );
     }
