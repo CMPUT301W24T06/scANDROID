@@ -3,12 +3,6 @@ package com.example.scandroid;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -30,6 +24,11 @@ public class ImageAssetDBAccessor {
     /* ----------- *
      * CONSTRUCTOR *
      * ----------- */
+    /**
+     * Sole constructor of ImageAssetDBAccessor. <br>
+     * Allows access to ImageAsset's stored as Bitmaps in a Firestore Database. <br>
+     * Actions permitted: Access(get) and Store
+     */
     public ImageAssetDBAccessor() {
 
         // Access ImageAssets collection of Firestore
@@ -49,45 +48,35 @@ public class ImageAssetDBAccessor {
         // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
         // Store an ImageAsset with imageAssetName as key
         ImageAssetRef.document(imageAssetName).set(bitmap)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("Firestore", "ImageAsset successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("Firestore", "Error writing ImageAsset document", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "ImageAsset successfully written!"))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error writing ImageAsset document", e));
     }
 
-    /* ------- *
-     * GETTERS *
-     * ------- */
     /**
      * Get ImageAsset stored in Firestore Database
      * @param imageAssetName Unique identifier for ImageAsset to be accessed
      */
-    public void getImageAsset(String imageAssetName) {
+    public Bitmap accessImageAsset(String imageAssetName) {
         // Source: https://firebase.google.com/docs/firestore/query-data/get-data
         // Get an ImageAsset via imageAssetName
+        final Bitmap[] retrievedImageAsset = new Bitmap[1];
         ImageAssetRef.document(imageAssetName).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-                            } else {
-                                Log.d("Firestore", "No such document");
-                            }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
+                            retrievedImageAsset[0] = task.getResult().toObject(Bitmap.class);
                         } else {
-                            Log.d("Firestore", "get failed with ", task.getException());
+                            Log.d("Firestore", "No such document");
+                            retrievedImageAsset[0] = null;
                         }
+                    } else {
+                        Log.d("Firestore", "get failed with ", task.getException());
+                        retrievedImageAsset[0] = null;
                     }
                 });
+
+        return retrievedImageAsset[0];
     }
 }
