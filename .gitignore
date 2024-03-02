@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 *.DS_Store
 .gitignore
-=======
 *.iml
 .gradle
 /local.properties
@@ -17,4 +15,3 @@
 .externalNativeBuild
 .cxx
 local.properties
->>>>>>> master

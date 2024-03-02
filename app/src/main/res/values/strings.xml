@@ -49,4 +49,17 @@
     <string name="enter_your_email_text">Enter your email</string>
     <string name="email_text">Email</string>
     <string name="change_picture_text">Change Picture</string>
+    <string name="search_with_attendee_name_text">Search with attendee name</string>
+    <string name="total_attendees_text">Total Attendees:</string>
+    <string name="welcome_text">Welcome!</string>
+    <string name="would_you_like_to_enter_your_name_text">Would you like to enter your name?</string>
+    <string name="optional_text">(Optional)</string>
+    <string name="your_name_text">Your Name</string>
+    <string name="maybe_later_text">Maybe Later</string>
+    <string name="enter_text">Enter</string>
+    <string name="zero_counter_text">0</string>
+    <string name="users_have_checked_into_your_event_text">users have checked into your event!</string>
+    <string name="remove_picture_text">Remove Picture</string>
+    <string name="check_in_text">Check In</string>
+    <string name="allow_scandroid_to_access_your_camera_roll_text">Allow scANDROID to access your Camera Roll?</string>
 </resources>
