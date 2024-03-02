@@ -65,7 +65,6 @@ public class EventTest {
                 "EventOrganizerID",
                 "EventName",
                 "EventDescription",
-                null,
                 projectDueDate,
                 locationValues
                 );
