@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <RelativeLayout
         android:id="@+id/profile_info"
@@ -97,6 +98,7 @@
     </RelativeLayout>
 
     <com.google.android.material.tabs.TabLayout
+        android:id="@+id/homepage_tabs"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/profile_info"
@@ -120,5 +122,31 @@
             android:background="@color/blue">
         </com.google.android.material.tabs.TabItem>
     </com.google.android.material.tabs.TabLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/homepage_tabs">
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/homepage_pager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </androidx.viewpager2.widget.ViewPager2>
+    </RelativeLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/navigation_bar_menu"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:itemIconSize="30dp"
+        app:labelVisibilityMode="labeled">
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
