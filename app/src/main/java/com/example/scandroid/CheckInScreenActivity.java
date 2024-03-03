@@ -13,7 +13,7 @@ public class CheckInScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_in_screen_activity);
-        ImageView backgroundImageView = findViewById(R.id.backgroundImageView);
+        ImageView backgroundImageView = findViewById(R.id.check_in_image);
         backgroundImageView.setBackgroundResource(R.drawable.check_in_image);
     }
 }

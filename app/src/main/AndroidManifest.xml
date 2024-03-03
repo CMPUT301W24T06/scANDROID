@@ -13,6 +13,18 @@
         android:theme="@style/Theme.ScANDROID"
         tools:targetApi="31">
         <activity
+            android:name=".EventViewAnnouncementsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BrowseActivity"
+            android:exported="true" />
+        <activity
+            android:name=".HomepageActivity"
+            android:exported="true" />
+        <activity
+            android:name=".QRScannerActivity"
+            android:exported="false" />
+        <activity
             android:name=".EventAttendeesActivity"
             android:exported="false" />
         <activity
