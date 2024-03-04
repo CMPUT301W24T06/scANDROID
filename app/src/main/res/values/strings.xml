@@ -67,4 +67,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_with_event_name_text">Search with event name</string>
+    <string name="your_name">Your Name</string>
+    <string name="empty">Empty</string>
+    <string name="event_time">Event Time</string>
+    <string name="enter_event_date">Enter Event Date</string>
 </resources>
