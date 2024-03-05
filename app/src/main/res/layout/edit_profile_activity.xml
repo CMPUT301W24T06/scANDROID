@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
@@ -69,16 +70,38 @@
 
     </RelativeLayout>
 
-
-    <ImageView
-        android:id="@+id/edit_profile_image"
-        android:layout_width="159dp"
-        android:layout_height="147dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/edit_profile_image_outline"
+        android:layout_width="145dp"
+        android:layout_height="144dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="160dp"
-        android:background="@drawable/guest_default_image"
-        android:clickable="false">
-    </ImageView>
+        android:clickable="false"
+
+        app:cardCornerRadius="80dp"
+        app:cardBackgroundColor="@android:color/white"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/edit_profile_image"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="161dp"
+        android:clickable="false"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="80dp"
+        app:cardBackgroundColor="@android:color/white">
+
+        <ImageView
+            android:id="@+id/image_inside_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+
+            android:src="@drawable/guest_default_image">
+        </ImageView>
+
+    </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/changePictureTextView"
