@@ -71,4 +71,5 @@
     <string name="empty">Empty</string>
     <string name="event_time">Event Time</string>
     <string name="enter_event_date">Enter Event Date</string>
+    <string name="update_my_event">Update My Event</string>
 </resources>
