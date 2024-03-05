@@ -2,12 +2,10 @@ package com.example.scandroid;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Looper;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -16,6 +14,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import android.os.Handler;
 
 /**
  * Represents interface between scANDROID and Firestore database. <br>
@@ -103,12 +102,11 @@ public class DBAccessor {
     }
 
     /**
-     * {@link EventPosterDBAccessor#accessEventPoster(String)}
+     * {@link EventPosterDBAccessor#accessEventPoster(String, BitmapCallback)}
      * @param EventID Unique identifier for EventPoster to be accessed
-     * @return Bitmap of EventPoster
      */
-    public Bitmap accessEventPoster(String EventID) {
-        return this.EventPosterDB.accessEventPoster(EventID);
+    public void accessEventPoster(String EventID, BitmapCallback callback) {
+        this.EventPosterDB.accessEventPoster(EventID, callback);
     }
 
     /**
@@ -396,8 +394,6 @@ public class DBAccessor {
         private EventPosterDBAccessor(StorageReference storageRef, String EventPosterRefName) {
 
             // Access EventPoster collection of Firestore
-//            this.EventPosterRef = db.collection(EventPosterRefName);
-//            this.EventPosterRef = storageRef.child(EventPosterRefName);
             this.storageRef = storageRef;
             this.EventPosterRefName = EventPosterRefName;
             this.boas = new ByteArrayOutputStream();
@@ -407,11 +403,11 @@ public class DBAccessor {
         /**
          * Get EventPoster stored in Firestore Database
          * @param EventID Unique identifier for EventPoster to be accessed
-         * @return Bitmap of EventPoster
          */
-        private Bitmap accessEventPoster(String EventID) {
+        private void accessEventPoster(String EventID, BitmapCallback callback) {
             // Download an EventPoster from Firestore Storage
-            // Source: https://firebase.google.com/docs/storage/android/download-files
+            // Source(1): https://firebase.google.com/docs/storage/android/download-files
+            // Source(2): https://chat.openai.com/share/5353b1da-4b10-4b2c-a928-be60d7cbb08c (via Simon Thang)
 
             // set storage reference to EventPoster collection with EventID as key
             EventPosterRef = this.storageRef.child(EventPosterRefName + "/" + EventID);
@@ -420,52 +416,29 @@ public class DBAccessor {
             final Bitmap[] retrievedPoster = new Bitmap[1];
             final long ONE_MEGABYTE = 1024 * 1024;
 
-
-            // get desired EventPoster from Firebase Storage
+            // download bitmap with EventID as key
             EventPosterRef.getBytes(ONE_MEGABYTE)
                     .addOnSuccessListener(bytes -> {
                         Log.d("FireStorage", "EventPoster successfully accessed!");
-                        retrievedPoster[0] = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            callback.onBitmapLoaded(bitmap);
+                        });
                     })
                     .addOnFailureListener(e -> {
                         Log.d("FireStorage", "EventPoster access failed!");
-                        retrievedPoster[0] = null;
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            callback.onBitmapFailed(e);
+                        });
                     });
-
-            // Get an EventPoster via EventID
-            // Source: https://firebase.google.com/docs/firestore/query-data/get-data
-//            this.EventPosterRef.document(EventID).get()
-//                    .addOnCompleteListener(task -> {
-//                        if (task.isSuccessful()) {
-//                            DocumentSnapshot document = task.getResult();
-//                            if (document.exists()) {
-//                                Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-//                                retrievedPoster[0] = task.getResult().toObject(Bitmap.class);
-//                            } else {
-//                                Log.d("Firestore", "No such document");
-//                                retrievedPoster[0] = null;
-//                            }
-//                        } else {
-//                            Log.d("Firestore", "get failed with ", task.getException());
-//                            retrievedPoster[0] = null;
-//                        }
-//                    });
-            Log.d("FireStorage", "Buying time");
-            Log.d("FireStorage", "Buying even more time");
-            return retrievedPoster[0];
         }
+
 
         /**
          * Delete an EventPoster in Firestore Database
          * @param EventID Unique identifier for EventPoster to be deleted
          */
         private void deleteEventPoster(String EventID) {
-            // Delete an EventPoster via EventID
-            // Source: https://firebase.google.com/docs/firestore/manage-data/delete-data
-//            this.EventPosterRef.document(EventID).delete()
-//                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "EventPoster successfully deleted!"))
-//                    .addOnFailureListener(e -> Log.w("Firestore", "Error deleting EventPoster", e));
-
             // Delete an EventPoster with EventID as key
             // Source: https://firebase.google.com/docs/storage/android/delete-files
 
@@ -484,12 +457,6 @@ public class DBAccessor {
          * @param EventPoster Bitmap of EventPoster to be stored.
          */
         private void storeEventPoster(String EventID, Bitmap EventPoster) {
-            // Store an EventPoster with EventID as key
-            // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
-//            this.EventPosterRef.document(EventID).set(EventPoster)
-//                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "EventPoster successfully written!"))
-//                    .addOnFailureListener(e -> Log.w("Firestore", "Error writing EventPoster document", e));
-
             // Store an EventPoster with EventID as key
             // Source: https://firebase.google.com/docs/storage/android/upload-files#java_1
 
