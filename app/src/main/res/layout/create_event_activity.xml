@@ -16,7 +16,8 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0" >
+    </RelativeLayout>
 
 
     <androidx.appcompat.widget.AppCompatButton
@@ -78,7 +79,7 @@
         android:autofillHints="AUTOFILL_TYPE_TEXT"
         android:background="@drawable/button_outline_grey"
         android:hint="@string/enter_event_name_hint"
-        android:inputType="text"
+        android:inputType="textMultiLine"
         android:padding="10dp"
         android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +105,7 @@
         android:autofillHints="AUTOFILL_TYPE_TEXT"
         android:background="@drawable/button_outline_grey"
         android:hint="@string/enter_event_location_hint"
-        android:inputType="text"
+        android:inputType="textMultiLine"
         android:textColorHint="#757575"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -123,19 +124,61 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/event_location_edit_text" />
 
-    <EditText
-        android:id="@+id/event_date_edit_text"
-        android:layout_width="360dp"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/edit_event_date_button"
+        android:layout_width="170dp"
         android:layout_height="48dp"
-        android:autofillHints="AUTOFILL_TYPE_DATE"
         android:background="@drawable/button_outline_grey"
         android:hint="@string/enter_event_date_hint"
         android:inputType="date"
-        android:textColorHint="#757575"
         android:padding="10dp"
+        android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.108"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_event_date_text" />
+
+    <EditText
+        android:id="@+id/event_description_edit_text"
+        android:layout_width="359dp"
+        android:layout_height="77dp"
+        android:background="@drawable/button_outline_grey"
+        android:hint="@string/enter_event_description_hint"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:padding="10dp"
+        android:textColorHint="#757575"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.519"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_description_text" />
+
+    <Button
+        android:id="@+id/create_event_button"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="36dp"
+        android:backgroundTint="@color/black"
+        android:text="@string/create_my_event_text"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_description_edit_text" />
+
+    <TextView
+        android:id="@+id/create_event_note_text"
+        android:layout_width="232dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/note_creating_an_event_will_generate_a_shareable_qr_code_that_users_can_scan_for_attendance_text"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_button"
+        tools:ignore="SmallSp" />
 
     <TextView
         android:id="@+id/create_event_description_text"
@@ -145,69 +188,15 @@
         android:text="@string/event_description_text"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.084"
+        app:layout_constraintHorizontal_bias="0.086"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_date_edit_text" />
-
-    <EditText
-        android:id="@+id/event_description_edit_text"
-        android:layout_width="360dp"
-        android:layout_height="75dp"
-        android:background="@drawable/button_outline_grey"
-        android:hint="@string/enter_event_description_hint"
-        android:importantForAutofill="no"
-        android:textColorHint="#757575"
-        android:padding="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_description_text"
-        android:inputType="textMultiLine" />
-
-    <CheckBox
-        android:id="@+id/receive_milestones_checkbox"
-        android:layout_width="339dp"
-        android:layout_height="48dp"
-        android:text="@string/do_you_want_to_receive_alerts_for_important_milestones_text"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.361"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_description_edit_text" />
-
-    <Button
-        android:id="@+id/create_event_button"
-        android:layout_width="300dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/black"
-        android:text="@string/create_my_event_text"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/receive_milestones_checkbox" />
-
-    <TextView
-        android:id="@+id/create_event_note_text"
-        android:layout_width="232dp"
-        android:layout_height="29dp"
-        android:layout_marginTop="3dp"
-        android:text="@string/note_creating_an_event_will_generate_a_shareable_qr_code_that_users_can_scan_for_attendance_text"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_button"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="SmallSp" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_event_time_button" />
 
     <Button
         android:id="@+id/cancel_update_event_button"
         android:layout_width="232dp"
         android:layout_height="29dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="8dp"
         android:text="@string/cancel_text"
         android:textSize="10sp"
         android:visibility="invisible"
@@ -215,6 +204,32 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_event_button"
-        app:layout_constraintVertical_bias="0.0"
         tools:ignore="SmallSp" />
+
+    <TextView
+        android:id="@+id/create_event_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/event_time"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_event_date_button" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/edit_event_time_button"
+        android:layout_width="170dp"
+        android:layout_height="48dp"
+        android:autofillHints="AUTOFILL_TYPE_DATE"
+        android:background="@drawable/button_outline_grey"
+        android:hint="@string/enter_event_date"
+        android:inputType="date"
+        android:textColorHint="#757575"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.107"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_time_text" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,7 +20,6 @@ import java.util.UUID;
  * @author Moyo Dawodu
  */
 public class UserTest {
-    //TODO - initialize mock Event and User for testing
     ArrayList<Integer> dateValues = new ArrayList<>(Arrays.asList(2024, 12, 24, 16, 0));
     //location: Fairmont Hotel Macdonald
     ArrayList<Double> locationValues = new ArrayList<>(Arrays.asList(53.540349083363616, -113.48952321566745));
@@ -49,7 +48,6 @@ public class UserTest {
                 "EventOrganizerID",
                 "Christmas-Eve Ball",
                 "Balldance",
-                null,
                 christmasEveBallDate,
                 locationValues
         );
@@ -57,13 +55,11 @@ public class UserTest {
     /* -------------- *
      * TEST : METHODS *
      * -------------- */
-    //TODO - Test isAdmin
     @Test
     public void testIsAdmin(){
         User mockUser = mockUser();
         assertFalse(mockUser.isAdmin("UserAdminKey"));
     }
-    //TODO - Test addEventToEventsAttending
     @Test
     public void testAddEventToEventsAttending(){
         Event mockEvent = mockEvent(dateValues,locationValues);
@@ -74,7 +70,6 @@ public class UserTest {
         assertEquals(eventID,mockUser.getEventsAttending().get(0));
         assertEquals(1, mockUser.getEventsAttending().size());
     }
-    //TODO - Test addEventToEventsOrganized
     @Test
     public void testAddEventToEventsOrganized(){
         Event mockEvent = mockEvent(dateValues,locationValues);
@@ -99,7 +94,6 @@ public class UserTest {
     /* -------------- *
      * TEST : GETTERS *
      * -------------- */
-    //TODO - Test getters
     @Test
     public void testGetUserID(){
         User mockUser = mockUser();
@@ -118,7 +112,7 @@ public class UserTest {
     }
 
     @Test
-    public void testGetUSerPhoneNumber(){
+    public void testGetUserPhoneNumber(){
         User mockUser = mockUser();
         assertEquals("7801234567",mockUser.getUserPhoneNumber());
     }
@@ -127,28 +121,42 @@ public class UserTest {
         User mockUser = mockUser();
         assertEquals("About John Doe", mockUser.getUserAboutMe());
     }
-    //TODO - test event UUIDS remain constant and change accordingly within the list of events
     @Test
     public void testGetEventsAttending(){
         User mockUser = mockUser();
         ArrayList<String> shouldBeEmpty = mockUser.getEventsAttending();
         assertTrue(shouldBeEmpty.isEmpty());
+
+        Event mock = mockEvent(dateValues,locationValues);
+        String id = mock.getEventID();
+        mockUser.addEventToEventsAttending(id);
+        assertEquals(id,mockUser.getEventsAttending().get(0));
+        assertEquals(1,mockUser.getEventsAttending().size());
     }
-    //TODO - test that event UUIDS remain constant and change accordingly within this list of events
     @Test
     public void testGetNotifiedBy(){
         User mock = mockUser();
         ArrayList<String> shouldBeEmpty = mock.getNotifiedBy();
         assertTrue((shouldBeEmpty.isEmpty()));
+
+        Event mockEvent = mockEvent(dateValues,locationValues);
+        String id = mockEvent.getEventID();
+        mock.addEventToNotifiedBy(id);
+        assertEquals(id,mock.getNotifiedBy().get(0));
+        assertEquals(1,mock.getNotifiedBy().size());
     }
-    //TODO - test event UUIDS remain constant and change accordingly within the list of events
     @Test
     public void testGetEventsOrganized(){
         User mockUser = mockUser();
         ArrayList<String> shouldBeEmpty = mockUser.getEventsOrganized();
         assertTrue(shouldBeEmpty.isEmpty());
+
+        Event mock = mockEvent(dateValues,locationValues);
+        String id = mock.getEventID();
+        mockUser.addEventToEventsOrganized(id);
+        assertEquals(id,mockUser.getEventsOrganized().get(0));
+        assertEquals(1,mockUser.getEventsOrganized().size());
     }
-    //TODO - Test getTimesAttended method. Need to have access to event uuid.
     @Test
     public void testGetTimesAttended(){
         Event mockEvent = mockEvent(dateValues,locationValues);
@@ -165,7 +173,7 @@ public class UserTest {
     /* -------------- *
      * TEST : SETTERS *
      * -------------- */
-    //TODO - Test setters
+    //TODO - any more setters to test?
     @Test
     public void testSetUserName(){
         User mock = mockUser();
