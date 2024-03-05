@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,19 +39,9 @@ public class EventQRCodesActivity extends AppCompatActivity {
         checkInQRCodeImgView.setImageBitmap(checkInQRCodeImg);
         promoQRCodeImgView.setImageBitmap(promoQRCodeImg);
 
-        shareCheckInQRButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shareCheckInQRCode();
-            }
-        });
+        shareCheckInQRButton.setOnClickListener(v -> shareCheckInQRCode());
 
-        sharePromoQRButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sharePromoQRCode();
-            }
-        });
+        sharePromoQRButton.setOnClickListener(v -> sharePromoQRCode());
     }
 
     /**
