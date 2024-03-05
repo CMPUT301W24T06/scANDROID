@@ -69,7 +69,7 @@ public class DBAccessor {
 
         // Initialize access to EventPoster storage
         EventPosterRefName = "EventPoster";
-        this.EventPosterDB = new EventPosterDBAccessor(db, EventPosterRefName);
+        this.EventPosterDB = new EventPosterDBAccessor(storageRef, EventPosterRefName);
 
         // Initialize access to ImageAsset storage
         ImageAssetRefName = "ImageAssets";
@@ -383,6 +383,7 @@ public class DBAccessor {
         // Attributes / Fields
 //        private CollectionReference EventPosterRef;
         private StorageReference EventPosterRef;
+        private StorageReference storageRef;
         private String EventPosterRefName;
         private ByteArrayOutputStream boas;
 
@@ -392,11 +393,12 @@ public class DBAccessor {
          * Allows access to EventPoster's stored as Bitmaps in a Firestore Database. <br>
          * Actions permitted: Access(get), Delete, and Store
          */
-        private EventPosterDBAccessor(FirebaseFirestore db, String EventPosterRefName) {
+        private EventPosterDBAccessor(StorageReference storageRef, String EventPosterRefName) {
 
             // Access EventPoster collection of Firestore
 //            this.EventPosterRef = db.collection(EventPosterRefName);
 //            this.EventPosterRef = storageRef.child(EventPosterRefName);
+            this.storageRef = storageRef;
             this.EventPosterRefName = EventPosterRefName;
             this.boas = new ByteArrayOutputStream();
         }
@@ -412,20 +414,23 @@ public class DBAccessor {
             // Source: https://firebase.google.com/docs/storage/android/download-files
 
             // set storage reference to EventPoster collection with EventID as key
-            EventPosterRef = storageRef.child(EventPosterRefName + "/" + EventID);
+            EventPosterRef = this.storageRef.child(EventPosterRefName + "/" + EventID);
 
             // setup getByte limit and return value location
             final Bitmap[] retrievedPoster = new Bitmap[1];
             final long ONE_MEGABYTE = 1024 * 1024;
 
+
             // get desired EventPoster from Firebase Storage
             EventPosterRef.getBytes(ONE_MEGABYTE)
                     .addOnSuccessListener(bytes -> {
+                        Log.d("FireStorage", "EventPoster successfully accessed!");
                         retrievedPoster[0] = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        Log.d("FireStorage", "EventPoster successfully accessed!"); })
+                    })
                     .addOnFailureListener(e -> {
-                        retrievedPoster[0] = null; });
                         Log.d("FireStorage", "EventPoster access failed!");
+                        retrievedPoster[0] = null;
+                    });
 
             // Get an EventPoster via EventID
             // Source: https://firebase.google.com/docs/firestore/query-data/get-data
@@ -445,7 +450,8 @@ public class DBAccessor {
 //                            retrievedPoster[0] = null;
 //                        }
 //                    });
-
+            Log.d("FireStorage", "Buying time");
+            Log.d("FireStorage", "Buying even more time");
             return retrievedPoster[0];
         }
 
@@ -464,7 +470,7 @@ public class DBAccessor {
             // Source: https://firebase.google.com/docs/storage/android/delete-files
 
             // set storage reference to EventPoster collection with EventID as key
-            EventPosterRef = storageRef.child(EventPosterRefName + "/" + EventID);
+            EventPosterRef = this.storageRef.child(EventPosterRefName + "/" + EventID);
 
             // Delete the EventPoster
             EventPosterRef.delete()
@@ -488,7 +494,7 @@ public class DBAccessor {
             // Source: https://firebase.google.com/docs/storage/android/upload-files#java_1
 
             // set storage reference to EventPoster collection with EventID as key
-            EventPosterRef = storageRef.child(EventPosterRefName + "/" + EventID);
+            EventPosterRef = this.storageRef.child(EventPosterRefName + "/" + EventID);
 
             // write bitmap to output stream
             EventPoster.compress(Bitmap.CompressFormat.PNG, 100, boas);
