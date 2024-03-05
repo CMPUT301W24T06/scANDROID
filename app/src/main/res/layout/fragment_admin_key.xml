@@ -44,6 +44,7 @@
                 android:inputType="textPersonName"
                 android:maxLines="1"/>
 
+
         </LinearLayout>
 
         <LinearLayout

@@ -9,7 +9,7 @@ import android.widget.EditText;
 import androidx.fragment.app.DialogFragment;
 
 public class AdminKeyFragment extends DialogFragment {
-
+    // constructor
     public AdminKeyFragment() {
     }
 

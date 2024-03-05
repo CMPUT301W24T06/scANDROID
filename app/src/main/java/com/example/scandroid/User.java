@@ -66,6 +66,7 @@ public class User {
             int randID = random_num.nextInt(10000);
             this.userName = "Guest" + randID;
         }
+
         else{
             this.userName = userName;
         }

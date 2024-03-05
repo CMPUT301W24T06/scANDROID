@@ -26,6 +26,7 @@
         android:contentDescription="@string/app_name"
         android:textColor="@color/white" />
 
+
     <TextView
         android:id="@+id/editProfileTextView"
         android:layout_width="wrap_content"

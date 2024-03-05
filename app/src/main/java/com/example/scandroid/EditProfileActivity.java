@@ -146,7 +146,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
 
 
-    }
+    }   //
     public void changeProfilePicture(View view) {
         // Call the method to open the gallery or camera
         openGallery();
