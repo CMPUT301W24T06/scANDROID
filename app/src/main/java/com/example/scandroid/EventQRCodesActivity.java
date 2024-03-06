@@ -154,10 +154,10 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
     /**
      * Method for sharing a QR Code.
-     * @param QRcode Bitmap of the QR code to be shared
+     * @param qrCodeToShare Bitmap of the QR code to be shared
      */
     // Source: https://www.youtube.com/watch?v=_vqWgyuexmY
-    private void shareQRCode(Bitmap QRcode) {
+    private void shareQRCode(Bitmap qrCodeToShare) {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
@@ -169,7 +169,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
         try {
             FileOutputStream outputStream = new FileOutputStream(f);
-            QRCode.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            qrCodeToShare.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
             outputStream.flush();
             outputStream.close();
