@@ -26,7 +26,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText nameEditText, emailEditText, phoneEditText, aboutMeEditText;
     private CheckBox pushNotificationCheckBox;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String userId = "uniqueUserID"; // Replace with the actual user ID
+    private String userId;  // Replace with the actual user ID
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private String profilePictureURL;
@@ -40,6 +40,12 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_profile_activity); // Replace with the actual layout file name
+        // Get the unique device ID
+        String deviceId = CheckInScreenActivity.getDeviceId(this);
+
+        // Now you can use the deviceId as needed in your application
+        Toast.makeText(this, "Device ID: " + deviceId, Toast.LENGTH_SHORT).show();
+        userId = deviceId;
 
         // Initialize views
         nameEditText = findViewById(R.id.nameEditText);
@@ -129,7 +135,9 @@ public class EditProfileActivity extends AppCompatActivity {
         updatedUserData.put("userName", name);
         updatedUserData.put("userPhoneNumber", phone);
         updatedUserData.put("userEmail", email);
+        updatedUserData.put("userAboutMe", aboutMe);
         updatedUserData.put("profilePictureUrl", newProfilePictureUrl); // Include the new profile picture URL
+
 
 
         db.collection("Users").document(userId)
