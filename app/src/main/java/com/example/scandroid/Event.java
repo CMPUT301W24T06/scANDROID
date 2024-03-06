@@ -1,7 +1,5 @@
 package com.example.scandroid;
 
-import android.media.Image;
-
 import androidx.annotation.NonNull;
 
 import java.sql.Time;
@@ -17,26 +15,21 @@ import java.util.UUID;
  * @author Jordan Beaubien & Moyo Dawodu
  */
 public class Event {
+
     /* ------------------- *
      * ATTRIBUTES / FIELDS *
      * ------------------- */
-    private static String EventID;
-    private String EventOrganizerID;
-    private String EventName;
-    private String EventDescription;
-    private Image EventPosterImage;
-    private Calendar EventDate; // NEEDS G&S FOR TIME AS WELL DATE
-    /* TODO ?? private Time EventTime ?? */
-    private ArrayList<Double> EventLocation;
     private ArrayList<CheckIn> EventAttendeeList;
     private ArrayList<EventAnnouncement> EventAnnouncementList;
+    private static String EventID;
+    private Calendar EventDate;
+    private String EventDescription;
+    private ArrayList<Double> EventLocation;
     private ArrayList<EventMilestone> EventMilestoneList;
     private ArrayList<Integer> MilestoneSeries;
+    private String EventName;
+    private String EventOrganizerID;
 
-    /* TODO - Attributes
-    * private QRCode EventQR
-    * private QRCode EventPromotionQR
-    * */
 
     /* ----------- *
      * CONSTRUCTOR *
@@ -47,27 +40,23 @@ public class Event {
      *
      * @param eventOrganizerID UserID of User that created Event
      * @param eventName        Name of Event
-     * @param eventDescription Description with related information of Event
-     * @param eventPoster      Profile image for Event
-     * @param eventDate        Day that Event will take place
+     * @param eventDescription Contextual information for Event.
+     * @param eventDate        Day that Event will take place, includes time of Event
      * @param eventLocation    Geographical coordinates of Event {latitude, longitude}
      */
-    public Event(
-            @NonNull String eventOrganizerID, @NonNull String eventName,
-            String eventDescription, Image eventPoster,
+    public Event(@NonNull String eventOrganizerID, @NonNull String eventName, String eventDescription,
             @NonNull Calendar eventDate, ArrayList<Double> eventLocation) {
-        EventDescription = eventDescription;
-        EventID = UUID.randomUUID().toString();
-        this.EventOrganizerID = eventOrganizerID;
-        this.EventName = eventName;
-        this.EventDescription = eventDescription;
-        this.EventPosterImage = eventPoster;
-        this.EventDate = eventDate;
-        this.EventLocation = eventLocation;
+
+        EventID = UUID.randomUUID().toString(); // unique identifier for database key
         this.EventAttendeeList = new ArrayList<>();
         this.EventAnnouncementList = new ArrayList<>();
-        this.MilestoneSeries = new ArrayList<>(Arrays.asList(1, 1));
+        this.EventDate = eventDate;
+        this.EventDescription = eventDescription;
+        this.EventLocation = eventLocation;
         this.EventMilestoneList = new ArrayList<>();
+        this.MilestoneSeries = new ArrayList<>(Arrays.asList(1, 1));
+        this.EventName = eventName;
+        this.EventOrganizerID = eventOrganizerID;
         this.addEventMilestone();   // adds first milestone of threshold of one attendee check-in
     }
 
@@ -75,7 +64,6 @@ public class Event {
     /* ------- *
      * METHODS *
      * ------- */
-
     /**
      * Add a new announcement to an Event as an Organizer.
      * @param announcementTitle A name for the announcement
@@ -137,10 +125,14 @@ public class Event {
     }
 
     /**
-     * @return Calendar date that the Event takes place on.
+     * @return Day that Event will take place, includes time of Event.
      */
     public Calendar getEventDate() { return this.EventDate; }
 
+    /**
+     * @return Contextual information for Event.
+     */
+    public String getEventDescription() { return this.EventDescription; }
 
     /**
      * @return Strong pseudo random number generator that belongs to this Event.
@@ -169,29 +161,24 @@ public class Event {
      */
     public String getEventOrganizerID() { return this.EventOrganizerID; }
 
-    /**
-     * @return The poster image provided for the Event.
-     */
-    public Image getEventPosterImage() { return this.EventPosterImage; }
-
 
     /* ------- *
      * SETTERS *
      * ------- */
     /**
-     * @param dateOfEvent   The Calendar date that the Event takes place on.
+     * @param dateOfEvent Day that Event will take place, includes time of Event.
      */
     public void setEventDate(Calendar dateOfEvent) { this.EventDate = dateOfEvent; }
+
+    /**
+     * @param eventDescription Contextual information for Event.
+     */
+    public void setEventDescription(String eventDescription) { this.EventDescription = eventDescription; }
 
     /**
      * @param latitudeOfEvent Latitude that the Event takes place at.
      */
     public void setEventLatitude(Double latitudeOfEvent) { this.EventLocation.set(0, latitudeOfEvent); }
-
-    /**
-     * @param longitudeOfEvent Longitude that the Event takes place at.
-     */
-    public void setEventLongitude(Double longitudeOfEvent) { this.EventLocation.set(1, longitudeOfEvent); }
 
     /**
      * @param locationOfEvent Coordinates that the Event takes place at.
@@ -201,14 +188,14 @@ public class Event {
         this.EventLocation.set(1, locationOfEvent.get(1)); }
 
     /**
+     * @param longitudeOfEvent Longitude that the Event takes place at.
+     */
+    public void setEventLongitude(Double longitudeOfEvent) { this.EventLocation.set(1, longitudeOfEvent); }
+
+    /**
      * @param nameOfEvent Name that the organizer has given the Event.
      */
     public void setEventName(String nameOfEvent) { this.EventName = nameOfEvent; }
-    
-    /**
-     * @param posterForEvent The poster image provided for the Event.
-     */
-    public void setEventPosterImage(Image posterForEvent) { this.EventPosterImage = posterForEvent; }
 
 
     /* -------------- *
@@ -256,7 +243,8 @@ public class Event {
         public ArrayList<Double> getCheckInLocation() {
             return this.CheckInLocation;
         }
-    }
+
+    } // end public class CheckIn
 
     /**
      * Represents a single Announcement for an Event. <br>
@@ -264,10 +252,10 @@ public class Event {
      * Attendees see Announcements for Events they attend if desired.
      */
     public class EventAnnouncement {
-        private String AnnouncementTitle;
         private String AnnouncementAbout;
         private String AnnouncementOrganizerID;
         private Time AnnouncementTime;
+        private String AnnouncementTitle;
 
         /**
          * Sole constructor for an <code>EventAnnouncement</code> object, specifying a
@@ -282,13 +270,6 @@ public class Event {
             this.AnnouncementAbout = about;
             this.AnnouncementOrganizerID = EventOrganizerID;
             this.AnnouncementTime = time;
-        }
-
-        /**
-         * @return The name of the announcement
-         */
-        public String getAnnouncementTitle() {
-            return AnnouncementTitle;
         }
 
         /**
@@ -311,7 +292,15 @@ public class Event {
         public Time getAnnouncementTime() {
             return AnnouncementTime;
         }
-    }
+
+        /**
+         * @return The name of the announcement
+         */
+        public String getAnnouncementTitle() {
+            return AnnouncementTitle;
+        }
+
+    } // end public class EventAnnouncement
 
     /**
      * Represents a single Milestone for an Event. <br>
@@ -337,13 +326,10 @@ public class Event {
         public Integer getThreshold() {
             return Threshold;
         }
-    }
 
-    /* TODO - Nested Classes
-    * private class QRCode
-    * private class QRCodeSharer
-    * */
-}
+    } // end public static class EventMilestone
+
+} // end public class Event
 
 
 

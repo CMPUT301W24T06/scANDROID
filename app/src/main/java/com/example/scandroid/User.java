@@ -27,18 +27,21 @@ public class User {
     private String userPhoneNumber;
     //TODO - (FRONT END) set character limit for userAboutMe.
     private String userAboutMe;
-    public Image userProfileImage;
-    private String adminKey;
+    private final String adminKey = "ThisPersonIsAnAdmin1298";
     private String userID;
-    private ArrayList<UUID> eventsAttending;
-    private ArrayList<UUID> eventsOrganized;
-    public ArrayList<UUID> notifiedBy;
+    private ArrayList<String> eventsAttending;
+    private ArrayList<String> eventsOrganized;
+    public ArrayList<String> notifiedBy;
+    private String profilePictureUrl;
 
-    private HashMap<UUID, Integer> timesAttended = new HashMap<>() ;
+    private HashMap<String, Integer> timesAttended = new HashMap<>() ;
     //TODO - make the user's location optional
     @Nullable private Location userLocation;
 
-
+    // Add a default constructor
+    public User() {
+        // Initialize default values if needed
+    }
     /* ----------- *
      * CONSTRUCTOR *
      * ----------- */
@@ -49,27 +52,28 @@ public class User {
      * @param userName The name of the User object you want to instantiate. This is set to a random guest name if none is provided.
      * @param userPhoneNumber The phone number of a user object. May be null.
      * @param userAboutMe The about-me section of a user's profile. May be null.
-     * @param userProfileImage The profile image of a user object. This is randomized if none is provided.
      * @param userEmail The email address of a user object. May be null.
+     *                       * @param profilePictureUrl The URL of the user's profile picture. May be null.
      */
-    public User(String userID, String userName, String userPhoneNumber, String userAboutMe, Image userProfileImage, String userEmail) {
+    public User(String userID, String userName, String userPhoneNumber, String userAboutMe, String userEmail) {
         this.userID = userID;
-        this.eventsAttending = new ArrayList<UUID>();
-        this.eventsOrganized = new ArrayList<UUID>();
-        this.notifiedBy = new ArrayList<UUID>();
+        this.eventsAttending = new ArrayList<String>();
+        this.eventsOrganized = new ArrayList<String>();
+        this.notifiedBy = new ArrayList<String>();
         //set the default value of a user's name to a Guest name if no name is provided.
         if(userName == null){
             Random random_num = new Random();
             int randID = random_num.nextInt(10000);
             this.userName = "Guest" + randID;
         }
+
         else{
             this.userName = userName;
         }
         this.userAboutMe = userAboutMe;
-        this.userProfileImage = userProfileImage;
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     /* ------- *
@@ -88,28 +92,44 @@ public class User {
      * Adds an event to the user's list of events they are attending.
      * @param event An eventID.
      */
-    public void addEventToEventsAttending(UUID event){
+    public void addEventToEventsAttending(String event){
         if(eventsAttending.contains(event)){
             Integer timesAttendedValue = timesAttended.get(event);
             timesAttended.replace(event,timesAttendedValue+1);
         }
         else{
             eventsAttending.add(event);
-            timesAttended.put(event,1);
+            timesAttended.put(event,0);
         }
     }
 
     /**
      * Adds an event to the user's list of events they have organized.
-     * @param event An eventID.
+     * @param event An event's ID.
      */
-    public void addEventToEventsOrganized(UUID event){
+    public void addEventToEventsOrganized(String event){
         eventsOrganized.add(event);
+    }
+
+    /**
+     * Adds an event to a user's list of events they wish to receive notifications from.
+     * @param event an event's ID.
+     */
+    public void addEventToNotifiedBy(String event){
+        notifiedBy.add(event);
+        //user will get notifications for this event.
     }
 
     /* ------- *
      * GETTERS *
      * ------- */
+
+    /**
+     * @return the URL of the user's profile picture
+     */
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
 
     /**
      * @return the user's userID
@@ -123,13 +143,6 @@ public class User {
      */
     public String getUserName() {
         return userName;
-    }
-
-    /**
-     * @return the user's profile picture
-     */
-    public Image getUserProfileImage() {
-        return userProfileImage;
     }
 
     //TODO - figure out how to calculate total number of times a user has checked in. May have to use some sort of button and track how many times it is  hit.
@@ -158,21 +171,21 @@ public class User {
     /**
      * @return A list of eventIDs that the user may be notified by.
      */
-    public ArrayList<UUID> getNotifiedBy() {
+    public ArrayList<String> getNotifiedBy() {
         return notifiedBy;
     }
 
     /**
      * @return the list of events (eventIDs) a user is attending
      */
-    public ArrayList<UUID> getEventsAttending() {
+    public ArrayList<String> getEventsAttending() {
         return eventsAttending;
     }
 
     /**
      * @return the list of events a user is organizing.
      */
-    public ArrayList<UUID> getEventsOrganized() {
+    public ArrayList<String> getEventsOrganized() {
         return eventsOrganized;
     }
 
@@ -180,7 +193,7 @@ public class User {
      * @param event an eventID
      * @return The number of times a User has attended a given event.
      */
-    public Integer getTimesAttended(UUID event){
+    public Integer getTimesAttended(String event){
         return timesAttended.get(event);
     }
 
@@ -215,34 +228,14 @@ public class User {
     public void setUserAboutMe(String userAboutMe) {
         this.userAboutMe = userAboutMe;
     }
-
     /**
-     * @param userProfileImage the profile picture the user adds to their profile.
+     * @param profilePictureUrl the URL of the user's profile picture
      */
-    public void setUserProfileImage(Image userProfileImage) {
-        this.userProfileImage = userProfileImage;
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
-    /**
-     * @param eventsAttending the new list of events a user may be attending.
-     */
-    public void setEventsAttending(ArrayList<UUID> eventsAttending) {
-        this.eventsAttending = eventsAttending;
-    }
-
-    /**
-     * @param eventsOrganized the new list of events a user is organizing.
-     */
-    public void setEventsOrganized(ArrayList<UUID> eventsOrganized) {
-        this.eventsOrganized = eventsOrganized;
-    }
-
-    /**
-     * @param notifiedBy the new list of events a user may be notified by.
-     */
-    public void setNotifiedBy(ArrayList<UUID> notifiedBy) {
-        this.notifiedBy = notifiedBy;
-    }
+    //removed setNotifiedBy, setEventAttending, setEventOrganizing, not necessary atm.
     //TODO - scanQRCode
     //TODO - UserDB
 }
