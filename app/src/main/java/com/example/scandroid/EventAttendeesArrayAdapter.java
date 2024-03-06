@@ -54,8 +54,8 @@ public class EventAttendeesArrayAdapter extends ArrayAdapter<Event.CheckIn> {
         attendCount.setText(attendeeUser.getTimesAttended(currentEventID));
 
         attendeeName.setText(attendeeUser.getUserName());
-        Bitmap profileBitmap = database.accessUserProfileImage(attendeeCheckIn.getUserID());
-        profilePicture.setImageBitmap(profileBitmap);
+//        Bitmap profileBitmap = database.accessUserProfileImage(attendeeCheckIn.getUserID());
+//        profilePicture.setImageBitmap(profileBitmap);
         return view;
     }
 }
