@@ -187,8 +187,3 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
         startActivity(Intent.createChooser(shareInt, "Share Check-In QR Code"));
     }}
-
-    /**
-     * Method for accessing the promo QR code from the database
-     * and sharing it.
-     */
