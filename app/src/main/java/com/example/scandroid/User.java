@@ -40,8 +40,15 @@ public class User {
 
     // Add a default constructor
     public User() {
-        // Initialize default values if needed
+        this.userID = "";  // Default to an empty string for userID
+        this.userName = ""; // Default to an empty string for userName
+        this.eventsAttending = new ArrayList<>();
+        this.eventsOrganized = new ArrayList<>();
+        this.notifiedBy = new ArrayList<>();
+        this.timesAttended = new HashMap<>();
+        this.userLocation = null; // Default to null for userLocation
     }
+
     /* ----------- *
      * CONSTRUCTOR *
      * ----------- */
@@ -234,8 +241,4 @@ public class User {
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
     }
-
-    //removed setNotifiedBy, setEventAttending, setEventOrganizing, not necessary atm.
-    //TODO - scanQRCode
-    //TODO - UserDB
 }
