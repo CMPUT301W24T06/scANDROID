@@ -48,6 +48,7 @@ public class User {
         this.timesAttended = new HashMap<>();
         this.userLocation = null; // Default to null for userLocation
     }
+
     /* ----------- *
      * CONSTRUCTOR *
      * ----------- */
@@ -240,8 +241,4 @@ public class User {
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
     }
-
-    //removed setNotifiedBy, setEventAttending, setEventOrganizing, not necessary atm.
-    //TODO - scanQRCode
-    //TODO - UserDB
 }
