@@ -1,4 +1,14 @@
 package com.example.scandroid;
 
-public class EventMilestonesActivity {
+import android.os.Bundle;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class EventMilestonesActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Event event = (Event)getIntent().getSerializableExtra("event");
+    }
 }

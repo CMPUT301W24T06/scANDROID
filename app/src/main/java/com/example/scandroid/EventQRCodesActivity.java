@@ -5,9 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
-
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,13 +19,10 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 
 /**
  * Represents the screen where event organizers can share the Event Check-In and Promo QR Codes.
- * @author Aaliyah Wusu
+ * @author Aaliyah Wusu and Moyo Dawodu
  */
 
 public class EventQRCodesActivity extends AppCompatActivity {
@@ -35,6 +30,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
     Event event;
     ImageView checkInQRCodeImgView;
     ImageView promoQRCodeImgView;
+    AppCompatButton backButton;
     AppCompatButton shareCheckInQRButton;
     AppCompatButton sharePromoQRButton;
 
@@ -71,13 +67,47 @@ public class EventQRCodesActivity extends AppCompatActivity {
         } catch (WriterException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    /**
+     * Method for sharing a QR Code.
+     * @param qrCodeToShare Bitmap of the QR code to be shared
+     */
+    // Source: https://www.youtube.com/watch?v=_vqWgyuexmY
+    private void shareQRCode(Bitmap qrCodeToShare) {
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+
+        event = (Event) getIntent().getSerializableExtra("event");
+        database = new DBAccessor();
+
+        File f = new File(getExternalCacheDir() + "/" + getResources().getString(R.string.app_name) + ".png");
+        Intent shareInt;
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(f);
+            qrCodeToShare.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+
+            outputStream.flush();
+            outputStream.close();
+
+            shareInt = new Intent(Intent.ACTION_SEND);
+            shareInt.setType("image/*");
+            shareInt.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
+            shareInt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        startActivity(Intent.createChooser(shareInt, "Share QR Code"));
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_qr_codes_activity);
 
+        backButton = findViewById(R.id.back_button);
         checkInQRCodeImgView = findViewById(R.id.check_in_qr_code_img);
         promoQRCodeImgView = findViewById(R.id.promo_qr_code_img);
         shareCheckInQRButton = findViewById(R.id.share_check_in_qr_button);
@@ -122,6 +152,15 @@ public class EventQRCodesActivity extends AppCompatActivity {
                 }
             });
 
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(EventQRCodesActivity.this, EditEventActivity.class);
+                    i.putExtra("event", getIntent().getSerializableExtra("event"));
+                    startActivity(i);
+                }
+            });
+
             shareCheckInQRButton.setOnClickListener(v -> database.accessQRMain(event.getEventID(), new BitmapCallback() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
@@ -150,38 +189,4 @@ public class EventQRCodesActivity extends AppCompatActivity {
             }));
         }
     }
-
-
-    /**
-     * Method for sharing a QR Code.
-     * @param qrCodeToShare Bitmap of the QR code to be shared
-     */
-    // Source: https://www.youtube.com/watch?v=_vqWgyuexmY
-    private void shareQRCode(Bitmap qrCodeToShare) {
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-
-        event = (Event) getIntent().getSerializableExtra("event");
-        database = new DBAccessor();
-
-        File f = new File(getExternalCacheDir() + "/" + getResources().getString(R.string.app_name) + ".png");
-        Intent shareInt;
-
-        try {
-            FileOutputStream outputStream = new FileOutputStream(f);
-            qrCodeToShare.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-
-            outputStream.flush();
-            outputStream.close();
-
-            shareInt = new Intent(Intent.ACTION_SEND);
-            shareInt.setType("image/*");
-            shareInt.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
-            shareInt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        startActivity(Intent.createChooser(shareInt, "Share QR Code"));
-    }}
+}
