@@ -3,9 +3,11 @@ package com.example.scandroid;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -20,6 +22,8 @@ public class HomepageActivity extends AppCompatActivity {
     HomepageActivityPageAdapter homepageActivityPageAdapter;
     BottomNavigationView navigationBar;
 
+    AppCompatButton editProfileButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +36,8 @@ public class HomepageActivity extends AppCompatActivity {
         homepagePager = findViewById(R.id.homepage_pager);
         homepageActivityPageAdapter = new HomepageActivityPageAdapter(this);
         homepagePager.setAdapter(homepageActivityPageAdapter);
+
+        editProfileButton = findViewById(R.id.edit_profile_button);
 
         homepageTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -79,5 +85,12 @@ public class HomepageActivity extends AppCompatActivity {
             }
         });
 
+        editProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomepageActivity.this, EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
