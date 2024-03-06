@@ -23,6 +23,7 @@ public class HomepageActivity extends AppCompatActivity {
     BottomNavigationView navigationBar;
 
     AppCompatButton editProfileButton;
+    AppCompatButton createEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class HomepageActivity extends AppCompatActivity {
         homepagePager.setAdapter(homepageActivityPageAdapter);
 
         editProfileButton = findViewById(R.id.edit_profile_button);
+        createEventButton = findViewById(R.id.create_event_button);
 
         homepageTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -79,7 +81,6 @@ public class HomepageActivity extends AppCompatActivity {
                     case R.id.notification_button:
                         startActivity(new Intent(getApplicationContext(), EventViewAnnouncementsActivity.class));
                         return true;
-
                 }
                 return false;
             }
@@ -89,6 +90,14 @@ public class HomepageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomepageActivity.this, EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        createEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomepageActivity.this, CreateEventActivity.class);
                 startActivity(intent);
             }
         });

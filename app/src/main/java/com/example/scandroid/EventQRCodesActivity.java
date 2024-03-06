@@ -135,7 +135,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
                     // bitmap load failure
                 }
             }));
-            sharePromoQRButton.setOnClickListener(v -> database.accessQRMain(event.getEventID(), new BitmapCallback() {
+            sharePromoQRButton.setOnClickListener(v -> database.accessQRPromo(event.getEventID(), new BitmapCallback() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
                     if (bitmap != null) {
@@ -153,8 +153,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
 
     /**
-     * Method for accessing a QR code from the database
-     * and sharing it.
+     * Method for sharing a QR Code.
      * @param QRcode Bitmap of the QR code to be shared
      */
     // Source: https://www.youtube.com/watch?v=_vqWgyuexmY
@@ -170,7 +169,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
         try {
             FileOutputStream outputStream = new FileOutputStream(f);
-            QRcode.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            QRCode.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
             outputStream.flush();
             outputStream.close();
