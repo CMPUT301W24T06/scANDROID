@@ -36,9 +36,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,6 +128,7 @@ public class EditProfileActivity extends AppCompatActivity {
         Map<String, Object> updatedUserData = new HashMap<>();
         updatedUserData.put("userName", name);
         updatedUserData.put("userPhoneNumber", phone);
+        updatedUserData.put("userEmail", email);
         updatedUserData.put("profilePictureUrl", newProfilePictureUrl); // Include the new profile picture URL
 
 
