@@ -85,6 +85,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
 
         event = (Event)getIntent().getSerializableExtra("event");
+        database = new DBAccessor();
 
         if (event != null){
             String eventID = event.getEventID();
@@ -92,10 +93,64 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
             imgCheckIn = generateCheckInQR(eventID,database);
             imgPromo = generatePromoQR(eventName,database);
+
+            database.accessQRMain(event.getEventID(), new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    if (bitmap != null) {
+                        checkInQRCodeImgView.setImageBitmap(bitmap);
+                    }
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    // bitmap load failure
+                }
+            });
+
+            database.accessQRPromo(event.getEventID(), new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    if (bitmap != null) {
+                        promoQRCodeImgView.setImageBitmap(bitmap);
+                    }
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    // bitmap load failure
+                }
+            });
+
+            shareCheckInQRButton.setOnClickListener(v -> database.accessQRMain(event.getEventID(), new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    if (bitmap != null) {
+                        shareQRCode(bitmap);
+                    }
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    // bitmap load failure
+                }
+            }));
+            sharePromoQRButton.setOnClickListener(v -> database.accessQRMain(event.getEventID(), new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    if (bitmap != null) {
+                        shareQRCode(bitmap);
+                    }
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    // bitmap load failure
+                }
+            }));
         }
 
 
-        database = new DBAccessor();
         //Bitmap checkInQRCodeImg = database.accessQRMain(event.getEventID());
         //Bitmap promoQRCodeImg = database.accessQRPromo(event.getEventID());
 
@@ -106,60 +161,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
         //sharePromoQRButton.setOnClickListener(v -> sharePromoQRCode());
 
-        database.accessQRMain(event.getEventID(), new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                if (bitmap != null) {
-                    checkInQRCodeImgView.setImageBitmap(bitmap);
-                }
-            }
 
-            @Override
-            public void onBitmapFailed(Exception e) {
-                // bitmap load failure
-            }
-        });
-
-        database.accessQRPromo(event.getEventID(), new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                if (bitmap != null) {
-                    promoQRCodeImgView.setImageBitmap(bitmap);
-                }
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e) {
-                // bitmap load failure
-            }
-        });
-
-        shareCheckInQRButton.setOnClickListener(v -> database.accessQRMain(event.getEventID(), new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                if (bitmap != null) {
-                    shareQRCode(bitmap);
-                }
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e) {
-                // bitmap load failure
-            }
-        }));
-        sharePromoQRButton.setOnClickListener(v -> database.accessQRMain(event.getEventID(), new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                if (bitmap != null) {
-                    shareQRCode(bitmap);
-                }
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e) {
-                // bitmap load failure
-            }
-        }));
     }
 
     /**
@@ -203,7 +205,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
      */
 
     // Source: https://www.youtube.com/watch?v=_vqWgyuexmY
-    private void sharePromoQRCode() {
+    private void sharePromoQRCode(Bitmap QRcode) {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
