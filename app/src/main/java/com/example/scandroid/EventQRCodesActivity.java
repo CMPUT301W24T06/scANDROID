@@ -164,14 +164,13 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
         event = (Event) getIntent().getSerializableExtra("event");
         database = new DBAccessor();
-        //Bitmap checkInQRCodeImg = database.accessQRMain(event.getEventID());
 
         File f = new File(getExternalCacheDir() + "/" + getResources().getString(R.string.app_name) + ".png");
         Intent shareInt;
 
         try {
             FileOutputStream outputStream = new FileOutputStream(f);
-            //checkInQRCodeImg.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            QRcode.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
             outputStream.flush();
             outputStream.close();
@@ -185,5 +184,5 @@ public class EventQRCodesActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-        startActivity(Intent.createChooser(shareInt, "Share Check-In QR Code"));
+        startActivity(Intent.createChooser(shareInt, "Share QR Code"));
     }}
