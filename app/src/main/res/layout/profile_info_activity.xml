@@ -43,11 +43,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/edit_profile_image"
+        android:id="@+id/profile_info_image"
         android:layout_width="159dp"
         android:layout_height="147dp"
         android:layout_marginTop="180dp"
-        android:background="@drawable/guest_default_image"
+        android:src="@drawable/guest_default_image"
         android:clickable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

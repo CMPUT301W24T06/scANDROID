@@ -1,10 +1,10 @@
 package com.example.scandroid;
 
-import static android.content.Intent.getIntent;
+
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +17,10 @@ import androidx.annotation.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+
+/**
+ * Array adapter for the list of users that are attending an event
+ */
 
 public class EventAttendeesArrayAdapter extends ArrayAdapter<Event.CheckIn> {
     private String currentEventID;
@@ -47,15 +51,21 @@ public class EventAttendeesArrayAdapter extends ArrayAdapter<Event.CheckIn> {
         TextView attendeeName = view.findViewById(R.id.event_attendees_list_attendee_name);
         ImageView profilePicture = view.findViewById(R.id.event_attendees_list_profile_picture);
 
-
         String checkInTimeText = "Check-in Time: " + attendeeCheckIn.getCheckInTime();
         checkInTime.setText(checkInTimeText);
-
         attendCount.setText(attendeeUser.getTimesAttended(currentEventID));
-
         attendeeName.setText(attendeeUser.getUserName());
-        Bitmap profileBitmap = database.accessUserProfileImage(attendeeCheckIn.getUserID());
-        profilePicture.setImageBitmap(profileBitmap);
+        database.accessUserProfileImage(attendeeCheckIn.getUserID(), new BitmapCallback() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap) {
+                profilePicture.setImageBitmap(bitmap);
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e) {
+                Log.d("BitmapLoad", "Failed to load image bitmap");
+            }
+        });
         return view;
     }
 }
