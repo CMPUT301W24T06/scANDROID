@@ -2,6 +2,7 @@ package com.example.scandroid;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -24,7 +25,7 @@ import java.util.Map;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    private EditText nameEditText, emailEditText, phoneEditText, aboutMeEditText;
+    private EditText nameEditText, emailEditText, phoneEditText, aboutMeEditText, homepageNameText;
     private CheckBox pushNotificationCheckBox;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String userId;  // Replace with the actual user ID
@@ -95,8 +96,6 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Handle update button click
                 updateProfile();
-                // go back to homepage -> it doesn't change the name displayed yet but will work on that
-                finish();
             }
         });
 
@@ -146,6 +145,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 .update(updatedUserData)
                 .addOnSuccessListener(aVoid -> {
                     nameEditText.setText(name);
+                    // Save the updated user name in SharedPreferences
+                    SharedPreferences sharedPreferences = getSharedPreferences("YourPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("updatedUserName", name);
+                    editor.apply();
+                    finish();
+
 
                     // Handle the success, e.g., show a toast or navigate to another activity
                 })
