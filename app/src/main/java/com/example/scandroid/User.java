@@ -32,12 +32,16 @@ public class User {
     private ArrayList<String> eventsAttending;
     private ArrayList<String> eventsOrganized;
     public ArrayList<String> notifiedBy;
+    private String profilePictureUrl;
 
     private HashMap<String, Integer> timesAttended = new HashMap<>() ;
     //TODO - make the user's location optional
     @Nullable private Location userLocation;
 
-
+    // Add a default constructor
+    public User() {
+        // Initialize default values if needed
+    }
     /* ----------- *
      * CONSTRUCTOR *
      * ----------- */
@@ -49,6 +53,7 @@ public class User {
      * @param userPhoneNumber The phone number of a user object. May be null.
      * @param userAboutMe The about-me section of a user's profile. May be null.
      * @param userEmail The email address of a user object. May be null.
+     *                       * @param profilePictureUrl The URL of the user's profile picture. May be null.
      */
     public User(String userID, String userName, String userPhoneNumber, String userAboutMe, String userEmail) {
         this.userID = userID;
@@ -61,12 +66,14 @@ public class User {
             int randID = random_num.nextInt(10000);
             this.userName = "Guest" + randID;
         }
+
         else{
             this.userName = userName;
         }
         this.userAboutMe = userAboutMe;
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     /* ------- *
@@ -116,6 +123,13 @@ public class User {
     /* ------- *
      * GETTERS *
      * ------- */
+
+    /**
+     * @return the URL of the user's profile picture
+     */
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
 
     /**
      * @return the user's userID
@@ -213,6 +227,12 @@ public class User {
      */
     public void setUserAboutMe(String userAboutMe) {
         this.userAboutMe = userAboutMe;
+    }
+    /**
+     * @param profilePictureUrl the URL of the user's profile picture
+     */
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     //removed setNotifiedBy, setEventAttending, setEventOrganizing, not necessary atm.

@@ -7,7 +7,7 @@ import android.widget.ImageView;
 
 
 public class CheckInScreenActivity extends AppCompatActivity {
-
+    //
     ImageView backgroundImageView; // declare the ImageView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
