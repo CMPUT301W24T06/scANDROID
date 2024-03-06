@@ -8,6 +8,11 @@
       </config>
     </shared>
     <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/font/poppins.xml">
+        <config>
+          <theme>@style/Theme.ScANDROID</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/allow_access_camera_roll_fragment.xml">
         <config>
           <theme>@style/Theme.ScANDROID</theme>
@@ -73,11 +78,6 @@
           <theme>@style/Theme.ScANDROID</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/event_features_activity.xml">
-        <config>
-          <theme>@style/Theme.ScANDROID</theme>
-        </config>
-      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/event_milestones_activity.xml">
         <config>
           <theme>@style/Theme.ScANDROID</theme>
@@ -139,7 +139,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="49c4a012-67cd-4f5e-a640-6ac57d121d35" name="Changes" comment="navigation between EditProfileActivity and HomepageActivity" />
+    <list default="true" id="49c4a012-67cd-4f5e-a640-6ac57d121d35" name="Changes" comment="Created EditEventActivity.java, linked necessary pages, made small edits" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -239,7 +239,6 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "Aaliyah-Updated",
     "last_opened_file_path": "/Users/jaderpana/scANDROID/app/src/main/res/drawable",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
@@ -715,7 +714,15 @@
       <option name="project" value="LOCAL" />
       <updated>1709707950085</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Created EditEventActivity.java, linked necessary pages, made small edits">
+      <option name="closed" value="true" />
+      <created>1709768409314</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1709768409314</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
