@@ -72,12 +72,12 @@ public class DBAccessor {
 
         // Initialize access to ImageAsset storage
         ImageAssetRefName = "ImageAssets";
-        this.ImageAssetDB = new ImageAssetDBAccessor(db, ImageAssetRefName);
+        this.ImageAssetDB = new ImageAssetDBAccessor(storageRef, ImageAssetRefName);
 
         // Initialize access to QRCode storage
         QRCodeMainRefName = "QRCodeMain";
         QRCodePromoRefName = "QRCodePromo";
-        this.QRCodeDB = new QRCodeDBAccessor(db, QRCodeMainRefName, QRCodePromoRefName);
+        this.QRCodeDB = new QRCodeDBAccessor(storageRef, QRCodeMainRefName, QRCodePromoRefName);
 
         // Initialize access to User storage
         UserRefName = "Users";
@@ -85,7 +85,7 @@ public class DBAccessor {
 
         // Initialize access to UserProfileImage storage
         UserProfileImageRefName = "UserProfileImages";
-        UserProfileImageDB = new UserProfileImageDBAccessor(db, UserProfileImageRefName);
+        UserProfileImageDB = new UserProfileImageDBAccessor(storageRef, UserProfileImageRefName);
     }
 
 
@@ -110,30 +110,27 @@ public class DBAccessor {
     }
 
     /**
-     * {@link ImageAssetDBAccessor#accessImageAsset(String)}
+     * {@link ImageAssetDBAccessor#accessImageAsset(String, BitmapCallback)}
      * @param imageAssetName Unique identifier for ImageAsset to be accessed
-     * @return Bitmap of ImageAsset
      */
-    public Bitmap accessImageAsset(String imageAssetName) {
-        return this.ImageAssetDB.accessImageAsset(imageAssetName);
+    public void accessImageAsset(String imageAssetName, BitmapCallback callback) {
+        this.ImageAssetDB.accessImageAsset(imageAssetName, callback);
     }
 
     /**
-     * {@link QRCodeDBAccessor#accessQRMain(String)}
+     * {@link QRCodeDBAccessor#accessQRMain(String, BitmapCallback)}
      * @param EventID Unique identifier for QRMain to be accessed
-     * @return Bitmap of main QR code for Event
      */
-    public Bitmap accessQRMain(String EventID) {
-        return this.QRCodeDB.accessQRMain(EventID);
+    public void accessQRMain(String EventID, BitmapCallback callback) {
+        this.QRCodeDB.accessQRMain(EventID, callback);
     }
 
     /**
-     * {@link QRCodeDBAccessor#accessQRPromo(String)}
+     * {@link QRCodeDBAccessor#accessQRPromo(String, BitmapCallback)}
      * @param EventID Unique identifier for QRPromo to be accessed
-     * @return Bitmap of promotional QR code for Event
      */
-    public Bitmap accessQRPromo(String EventID) {
-        return this.QRCodeDB.accessQRPromo(EventID);
+    public void accessQRPromo(String EventID, BitmapCallback callback) {
+        this.QRCodeDB.accessQRPromo(EventID, callback);
     }
 
     /**
@@ -146,12 +143,11 @@ public class DBAccessor {
     }
 
     /**
-     * {@link UserProfileImageDBAccessor#accessUserProfileImage(String)}
+     * {@link UserProfileImageDBAccessor#accessUserProfileImage(String, BitmapCallback)}
      * @param UserID Unique identifier for UserProfileImage to be accessed
-     * @return Bitmap of ProfileImage for User
      */
-    public Bitmap accessUserProfileImage(String UserID) {
-        return this.UserProfileImageDB.accessUserProfileImage(UserID);
+    public void accessUserProfileImage(String UserID, BitmapCallback callback) {
+        this.UserProfileImageDB.accessUserProfileImage(UserID, callback);
     }
 
     /* -------------------------- *
@@ -379,7 +375,6 @@ public class DBAccessor {
     private class EventPosterDBAccessor {
 
         // Attributes / Fields
-//        private CollectionReference EventPosterRef;
         private StorageReference EventPosterRef;
         private StorageReference storageRef;
         private String EventPosterRefName;
@@ -392,8 +387,7 @@ public class DBAccessor {
          * Actions permitted: Access(get), Delete, and Store
          */
         private EventPosterDBAccessor(StorageReference storageRef, String EventPosterRefName) {
-
-            // Access EventPoster collection of Firestore
+            // Access EventPoster storage of Firestore
             this.storageRef = storageRef;
             this.EventPosterRefName = EventPosterRefName;
             this.boas = new ByteArrayOutputStream();
@@ -410,14 +404,13 @@ public class DBAccessor {
             // Source(2): https://chat.openai.com/share/5353b1da-4b10-4b2c-a928-be60d7cbb08c (via Simon Thang)
 
             // set storage reference to EventPoster collection with EventID as key
-            EventPosterRef = this.storageRef.child(EventPosterRefName + "/" + EventID);
+            this.EventPosterRef = this.storageRef.child(this.EventPosterRefName + "/" + EventID);
 
             // setup getByte limit and return value location
-            final Bitmap[] retrievedPoster = new Bitmap[1];
             final long ONE_MEGABYTE = 1024 * 1024;
 
             // download bitmap with EventID as key
-            EventPosterRef.getBytes(ONE_MEGABYTE)
+            this.EventPosterRef.getBytes(ONE_MEGABYTE)
                     .addOnSuccessListener(bytes -> {
                         Log.d("FireStorage", "EventPoster successfully accessed!");
                         new Handler(Looper.getMainLooper()).post(() -> {
@@ -443,10 +436,10 @@ public class DBAccessor {
             // Source: https://firebase.google.com/docs/storage/android/delete-files
 
             // set storage reference to EventPoster collection with EventID as key
-            EventPosterRef = this.storageRef.child(EventPosterRefName + "/" + EventID);
+            this.EventPosterRef = this.storageRef.child(this.EventPosterRefName + "/" + EventID);
 
             // Delete the EventPoster
-            EventPosterRef.delete()
+            this.EventPosterRef.delete()
                     .addOnFailureListener(e -> Log.w("Firestore", "Error deleting EventPoster", e))
                     .addOnSuccessListener(unused -> Log.d("Firestore", "EventPoster successfully deleted!"));
         }
@@ -461,14 +454,14 @@ public class DBAccessor {
             // Source: https://firebase.google.com/docs/storage/android/upload-files#java_1
 
             // set storage reference to EventPoster collection with EventID as key
-            EventPosterRef = this.storageRef.child(EventPosterRefName + "/" + EventID);
+            this.EventPosterRef = this.storageRef.child(this.EventPosterRefName + "/" + EventID);
 
             // write bitmap to output stream
             EventPoster.compress(Bitmap.CompressFormat.PNG, 100, boas);
             byte[] EventPosterData = boas.toByteArray();
 
             // upload bitmap to Firebase Storage
-            UploadTask uploadPosterTask = EventPosterRef.putBytes(EventPosterData);
+            UploadTask uploadPosterTask = this.EventPosterRef.putBytes(EventPosterData);
             uploadPosterTask
                     .addOnFailureListener(e -> Log.w("FireStorage", "Error writing EventPoster ByteArray"))
                     .addOnSuccessListener(taskSnapshot -> Log.w("FireStorage", "EventPoster successfully written!"));
@@ -484,7 +477,10 @@ public class DBAccessor {
     private class ImageAssetDBAccessor {
 
         // Attributes / Fields
-        private CollectionReference ImageAssetRef;
+        private StorageReference ImageAssetRef;
+        private StorageReference storageRef;
+        private String ImageAssetRefName;
+        private ByteArrayOutputStream boas;
 
         // Constructor
         /**
@@ -492,54 +488,67 @@ public class DBAccessor {
          * Allows access to ImageAsset's stored as Bitmaps in a Firestore Database. <br>
          * Actions permitted: Access(get) and Store
          */
-        private ImageAssetDBAccessor(FirebaseFirestore db, String ImageAssetRefName) {
-
-            // Access ImageAssets collection of Firestore
-            this.ImageAssetRef = db.collection(ImageAssetRefName);
+        private ImageAssetDBAccessor(StorageReference storageRef, String ImageAssetRefName) {
+            // Access EventPoster collection of Firestore
+            this.storageRef = storageRef;
+            this.ImageAssetRefName = ImageAssetRefName;
+            this.boas = new ByteArrayOutputStream();
         }
 
         // Methods
         /**
          * Get ImageAsset stored in Firestore Database
          * @param imageAssetName Unique identifier for ImageAsset to be accessed
-         * @return Bitmap of ImageAsset
          */
-        private Bitmap accessImageAsset(String imageAssetName) {
-            final Bitmap[] retrievedImageAsset = new Bitmap[1];
-
+        private void accessImageAsset(String imageAssetName, BitmapCallback callback) {
             // Get an ImageAsset via imageAssetName
-            // Source: https://firebase.google.com/docs/firestore/query-data/get-data
-            this.ImageAssetRef.document(imageAssetName).get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-                                retrievedImageAsset[0] = task.getResult().toObject(Bitmap.class);
-                            } else {
-                                Log.d("Firestore", "No such document");
-                                retrievedImageAsset[0] = null;
-                            }
-                        } else {
-                            Log.d("Firestore", "get failed with ", task.getException());
-                            retrievedImageAsset[0] = null;
-                        }
-                    });
+            // Source(1): https://firebase.google.com/docs/storage/android/download-files
+            // Source(2): https://chat.openai.com/share/5353b1da-4b10-4b2c-a928-be60d7cbb08c (via Simon Thang)
 
-            return retrievedImageAsset[0];
+            // set storage reference to EventPoster collection with EventID as key
+            ImageAssetRef = this.storageRef.child(this.ImageAssetRefName + "/" + imageAssetName);
+
+            // setup getByte limit and return value location
+            final long ONE_MEGABYTE = 1024 * 1024;
+
+            // download bitmap with EventID as key
+            ImageAssetRef.getBytes(ONE_MEGABYTE)
+                    .addOnSuccessListener(bytes -> {
+                        Log.d("FireStorage", "ImageAsset successfully accessed!");
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            callback.onBitmapLoaded(bitmap);
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.d("FireStorage", "ImageAsset access failed!");
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            callback.onBitmapFailed(e);
+                        });
+                    });
         }
 
         /**
          * Store or update ImageAsset in Firestore Database
          * @param imageAssetName Name of ImageAsset to be added or updated.
-         * @param bitmap Bitmap of ImageAsset to be added or updated.
+         * @param imageAsset Bitmap of ImageAsset to be added or updated.
          */
-        private void storeImageAsset(String imageAssetName, Bitmap bitmap) {
+        private void storeImageAsset(String imageAssetName, Bitmap imageAsset) {
             // Store an ImageAsset with imageAssetName as key
-            // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
-            this.ImageAssetRef.document(imageAssetName).set(bitmap)
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "ImageAsset successfully written!"))
-                    .addOnFailureListener(e -> Log.w("Firestore", "Error writing ImageAsset document", e));
+            // Source: https://firebase.google.com/docs/storage/android/upload-files#java_1
+
+            // set storage reference to ImageAsset collection with imageAssetName as key
+            this.ImageAssetRef = this.storageRef.child(this.ImageAssetRefName + "/" + imageAssetName);
+
+            // write bitmap to output stream
+            imageAsset.compress(Bitmap.CompressFormat.PNG, 100, boas);
+            byte[] ImageAssetData = boas.toByteArray();
+
+            // upload bitmap to Firebase Storage
+            UploadTask uploadPosterTask = this.ImageAssetRef.putBytes(ImageAssetData);
+            uploadPosterTask
+                    .addOnFailureListener(e -> Log.w("FireStorage", "Error writing ImageAsset ByteArray"))
+                    .addOnSuccessListener(taskSnapshot -> Log.w("FireStorage", "ImageAsset successfully written!"));
         }
 
     } // end private class ImageAssetDBAccessor
@@ -552,132 +561,173 @@ public class DBAccessor {
     private class QRCodeDBAccessor {
 
         // Attributes / Fields
-        private CollectionReference QRCodeMainRef;
-        private CollectionReference QRCodePromoRef;
+        private StorageReference QRCodeMainRef;
+        private StorageReference QRCodePromoRef;
+        private StorageReference storageRef;
+        private String QRCodeMainRefName;
+        private String QRCodePromoRefName;
+        private ByteArrayOutputStream boas;
 
 
         // Constructor
         /**
          * Sole constructor of QRCodeDBAccessor. <br>
          * Allows access to QRCode's stored as Bitmaps in a Firestore Database. <br>
-         * Actions permitted: Access(get) and Store
+         * Actions permitted: Access(get), Delete, and Store
          */
-        private QRCodeDBAccessor(FirebaseFirestore db, String QRCodeMainRefName, String QRCodePromoRefName) {
-
-            // Access ImageAssets collection of Firestore
-            this.QRCodeMainRef = db.collection(QRCodeMainRefName);
-            this.QRCodePromoRef = db.collection(QRCodePromoRefName);
+        private QRCodeDBAccessor(StorageReference storageRef, String QRCodeMainRefName, String QRCodePromoRefName) {
+            // Access QRCode storage of Firestore
+            this.storageRef = storageRef;
+            this.QRCodeMainRefName = QRCodeMainRefName;
+            this.QRCodePromoRefName = QRCodePromoRefName;
+            this.boas = new ByteArrayOutputStream();
         }
 
         // Methods
         /**
          * Get main QR code for an Event stored in Firestore Database
          * @param EventID Unique identifier for QRCode to be accessed
-         * @return Bitmap of main QR code for Event
          */
-        private Bitmap accessQRMain(String EventID) {
-            final Bitmap[] retrievedQRMain = new Bitmap[1];
+        private void accessQRMain(String EventID, BitmapCallback callback) {
+            // Download a QRCodeMain from Firestore Storage
+            // Source(1): https://firebase.google.com/docs/storage/android/download-files
+            // Source(2): https://chat.openai.com/share/5353b1da-4b10-4b2c-a928-be60d7cbb08c (via Simon Thang)
 
-            // Get a QRMain via EventID
-            // Source: https://firebase.google.com/docs/firestore/query-data/get-data
-            this.QRCodeMainRef.document(EventID).get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-                                retrievedQRMain[0] = task.getResult().toObject(Bitmap.class);
-                            } else {
-                                Log.d("Firestore", "No such document");
-                                retrievedQRMain[0] = null;
-                            }
-                        } else {
-                            Log.d("Firestore", "get failed with ", task.getException());
-                            retrievedQRMain[0] = null;
-                        }
+            // set storage reference to QRCodeMain collection with EventID as key
+            this.QRCodeMainRef = this.storageRef.child(this.QRCodeMainRefName + "/" + EventID);
+
+            // setup getByte limit and return value location
+            final long ONE_MEGABYTE = 1024 * 1024;
+
+            // download bitmap with EventID as key
+            this.QRCodeMainRef.getBytes(ONE_MEGABYTE)
+                    .addOnSuccessListener(bytes -> {
+                        Log.d("FireStorage", "QRCodeMain successfully accessed!");
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            callback.onBitmapLoaded(bitmap);
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.d("FireStorage", "QRCodeMain access failed!");
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            callback.onBitmapFailed(e);
+                        });
                     });
-
-            return retrievedQRMain[0];
         }
 
         /**
          * Get promotional QR code for an Event stored in Firestore Database
          * @param EventID Unique identifier for promo QRCode to be accessed
-         * @return Bitmap of promotional QR code for Event
          */
-        private Bitmap accessQRPromo(String EventID) {
-            final Bitmap[] retrievedQRPromo = new Bitmap[1];
+        private void accessQRPromo(String EventID, BitmapCallback callback) {
+            // Download a QRCodePromo from Firestore Storage
+            // Source(1): https://firebase.google.com/docs/storage/android/download-files
+            // Source(2): https://chat.openai.com/share/5353b1da-4b10-4b2c-a928-be60d7cbb08c (via Simon Thang)
 
-            // Get a QRPromo via EventID
-            // Source: https://firebase.google.com/docs/firestore/query-data/get-data
-            this.QRCodePromoRef.document(EventID).get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-                                retrievedQRPromo[0] = task.getResult().toObject(Bitmap.class);
-                            } else {
-                                Log.d("Firestore", "No such document");
-                                retrievedQRPromo[0] = null;
-                            }
-                        } else {
-                            Log.d("Firestore", "get failed with ", task.getException());
-                            retrievedQRPromo[0] = null;
-                        }
+            // set storage reference to QRCodePromo collection with EventID as key
+            this.QRCodePromoRef = this.storageRef.child(this.QRCodePromoRefName + "/" + EventID);
+
+            // setup getByte limit and return value location
+            final long ONE_MEGABYTE = 1024 * 1024;
+
+            // download bitmap with EventID as key
+            this.QRCodePromoRef.getBytes(ONE_MEGABYTE)
+                    .addOnSuccessListener(bytes -> {
+                        Log.d("FireStorage", "QRCodePromo successfully accessed!");
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            callback.onBitmapLoaded(bitmap);
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.d("FireStorage", "QRCodePromo access failed!");
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            callback.onBitmapFailed(e);
+                        });
                     });
-
-            return retrievedQRPromo[0];
         }
 
         /**
-         * Delete a QRMain in Firestore Database
-         * @param EventID Unique identifier for QRMain to be deleted
+         * Delete a QRCodeMain in Firestore Database
+         * @param EventID Unique identifier for QRCodeMain to be deleted
          */
         private void deleteQRMain(String EventID) {
-            // Delete a QRMain via EventID
-            // Source: https://firebase.google.com/docs/firestore/manage-data/delete-data
-            this.QRCodeMainRef.document(EventID).delete()
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "QRMain successfully deleted!"))
-                    .addOnFailureListener(e -> Log.w("Firestore", "Error deleting QRMain", e));
+            // Delete a QRCodeMain with EventID as key
+            // Source: https://firebase.google.com/docs/storage/android/delete-files
+
+            // set storage reference to QRCodeMain collection with EventID as key
+            this.QRCodeMainRef = this.storageRef.child(this.QRCodeMainRefName + "/" + EventID);
+
+            // Delete the EventPoster
+            this.QRCodeMainRef.delete()
+                    .addOnFailureListener(e -> Log.w("Firestore", "Error deleting QRCodeMain", e))
+                    .addOnSuccessListener(unused -> Log.d("Firestore", "QRCodeMain successfully deleted!"));
         }
 
         /**
-         * Delete a QRPromo in Firestore Database
-         * @param EventID Unique identifier for QRPromo to be deleted
+         * Delete a QRCodePromo in Firestore Database
+         * @param EventID Unique identifier for QRCodePromo to be deleted
          */
         private void deleteQRPromo(String EventID) {
-            // Delete a QRPromo via EventID
-            // Source: https://firebase.google.com/docs/firestore/manage-data/delete-data
-            this.QRCodePromoRef.document(EventID).delete()
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "QRPromo successfully deleted!"))
-                    .addOnFailureListener(e -> Log.w("Firestore", "Error deleting QRPromo", e));
+            // Delete a QRCodePromo with EventID as key
+            // Source: https://firebase.google.com/docs/storage/android/delete-files
+
+            // set storage reference to QRCodePromo collection with EventID as key
+            this.QRCodePromoRef = this.storageRef.child(this.QRCodePromoRefName + "/" + EventID);
+
+            // Delete the EventPoster
+            this.QRCodePromoRef.delete()
+                    .addOnFailureListener(e -> Log.w("Firestore", "Error deleting QRCodePromo", e))
+                    .addOnSuccessListener(unused -> Log.d("Firestore", "QRCodePromo successfully deleted!"));
         }
+
 
         /**
          * Store or update an Events main QR code in Firestore Database
-         * @param EventID Unique identifier for QRCode to be accessed
-         * @param QRMain Bitmap of QRMain to be stored.
+         * @param EventID Unique identifier for QRCodeMain to be accessed
+         * @param QRCodeMain Bitmap of QRCodeMain to be stored.
          */
-        private void storeQRMain(String EventID, Bitmap QRMain) {
-            // Store a QRMain with EventID as key
-            // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
-            this.QRCodeMainRef.document(EventID).set(QRMain)
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "QRMain successfully written!"))
-                    .addOnFailureListener(e -> Log.w("Firestore", "Error writing QRMain document", e));
+        private void storeQRMain(String EventID, Bitmap QRCodeMain) {
+            // Store an QRCodeMain with EventID as key
+            // Source: https://firebase.google.com/docs/storage/android/upload-files#java_1
+
+            // set storage reference to QRCodeMain collection with EventID as key
+            this.QRCodeMainRef = this.storageRef.child(this.QRCodeMainRefName + "/" + EventID);
+
+            // write bitmap to output stream
+            QRCodeMain.compress(Bitmap.CompressFormat.PNG, 100, boas);
+            byte[] EventPosterData = boas.toByteArray();
+
+            // upload bitmap to Firebase Storage
+            UploadTask uploadPosterTask = this.QRCodeMainRef.putBytes(EventPosterData);
+            uploadPosterTask
+                    .addOnFailureListener(e -> Log.w("FireStorage", "Error writing QRCodeMain ByteArray"))
+                    .addOnSuccessListener(taskSnapshot -> Log.w("FireStorage", "QRCodeMain successfully written!"));
         }
+
 
         /**
          * Store or update an Events promotional QR code in Firestore Database
-         * @param EventID Unique identifier for QRCode to be accessed
-         * @param QRPromo Bitmap of QRPromo to be stored.
+         * @param EventID Unique identifier for QRCodePromo to be accessed
+         * @param QRCodePromo Bitmap of QRCodePromo to be stored.
          */
-        private void storeQRPromo(String EventID, Bitmap QRPromo) {
-            // Store a QRPromo with EventID as key
-            // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
-            this.QRCodePromoRef.document(EventID).set(QRPromo)
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "QRPromo successfully written!"))
-                    .addOnFailureListener(e -> Log.w("Firestore", "Error writing QRPromo document", e));
+        private void storeQRPromo(String EventID, Bitmap QRCodePromo) {
+            // Store an QRCodePromo with EventID as key
+            // Source: https://firebase.google.com/docs/storage/android/upload-files#java_1
+
+            // set storage reference to QRCodePromo collection with EventID as key
+            this.QRCodePromoRef = this.storageRef.child(this.QRCodePromoRefName + "/" + EventID);
+
+            // write bitmap to output stream
+            QRCodePromo.compress(Bitmap.CompressFormat.PNG, 100, boas);
+            byte[] EventPosterData = boas.toByteArray();
+
+            // upload bitmap to Firebase Storage
+            UploadTask uploadPosterTask = this.QRCodePromoRef.putBytes(EventPosterData);
+            uploadPosterTask
+                    .addOnFailureListener(e -> Log.w("FireStorage", "Error writing QRCodePromo ByteArray"))
+                    .addOnSuccessListener(taskSnapshot -> Log.w("FireStorage", "QRCodePromo successfully written!"));
         }
 
     } // end private class QRCodeDBAccessor
@@ -769,7 +819,10 @@ public class DBAccessor {
     private class UserProfileImageDBAccessor {
 
         // Attributes / Fields
-        private CollectionReference UserProfileImageRef;
+        private StorageReference UserProfileImageRef;
+        private StorageReference storageRef;
+        private String UserProfileImageRefName;
+        private ByteArrayOutputStream boas;
 
         // Constructor
         /**
@@ -777,41 +830,45 @@ public class DBAccessor {
          * Allows access to UserProfileImages stored as Bitmaps in a Firestore Database. <br>
          * Actions permitted: Access(get), Delete, and Store
          */
-        private UserProfileImageDBAccessor(FirebaseFirestore db, String UserProfileImageRefName) {
+        private UserProfileImageDBAccessor(StorageReference storageRef, String UserProfileImageRefName) {
 
             // Access EventPoster collection of Firestore
-            this.UserProfileImageRef = db.collection(UserProfileImageRefName);
+            this.storageRef = storageRef;
+            this.UserProfileImageRefName = UserProfileImageRefName;
+            this.boas = new ByteArrayOutputStream();
         }
 
         // Methods
         /**
          * Get UserProfileImage stored in Firestore Database
          * @param UserID Unique identifier for UserProfileImage to be accessed
-         * @return Bitmap of ProfileImage for User
          */
-        private Bitmap accessUserProfileImage(String UserID) {
-            final Bitmap[] retrievedProfileImage = new Bitmap[1];
+        private void accessUserProfileImage(String UserID, BitmapCallback callback) {
+            // Download a UserProfileImage from Firestore Storage
+            // Source(1): https://firebase.google.com/docs/storage/android/download-files
+            // Source(2): https://chat.openai.com/share/5353b1da-4b10-4b2c-a928-be60d7cbb08c (via Simon Thang)
 
-            // Get a UserProfileImage via UserID
-            // Source: https://firebase.google.com/docs/firestore/query-data/get-data
-            this.UserProfileImageRef.document(UserID).get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-                                retrievedProfileImage[0] = task.getResult().toObject(Bitmap.class);
-                            } else {
-                                Log.d("Firestore", "No such document");
-                                retrievedProfileImage[0] = null;
-                            }
-                        } else {
-                            Log.d("Firestore", "get failed with ", task.getException());
-                            retrievedProfileImage[0] = null;
-                        }
+            // set storage reference to UserProfileImage collection with UserID as key
+            this.UserProfileImageRef = this.storageRef.child(this.UserProfileImageRefName + "/" + UserID);
+
+            // setup getByte limit and return value location
+            final long ONE_MEGABYTE = 1024 * 1024;
+
+            // download bitmap with EventID as key
+            this.UserProfileImageRef.getBytes(ONE_MEGABYTE)
+                    .addOnSuccessListener(bytes -> {
+                        Log.d("FireStorage", "UserProfileImage successfully accessed!");
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            callback.onBitmapLoaded(bitmap);
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.d("FireStorage", "UserProfileImage access failed!");
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            callback.onBitmapFailed(e);
+                        });
                     });
-
-            return retrievedProfileImage[0];
         }
 
         /**
@@ -819,11 +876,16 @@ public class DBAccessor {
          * @param UserID Unique identifier for UserProfileImage to be deleted
          */
         private void deleteUserProfileImage(String UserID) {
-            // Delete a UserProfileImage via UserID
-            // Source: https://firebase.google.com/docs/firestore/manage-data/delete-data
-            this.UserProfileImageRef.document(UserID).delete()
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "UserProfileImage successfully deleted!"))
-                    .addOnFailureListener(e -> Log.w("Firestore", "Error deleting UserProfileImage", e));
+            // Delete an UserProfileImage with UserID as key
+            // Source: https://firebase.google.com/docs/storage/android/delete-files
+
+            // set storage reference to UserProfileImage collection with UserID as key
+            this.UserProfileImageRef = this.storageRef.child(this.UserProfileImageRefName + "/" + UserID);
+
+            // Delete the EventPoster
+            this.UserProfileImageRef.delete()
+                    .addOnFailureListener(e -> Log.w("Firestore", "Error deleting UserProfileImage", e))
+                    .addOnSuccessListener(unused -> Log.d("Firestore", "UserProfileImage successfully deleted!"));
         }
 
         /**
@@ -832,11 +894,21 @@ public class DBAccessor {
          * @param UserProfileImage Bitmap of UserProfileImage to be stored
          */
         private void storeUserProfileImage(String UserID, Bitmap UserProfileImage) {
-            // Store a UserProfileImage with UserID as key
-            // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
-            this.UserProfileImageRef.document(UserID).set(UserProfileImage)
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "UserProfileImage successfully written!"))
-                    .addOnFailureListener(e -> Log.w("Firestore", "Error writing UserProfileImage document", e));
+            // Store an UserProfileImage with UserID as key
+            // Source: https://firebase.google.com/docs/storage/android/upload-files#java_1
+
+            // set storage reference to UserProfileImage collection with UserID as key
+            this.UserProfileImageRef = this.storageRef.child(this.UserProfileImageRefName + "/" + UserID);
+
+            // write bitmap to output stream
+            UserProfileImage.compress(Bitmap.CompressFormat.PNG, 100, boas);
+            byte[] EventPosterData = boas.toByteArray();
+
+            // upload bitmap to Firebase Storage
+            UploadTask uploadPosterTask = this.UserProfileImageRef.putBytes(EventPosterData);
+            uploadPosterTask
+                    .addOnFailureListener(e -> Log.w("FireStorage", "Error writing UserProfileImage ByteArray"))
+                    .addOnSuccessListener(taskSnapshot -> Log.w("FireStorage", "UserProfileImage successfully written!"));
         }
 
     } // end private class UserProfileImageDBAccessor
