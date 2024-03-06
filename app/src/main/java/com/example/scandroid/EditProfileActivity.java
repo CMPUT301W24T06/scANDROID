@@ -1,5 +1,6 @@
 package com.example.scandroid;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -94,7 +95,8 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Handle update button click
                 updateProfile();
-
+                // go back to homepage -> it doesn't change the name displayed yet but will work on that
+                finish();
             }
         });
 
