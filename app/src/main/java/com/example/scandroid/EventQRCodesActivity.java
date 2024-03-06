@@ -90,9 +90,11 @@ public class EventQRCodesActivity extends AppCompatActivity {
         }));
     }
 
+
     /**
      * Method for accessing a QR code from the database
      * and sharing it.
+     * @param QRcode Bitmap of the QR code to be shared
      */
     // Source: https://www.youtube.com/watch?v=_vqWgyuexmY
     private void shareQRCode(Bitmap QRcode) {

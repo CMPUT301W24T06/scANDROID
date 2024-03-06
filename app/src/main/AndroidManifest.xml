@@ -36,6 +36,9 @@
             android:name=".EventAttendeesActivity"
             android:exported="false" />
         <activity
+            android:name=".EventQRCodesActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditProfileActivity"
             android:exported="true" />
         <activity

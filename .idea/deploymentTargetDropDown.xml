@@ -2,10 +2,13 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="BrowseActivity">
+      <entry key="EventAttendeesActivity">
         <State />
       </entry>
-      <entry key="EventAttendeesActivity">
+      <entry key="EventQRCodesActivity">
+        <State />
+      </entry>
+      <entry key="EventViewAnnouncementsActivity">
         <State />
       </entry>
       <entry key="HomepageActivity">
