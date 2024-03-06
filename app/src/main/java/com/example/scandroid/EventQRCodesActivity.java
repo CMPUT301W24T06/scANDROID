@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
+
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -104,14 +105,69 @@ public class EventQRCodesActivity extends AppCompatActivity {
         //shareCheckInQRButton.setOnClickListener(v -> shareCheckInQRCode());
 
         //sharePromoQRButton.setOnClickListener(v -> sharePromoQRCode());
+
+        database.accessQRMain(event.getEventID(), new BitmapCallback() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap) {
+                if (bitmap != null) {
+                    checkInQRCodeImgView.setImageBitmap(bitmap);
+                }
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e) {
+                // bitmap load failure
+            }
+        });
+
+        database.accessQRPromo(event.getEventID(), new BitmapCallback() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap) {
+                if (bitmap != null) {
+                    promoQRCodeImgView.setImageBitmap(bitmap);
+                }
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e) {
+                // bitmap load failure
+            }
+        });
+
+        shareCheckInQRButton.setOnClickListener(v -> database.accessQRMain(event.getEventID(), new BitmapCallback() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap) {
+                if (bitmap != null) {
+                    shareQRCode(bitmap);
+                }
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e) {
+                // bitmap load failure
+            }
+        }));
+        sharePromoQRButton.setOnClickListener(v -> database.accessQRMain(event.getEventID(), new BitmapCallback() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap) {
+                if (bitmap != null) {
+                    shareQRCode(bitmap);
+                }
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e) {
+                // bitmap load failure
+            }
+        }));
     }
 
     /**
-     * Method for accessing the check in QR code from the database
+     * Method for accessing a QR code from the database
      * and sharing it.
      */
     // Source: https://www.youtube.com/watch?v=_vqWgyuexmY
-    private void shareCheckInQRCode() {
+    private void shareQRCode(Bitmap QRcode) {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
@@ -161,6 +217,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
         try {
             FileOutputStream outputStream = new FileOutputStream(f);
             //promoQRCodeImg.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            QRcode.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
             outputStream.flush();
             outputStream.close();
@@ -174,6 +231,6 @@ public class EventQRCodesActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
-        startActivity(Intent.createChooser(shareInt, "Share Promo QR Code"));
+        startActivity(Intent.createChooser(shareInt, "Share QR Code"));
     }
 }
