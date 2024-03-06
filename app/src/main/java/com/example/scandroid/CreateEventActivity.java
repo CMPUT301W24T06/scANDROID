@@ -9,8 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.Manifest;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,11 +16,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 
@@ -34,12 +29,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 
-import java.io.IOException;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+
 
 /**
  * The view for when Users wish to create a new event or edit an existing event's parameters
@@ -83,7 +77,7 @@ public class CreateEventActivity extends AppCompatActivity {
             editEventDate.setText(eventDate);
             String eventTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
             editEventTime.setText(eventTime);
-            editEventLocation.setText(coordinatesToAddress(event.getEventLocation()));
+            editEventLocation.setText(new LocationGeocoder(CreateEventActivity.this).coordinatesToAddress(event.getEventLocation()));
             editEventDescription.setText(event.getEventDescription());
             database.accessEventPoster(event.getEventID(), new BitmapCallback() {
                 @Override
@@ -134,11 +128,17 @@ public class CreateEventActivity extends AppCompatActivity {
             timePickerDialog.show();
         });
 
+        //Update or create a new Event and store in database
         confirmButton.setOnClickListener(v -> {
             String eventName = editEventName.getText().toString();
-            String eventLocation = editEventLocation.getText().toString();
             String eventDescription = editEventDescription.getText().toString();
-            ArrayList<Double> coords = addressToCoordinates(eventLocation);
+            String eventLocation = editEventLocation.getText().toString();
+            ArrayList<Double> coords = new LocationGeocoder(CreateEventActivity.this).addressToCoordinates(eventLocation);
+            if (coords.size() == 0){
+                Toast.makeText(CreateEventActivity.this, "Invalid event location", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             posterBitmap = drawableToBitmap(posterButton.getBackground());
             String eventID;
 
@@ -153,25 +153,9 @@ public class CreateEventActivity extends AppCompatActivity {
                 event.setEventLocation(coords);
             }
 
-            //database.storeEvent(event);
-            //database.storeEventPoster(eventID, posterBitmap);
-            //finish();
-            database.accessEventPoster("2", new BitmapCallback() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap) {
-                    if (bitmap != null) {
-                        Log.d("BitmapInfo", "Width: " + bitmap.getWidth() + ", Height: " + bitmap.getHeight());
-                        BitmapDrawable d = new BitmapDrawable(getResources(), bitmap);
-                        posterButton.setBackground(d);
-                    }else{
-                        Log.d("BitmapInfo", "THERE IS NO BItMAP");
-                    }
-                }
-                @Override
-                public void onBitmapFailed(Exception e) {
-                    Log.e("BitmapInfo", "Bitmap loading failed", e);
-                }
-            });
+            database.storeEvent(event);
+            database.storeEventPoster(eventID, posterBitmap);
+            finish();
         });
 
         backButton.setOnClickListener(v -> finish());
@@ -226,8 +210,6 @@ public class CreateEventActivity extends AppCompatActivity {
         );
     }
 
-
-
     /**
      * Starts an Intent for selecting an image from a user's gallery
      */
@@ -264,46 +246,6 @@ public class CreateEventActivity extends AppCompatActivity {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bitmap;
-    }
-
-    /**
-     * Creates an array holding the latitude and longitude of a location
-     * @param eventLocation String description of the location
-     * @return
-     * Return an array of 2 values, the latitude and longitude
-     */
-    //Source: https://stackoverflow.com/questions/9698328/how-to-get-coordinates-of-an-address-in-android
-    public ArrayList<Double> addressToCoordinates(String eventLocation){
-        Geocoder geocoder = new Geocoder(CreateEventActivity.this, Locale.getDefault());
-        List<Address> addresses;
-        try {
-            addresses = geocoder.getFromLocationName(eventLocation, 1);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        ArrayList<Double> coords = new ArrayList<>();
-        coords.add(addresses.get(0).getLatitude());
-        coords.add(addresses.get(0).getLongitude());
-        return coords;
-    }
-
-    /**
-     * Creates a String describing the location from an array holding a latitude and longitude
-     * @param coordinates An ArrayList holding the latitude and longitude
-     * @return
-     * Returns a String of the location
-     */
-    public String coordinatesToAddress(ArrayList<Double> coordinates){
-        Geocoder geocoder = new Geocoder(CreateEventActivity.this, Locale.getDefault());
-        String eventLocation;
-        try {
-            eventLocation = geocoder.getFromLocation(coordinates.get(0), coordinates.get(1), 1).get(0).getAddressLine(0);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return eventLocation;
     }
 
 }
