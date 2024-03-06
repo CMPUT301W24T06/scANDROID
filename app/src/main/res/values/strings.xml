@@ -71,4 +71,5 @@
     <string name="empty">Empty</string>
     <string name="event_time">Event Time</string>
     <string name="enter_event_date">Enter Event Date</string>
+    <string name="scan_code_text">Scan Code</string>
 </resources>
