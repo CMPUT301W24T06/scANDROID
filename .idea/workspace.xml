@@ -140,16 +140,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49c4a012-67cd-4f5e-a640-6ac57d121d35" name="Changes" comment="navigation between EditProfileActivity and HomepageActivity">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EditEventActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventLocationTrackingActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/scANDROID.app.androidTest.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/scANDROID.app.main.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/app/scANDROID.app.unitTest.iml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/font/poppins.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventCreateAnnouncementActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventCreateAnnouncementActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventMilestonesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventMilestonesActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventQRCodesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventQRCodesActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/event_qr_codes_activity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/event_qr_codes_activity.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/edit_event_activity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/edit_event_activity.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/event_create_announcement_activity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/event_create_announcement_activity.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/event_milestones_activity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/event_milestones_activity.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/preloaded_fonts.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/preloaded_fonts.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -264,8 +265,8 @@
       <recent name="com.example.scandroid" />
     </key>
   </component>
-  <component name="RunManager" selected="Android App.EventViewAnnouncementsActivity">
-    <configuration name="EventAttendeesActivity" type="AndroidRunConfigurationType" factoryName="Android App" temporary="true">
+  <component name="RunManager" selected="Android App.HomepageActivity">
+    <configuration name="EditEventActivity" type="AndroidRunConfigurationType" factoryName="Android App" temporary="true">
       <module name="scANDROID.app.main" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
@@ -325,7 +326,7 @@
         <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
       </Profilers>
       <option name="DEEP_LINK" value="" />
-      <option name="ACTIVITY_CLASS" value="com.example.scandroid.EventAttendeesActivity" />
+      <option name="ACTIVITY_CLASS" value="com.example.scandroid.EditEventActivity" />
       <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
       <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
       <method v="2">
@@ -669,11 +670,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Android App.HomepageActivity" />
+        <item itemvalue="Android App.EditEventActivity" />
         <item itemvalue="Android App.EventViewAnnouncementsActivity" />
         <item itemvalue="Android App.EventQRCodesActivity" />
-        <item itemvalue="Android App.HomepageActivity" />
         <item itemvalue="Android App.QRScannerActivity" />
-        <item itemvalue="Android App.HomepageActivity" />
       </list>
     </recent_temporary>
   </component>

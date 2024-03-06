@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -152,14 +151,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
                 }
             });
 
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(EventQRCodesActivity.this, EditEventActivity.class);
-                    i.putExtra("event", getIntent().getSerializableExtra("event"));
-                    startActivity(i);
-                }
-            });
+            backButton.setOnClickListener(v -> finish());
 
             shareCheckInQRButton.setOnClickListener(v -> database.accessQRMain(event.getEventID(), new BitmapCallback() {
                 @Override
