@@ -176,21 +176,11 @@ public class Event {
     public void setEventDescription(String eventDescription) { this.EventDescription = eventDescription; }
 
     /**
-     * @param latitudeOfEvent Latitude that the Event takes place at.
-     */
-    public void setEventLatitude(Double latitudeOfEvent) { this.EventLocation.set(0, latitudeOfEvent); }
-
-    /**
      * @param locationOfEvent Coordinates that the Event takes place at.
      */
     public void setEventLocation(ArrayList<Double> locationOfEvent) {
         this.EventLocation.set(0, locationOfEvent.get(0));
         this.EventLocation.set(1, locationOfEvent.get(1)); }
-
-    /**
-     * @param longitudeOfEvent Longitude that the Event takes place at.
-     */
-    public void setEventLongitude(Double longitudeOfEvent) { this.EventLocation.set(1, longitudeOfEvent); }
 
     /**
      * @param nameOfEvent Name that the organizer has given the Event.
