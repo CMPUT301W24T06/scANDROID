@@ -1,9 +1,11 @@
 package com.example.scandroid;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -91,6 +93,7 @@ public class HomepageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(HomepageActivity.this, EditProfileActivity.class);
                 startActivity(intent);
+                // Check if there is data passed from EditProfileActivity
             }
         });
 
@@ -101,5 +104,20 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateProfile();
+    }
+
+    private void updateProfile() {
+        // Retrieve the updated user name from SharedPreferences or any other storage mechanism
+        SharedPreferences sharedPreferences = getSharedPreferences("YourPrefs", MODE_PRIVATE);
+        String updatedUserName = sharedPreferences.getString("updatedUserName", "");
+
+        // Update the TextView with the updated user name
+        TextView homepageNameText = findViewById(R.id.homepage_name_text);
+        homepageNameText.setText(updatedUserName);
     }
 }
