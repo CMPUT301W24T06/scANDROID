@@ -1,20 +1,19 @@
 package com.example.scandroid;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,11 +31,13 @@ public class MyEventsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     ArrayAdapter<String> myEventsAdapter;
+    private DBAccessor database;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         super.onCreate(savedInstanceState);
+        database = new DBAccessor();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -48,10 +49,19 @@ public class MyEventsFragment extends Fragment {
                 ArrayList<String> myEvents = user.getEventsOrganized();
                 myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, mParam1);
                 myEventsList.setAdapter(myEventsAdapter);
+
+                myEventsList.setOnItemClickListener((parent, view, position, id) -> {
+                    String event = myEvents.get(position);
+                    database.accessEvent(event, event1 -> {
+                        // Source: https://stackoverflow.com/a/24610673/20869063 Stack Overflow. Answered by Ahmad, Nisar. Downloaded 2024-03-07
+                        Intent i = new Intent(getActivity(), EditEventActivity.class);
+                        i.putExtra("event", (Serializable) event1);
+                        startActivity(i);
+                    });
+                });
             }
         });
     }
-
 
 
     public MyEventsFragment() {
@@ -83,7 +93,6 @@ public class MyEventsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
 
@@ -93,5 +102,4 @@ public class MyEventsFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.my_events_fragment, container, false);
     }
-
 }

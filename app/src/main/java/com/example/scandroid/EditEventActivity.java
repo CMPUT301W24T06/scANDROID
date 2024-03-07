@@ -21,7 +21,7 @@ public class EditEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_event_activity);
 
-        backButton = findViewById(R.id.back_arrow);
+        backButton = findViewById(R.id.back_button);
         eventDetailsPageButton = findViewById(R.id.event_details_button);
         eventAttendeesPageButton = findViewById(R.id.attendees_button);
         eventQRCodePageButton = findViewById(R.id.QR_code_info_button);
@@ -29,17 +29,10 @@ public class EditEventActivity extends AppCompatActivity {
         eventLocationTrackingPageButton = findViewById(R.id.location_tracking_button);
         eventMilestonesPageButton = findViewById(R.id.milestones_button);
 
+        backButton.setOnClickListener(v -> finish());
+
         if (getIntent().getSerializableExtra("event") != null) {
             event = (Event) getIntent().getSerializableExtra("event");
-
-            backButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(EditEventActivity.this, HomepageActivity.class);
-                    i.putExtra("event", getIntent().getSerializableExtra("event"));
-                    startActivity(i);
-                }
-            });
             eventDetailsPageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

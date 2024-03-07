@@ -9,6 +9,6 @@ public class EventLocationTrackingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Event event = (Event)getIntent().getSerializableExtra("event");
+        // Event event = (Event)getIntent().getSerializableExtra("event");
     }
 }
