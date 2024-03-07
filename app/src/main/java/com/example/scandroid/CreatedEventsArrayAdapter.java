@@ -14,14 +14,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+
 import java.util.ArrayList;
 
 public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
-    private String userID;
-    User attendeeUser;
+
     public CreatedEventsArrayAdapter(Context context, ArrayList<String> myEvents, String userID) {
         super(context,0, myEvents);
-        this.userID = userID;
     }
 
     @NonNull
@@ -40,12 +39,9 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
         String eventID = getItem(position);
         assert eventID != null;
         DBAccessor database = new DBAccessor();
-        database.accessEvent(eventID, new EventCallback() {
-            @Override
-            public void onEventReceived(Event event) {
-                String eventName = event.getEventName();
-                eventNameText.setText(eventName);
-            }
+        database.accessEvent(eventID, event -> {
+            String eventName = event.getEventName();
+            eventNameText.setText(eventName);
         });
 
         database.accessEventPoster(eventID, new BitmapCallback() {
@@ -59,7 +55,6 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
                 Toast.makeText(view.getContext(), "Failed to retrieve event poster", Toast.LENGTH_SHORT).show();
             }
         });
-
         return view;
     }
 }

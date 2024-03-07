@@ -1,6 +1,7 @@
 package com.example.scandroid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,11 +11,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,8 +32,8 @@ public class MyEventsFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String userID;
+    private String userType;
     ArrayAdapter<String> myEventsAdapter;
 
     @Override
@@ -38,16 +41,52 @@ public class MyEventsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            userID = getArguments().getString(ARG_PARAM1);
+            userType = getArguments().getString(ARG_PARAM2);
         }
         ListView myEventsList = view.findViewById(R.id.my_events_list);
-        new DBAccessor().accessUser(mParam1, new UserCallback() {
-            @Override
-            public void onUserRetrieved(User user) {
+        new DBAccessor().accessUser(userID, user -> {
+            if (Objects.equals(userType, "organizer")) {
                 ArrayList<String> myEvents = user.getEventsOrganized();
-                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, mParam1);
+                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
                 myEventsList.setAdapter(myEventsAdapter);
+            }
+            else if (Objects.equals(userType, "attendee")){
+                ArrayList<String> myEvents = user.getEventsAttending();
+                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
+                myEventsList.setAdapter(myEventsAdapter);
+            }
+        });
+
+        myEventsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (Objects.equals(userType, "organizer")){
+                    String eventID = myEventsAdapter.getItem(position);
+                    Intent editEventIntent = new Intent(view.getContext(), CreateEventActivity.class);
+                    editEventIntent.putExtra("eventID", eventID);
+                    startActivity(editEventIntent);
+                } else {
+                    String eventID = myEventsAdapter.getItem(position);
+                    Intent viewEventIntent = new Intent(view.getContext(), EventInfoActivity.class);
+                    viewEventIntent.putExtra("eventID", eventID);
+                    startActivity(viewEventIntent);
+                }
+                //Retrieve the new information about the lists
+                new DBAccessor().accessUser(userID, user -> {
+                    if (Objects.equals(userType, "organizer")) {
+                        ArrayList<String> myEvents = user.getEventsOrganized();
+                        myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
+                        myEventsList.setAdapter(myEventsAdapter);
+                    }
+                    else if (Objects.equals(userType, "attendee")){
+                        ArrayList<String> myEvents = user.getEventsAttending();
+                        myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
+                        myEventsList.setAdapter(myEventsAdapter);
+                    }
+                    //Update the adapter
+                    myEventsAdapter.notifyDataSetChanged();
+                });
             }
         });
     }
@@ -80,8 +119,8 @@ public class MyEventsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            userID = getArguments().getString(ARG_PARAM1);
+            userType = getArguments().getString(ARG_PARAM2);
         }
 
     }
