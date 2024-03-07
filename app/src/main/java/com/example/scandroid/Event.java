@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -29,7 +31,7 @@ public class Event implements Serializable {
      * ------------------- */
     private ArrayList<CheckIn> EventAttendeeList;
     private ArrayList<EventAnnouncement> EventAnnouncementList;
-    private static String EventID;
+    private String EventID;
     private Calendar EventDate;
     private String EventDescription;
     private ArrayList<Double> EventLocation;
@@ -73,12 +75,13 @@ public class Event implements Serializable {
      * Solution provided by ChatGPT via Simon Thang. <br>
      * {@see <a href="https://chat.openai.com/share/e135f2dc-cd2f-47ca-b48e-55115d41e6bf"> ChatGPT Conversation </a>}
      */
-    private Event() {
+    public Event() {
         this.EventLocation = new ArrayList<>(2); // Ensure initial capacity
         this.EventLocation.add(0.0); // Initial latitude
         this.EventLocation.add(0.0); // Initial longitude
+        this.EventMilestoneList = new ArrayList<>();
+        this.MilestoneSeries = new ArrayList<>(Arrays.asList(1, 1));
     }
-
 
     /* ------- *
      * METHODS *
@@ -131,8 +134,13 @@ public class Event implements Serializable {
 
         // Extract data from the DocumentSnapshot
         event.EventID = snapshot.getString("eventID");
+        event.EventOrganizerID = snapshot.getString("eventOrganizerID");
         event.EventName = snapshot.getString("eventName");
         event.EventDescription = snapshot.getString("eventDescription");
+        //TODO Properly deserialize these attributes when retrieving them from firebase
+        event.EventMilestoneList = new ArrayList<>();
+        event.MilestoneSeries = new ArrayList<>(Arrays.asList(1, 1));
+        event.EventAttendeeList = new ArrayList<>();
 
         // ... extract other fields accordingly
         // Convert Firestore Timestamp to Date
@@ -166,7 +174,33 @@ public class Event implements Serializable {
             event.EventLocation.add(eventLocationMap.get("latitude"));
             event.EventLocation.add(eventLocationMap.get("longitude"));
         }
+        //TODO these Event attributes may also have to be deserialized
+// Extract EventAttendeeList
+        List<Map<String, Object>> attendeeListMap = (List<Map<String, Object>>) snapshot.get("eventAttendeeList");
+        if (attendeeListMap != null) {
+            for (Map<String, Object> checkInMap : attendeeListMap) {
+                String userID = (String) checkInMap.get("userID");
+                // Extract other details as needed
+                // ...
+                // You may need to convert Time and ArrayList<Double> from the checkInMap
+                // using similar logic as you did in the original code
+                //event.addEventAttendee(userID, checkInTime, checkInLocation);
+            }
+        }
 
+        // Extract EventAnnouncements
+        List<Map<String, Object>> announcementListMap = (List<Map<String, Object>>) snapshot.get("eventAnnouncements");
+        if (announcementListMap != null) {
+            for (Map<String, Object> announcementMap : announcementListMap) {
+                // Extract details from announcementMap and create EventAnnouncement objects
+                // ...
+                // You may need to convert timestamp and other fields
+                String announcementTitle = (String) announcementMap.get("announcementTitle");
+                String announcementAbout = (String) announcementMap.get("announcementAbout");
+                //Time announcementTime = ...; // Convert timestamp or other relevant field
+                //event.addEventAnnouncement(announcementTitle, announcementAbout, announcementTime);
+            }
+        }
         return event;
 
     } // end of fromSnapshot

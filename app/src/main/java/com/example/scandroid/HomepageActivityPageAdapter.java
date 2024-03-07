@@ -18,9 +18,10 @@ public class HomepageActivityPageAdapter extends FragmentStateAdapter {
         switch (position){
             case 0:
                 new MyEventsFragment();
-                return MyEventsFragment.newInstance(userID, "b");
+                return MyEventsFragment.newInstance(userID,"organizer");
             case 1:
-                return new AttendingEventsFragment();
+                new MyEventsFragment();
+                return MyEventsFragment.newInstance(userID, "attendee");
             default:
                 return null;
         }

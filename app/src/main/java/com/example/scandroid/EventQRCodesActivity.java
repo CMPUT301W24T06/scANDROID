@@ -33,7 +33,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
     AppCompatButton shareCheckInQRButton;
     AppCompatButton sharePromoQRButton;
 
-    private void generatePromoQR(String eventID, DBAccessor dbAccessor){
+    public void generatePromoQR(String eventID, DBAccessor dbAccessor){
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
             BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE,650,650);

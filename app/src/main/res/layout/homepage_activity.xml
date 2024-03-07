@@ -28,7 +28,7 @@
                 android:id="@+id/profile_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 android:layout_gravity="center"
                 android:src="@drawable/guest_default_image">
             </ImageView>
@@ -52,7 +52,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold"></androidx.appcompat.widget.AppCompatButton>
+            android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/create_event_button"
@@ -71,7 +71,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold"></androidx.appcompat.widget.AppCompatButton>
+            android:textStyle="bold" />
 
         <View
             android:id="@+id/homepage_profile_line"
@@ -82,7 +82,8 @@
             android:layout_marginStart="11dp"
             android:layout_marginTop="63dp"
             android:layout_marginEnd="13dp"
-            android:background="@color/white"></View>
+            android:background="@color/white" />
+
 
         <TextView
             android:id="@+id/homepage_name_text"
@@ -94,7 +95,7 @@
             android:text="@string/guest_text"
             android:textColor="@color/white"
             android:textSize="40sp"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold" />
     </RelativeLayout>
 
     <com.google.android.material.tabs.TabLayout
