@@ -37,11 +37,7 @@ public class Event {
     private ArrayList<Integer> MilestoneSeries;
     private String EventName;
     private String EventOrganizerID;
-    public Event(){
-        this.EventLocation = new ArrayList<>(2); // Ensure initial capacity
-        this.EventLocation.add(0.0); // Initial latitude
-        this.EventLocation.add(0.0); // Initial longitude
-    }
+
 
     /* ----------- *
      * CONSTRUCTOR *
@@ -71,6 +67,17 @@ public class Event {
         this.EventOrganizerID = eventOrganizerID;
         this.addEventMilestone();   // adds first milestone of threshold of one attendee check-in
    }
+
+    /**
+     * Necessary empty constructor for Event.fromSnapshot method. <br>
+     * Solution provided by ChatGPT via Simon Thang. <br>
+     * {@see <a href="https://chat.openai.com/share/e135f2dc-cd2f-47ca-b48e-55115d41e6bf"> ChatGPT Conversation </a>}
+     */
+    private Event() {
+        this.EventLocation = new ArrayList<>(2); // Ensure initial capacity
+        this.EventLocation.add(0.0); // Initial latitude
+        this.EventLocation.add(0.0); // Initial longitude
+    }
 
 
     /* ------- *
@@ -110,16 +117,28 @@ public class Event {
         this.MilestoneSeries.set(0, pastGreatest);
         this.MilestoneSeries.set(1, nextGreatest);                                      // i.e. [2,3] becomes [3,5]
     }
+
+    /**
+     * Extracts necessary data from snapshot to create an instance of Event. <br>
+     * Solution provided by ChatGPT via Simon Thang. <br>
+     * {@see <a href="https://chat.openai.com/share/e135f2dc-cd2f-47ca-b48e-55115d41e6bf"> ChatGPT Conversation </a>}
+     * @param snapshot Document read from Firestore database with Event.accessEvent() data.
+     * @return Event object with appropriate attributes
+     */
     public static Event fromSnapshot(DocumentSnapshot snapshot) {
+        // initialize return Event
         Event event = new Event();
+
         // Extract data from the DocumentSnapshot
         event.EventID = snapshot.getString("eventID");
         event.EventName = snapshot.getString("eventName");
         event.EventDescription = snapshot.getString("eventDescription");
+
         // ... extract other fields accordingly
         // Convert Firestore Timestamp to Date
         Log.d("Firestore", "Type of eventDate: " + snapshot.get("eventDate").getClass().getName());
         HashMap<String, Object> dateMap = (HashMap<String, Object>) snapshot.get("eventDate");
+
         if (dateMap != null) {
             Timestamp timeInMillis = (Timestamp) dateMap.get("time");
             if (timeInMillis != null) {
@@ -130,6 +149,7 @@ public class Event {
         }
         Log.d("Firestore", "Type of eventLocation: " + snapshot.get("eventLocation").getClass().getName());
         Object eventLocationObject = snapshot.get("eventLocation");
+
         if (eventLocationObject instanceof GeoPoint) {
             // Case 1: eventLocation is a GeoPoint
             GeoPoint geoPoint = (GeoPoint) eventLocationObject;
@@ -148,7 +168,8 @@ public class Event {
         }
 
         return event;
-    }
+
+    } // end of fromSnapshot
 
 
     /* ------- *
