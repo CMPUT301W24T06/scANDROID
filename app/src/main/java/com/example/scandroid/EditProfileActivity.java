@@ -1,23 +1,25 @@
 package com.example.scandroid;
 
-import android.app.Activity;
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
@@ -25,11 +27,14 @@ import java.util.Map;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    private EditText nameEditText, emailEditText, phoneEditText, aboutMeEditText, homepageNameText;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
+    private EditText nameEditText, emailEditText, phoneEditText, aboutMeEditText;
     private CheckBox pushNotificationCheckBox;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String userId;
+    private String userID;
+    private User currentUser;
     private static final int PICK_IMAGE_REQUEST = 1;
+
     private String profilePictureURL;
     private Uri selectedImageUri;
 
@@ -42,11 +47,11 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_profile_activity); // Replace with the actual layout file name
         // Get the unique device ID
-        String deviceId = CheckInScreenActivity.getDeviceId(this);
+        String deviceId = new DeviceIDRetriever(this).getDeviceId();
 
         // Now you can use the deviceId as needed in your application
         Toast.makeText(this, "Device ID: " + deviceId, Toast.LENGTH_SHORT).show();
-        userId = deviceId;
+        userID = deviceId;
 
         // Initialize views
         nameEditText = findViewById(R.id.nameEditText);
@@ -54,49 +59,63 @@ public class EditProfileActivity extends AppCompatActivity {
         phoneEditText = findViewById(R.id.phoneEditText);
         aboutMeEditText = findViewById(R.id.aboutMeEditText);
         pushNotificationCheckBox = findViewById(R.id.pushNotificationCheckBox);
-        profilePictureURL = "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg";
+        ImageView profileImageView = findViewById(R.id.image_inside_card);
 
-
-        // Retrieve existing details (replace with your data retrieval logic)
-        //String existingName = "John Doe"; // Replace with your actual logic
-        //String existingEmail = "john.doe@example.com";
-        //String existingPhone = "123-456-7890";
-        //String existingAboutMe = "I love programming and exploring new technologies. ayo what the heck just checking whay atoaysdyasdyadw";
-        //boolean existingReceiveNotifications = true;
-
-
-        // Retrieve current user data
-        db.collection("Users").document(userId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        User currentUser = documentSnapshot.toObject(User.class);
-
-
-                        // Now you can use the currentUser object to populate your UI components
-                        nameEditText.setText(currentUser.getUserName());
-                        phoneEditText.setText(currentUser.getUserPhoneNumber());
-                        emailEditText.setText(currentUser.getUserEmail());
-                        aboutMeEditText.setText(currentUser.getUserAboutMe());
-                        //pushNotificationCheckBox.setChecked(currentUser.getNotifiedBy());
-                        // ... other fields
-                    } else {
-                        // Handle the case where the user document does not exist
+        DBAccessor database = new DBAccessor();
+        database.accessUser(userID, new UserCallback() {
+            @Override
+            public void onUserRetrieved(User user) {
+                nameEditText.setText(user.getUserName());
+                phoneEditText.setText(user.getUserPhoneNumber());
+                emailEditText.setText(user.getUserEmail());
+                aboutMeEditText.setText(user.getUserAboutMe());
+                database.accessUserProfileImage(userID, new BitmapCallback() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap) {
+                        profileImageView.setImageBitmap(bitmap);
                     }
-                })
-                .addOnFailureListener(e -> {
-                    // Handle the failure, e.g., show an error message
+
+                    @Override
+                    public void onBitmapFailed(Exception e) {
+                        Toast.makeText(EditProfileActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
+                    }
                 });
 
+                currentUser = user;
+
+            }
+        });
+        if (currentUser == null) {
+            currentUser = new User();
+            currentUser.setUserID(userID);
+        }
 
         Button updateButton = findViewById(R.id.updateButton);
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Handle update button click
-                updateProfile();
+                //updateProfile(currentUser);
+                String name = nameEditText.getText().toString();
+                String email = emailEditText.getText().toString();
+                String phone = phoneEditText.getText().toString();
+                String aboutMe = aboutMeEditText.getText().toString();
+                boolean receiveNotifications = pushNotificationCheckBox.isChecked();
+                ImageView profileImageView = findViewById(R.id.image_inside_card);
+                Bitmap profilePicBitmap = new BitmapConfigurator().drawableToBitmap(profileImageView.getDrawable());
+                DBAccessor database = new DBAccessor();
+                currentUser.setUserName(name);
+                currentUser.setUserEmail(email);
+                currentUser.setUserPhoneNumber(phone);
+                currentUser.setUserAboutMe(aboutMe);
+                database.storeUser(currentUser);
+                database.storeUserProfileImage(userID, profilePicBitmap);
+                finish();
             }
         });
+
+        Button backButton = findViewById(R.id.back_arrow);
+        backButton.setOnClickListener(v -> finish());
 
         Button changePictureButton = findViewById(R.id.changePictureTextView);
         changePictureButton.setOnClickListener(new View.OnClickListener() {
@@ -140,25 +159,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
 
-        db.collection("Users").document(userId)
-                .update(updatedUserData)
-                .addOnSuccessListener(aVoid -> {
-                    nameEditText.setText(name);
-                    // Save the updated user name in SharedPreferences
-                    SharedPreferences sharedPreferences = getSharedPreferences("namePref", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("updatedUserName", name);
-                    editor.apply();
-                    finish();
-
-
-                    // Handle the success, e.g., show a toast or navigate to another activity
-                })
-                .addOnFailureListener(e -> {
-                    // Handle the failure, e.g., show an error message
-                });
-
-
     }   //
     public void changeProfilePicture(View view) {
         // Call the method to open the gallery or camera
@@ -183,6 +183,29 @@ public class EditProfileActivity extends AppCompatActivity {
             CardView cardView = findViewById(R.id.edit_profile_image);
             ImageView profileImageView = findViewById(R.id.image_inside_card);
             profileImageView.setImageURI(selectedImageUri);
+        }
+    }
+
+    /**
+     * Requests user for permission for app to access their files
+     */
+    //Source: https://stackoverflow.com/questions/39866869/how-to-ask-permission-to-access-gallery-on-android-m
+    private void requestStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        } else {
+            openGallery();
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                Toast.makeText(this, "Permission denied. Cannot pick image.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

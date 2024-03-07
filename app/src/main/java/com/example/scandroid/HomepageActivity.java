@@ -2,9 +2,13 @@ package com.example.scandroid;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,25 +35,43 @@ public class HomepageActivity extends AppCompatActivity {
     AppCompatButton createEventButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String userId;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage_activity);
         displayWelcomeFragment();
+        userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
 
         navigationBar = findViewById(R.id.navigation_bar);
         navigationBar.setSelectedItemId(R.id.home_button);
 
         homepageTabs = findViewById(R.id.homepage_tabs);
         homepagePager = findViewById(R.id.homepage_pager);
-        homepageActivityPageAdapter = new HomepageActivityPageAdapter(this);
+        homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
         homepagePager.setAdapter(homepageActivityPageAdapter);
 
         editProfileButton = findViewById(R.id.edit_profile_button);
         createEventButton = findViewById(R.id.create_event_button);
 
-        userId = CheckInScreenActivity.getDeviceId(this);
+        TextView profileName = findViewById(R.id.homepage_name_text);
+        ImageView profilePicture = findViewById(R.id.profile_image);
+        DBAccessor database = new DBAccessor();
+        database.accessUser(userID, user -> {
+            profileName.setText(user.getUserName());
+            database.accessUserProfileImage(userID, new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    profilePicture.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
 
         homepageTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -96,26 +118,43 @@ public class HomepageActivity extends AppCompatActivity {
             }
         });
 
-        editProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomepageActivity.this, EditProfileActivity.class);
-                startActivity(intent);
-            }
+        editProfileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(HomepageActivity.this, EditProfileActivity.class);
+            String userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
+            intent.putExtra("userID", userID);
+            startActivity(intent);
         });
 
-        createEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomepageActivity.this, CreateEventActivity.class);
-                startActivity(intent);
-            }
+        createEventButton.setOnClickListener(v -> {
+            Intent intent = new Intent(HomepageActivity.this, CreateEventActivity.class);
+            startActivity(intent);
         });
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        updateProfile();
+        TextView profileName = findViewById(R.id.homepage_name_text);
+        ImageView profilePicture = findViewById(R.id.profile_image);
+        DBAccessor database = new DBAccessor();
+        String userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
+        database.accessUser(userID, user -> {
+            profileName.setText(user.getUserName());
+            database.accessUserProfileImage(userID, new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    profilePicture.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+
+
     }
 
     private void updateProfile() {
@@ -157,7 +196,7 @@ public class HomepageActivity extends AppCompatActivity {
     }
     private void updateNameInFirebase(String newName) {
         // Update the user's name in Firebase
-        db.collection("Users").document(userId)
+        db.collection("Users").document(userID)
                 .update("userName", newName);
     }
 

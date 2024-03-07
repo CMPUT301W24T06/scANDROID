@@ -324,15 +324,15 @@ public class DBAccessor {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-                                Event retrievedEvent = task.getResult().toObject(Event.class);
-                                callback.onEventRetrieved(retrievedEvent);
+                                Event retrievedEvent = Event.fromSnapshot(document);
+                                callback.onEventReceived(retrievedEvent);
                             } else {
                                 Log.d("Firestore", "No such document");
-                                callback.onEventRetrieved(null);
+                                callback.onEventReceived(null);
                             }
                         } else {
                             Log.d("Firestore", "get failed with ", task.getException());
-                            callback.onEventRetrieved(null);
+                            callback.onEventReceived(null);
                         }
                     });
         }

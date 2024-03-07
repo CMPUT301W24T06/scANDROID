@@ -6,8 +6,10 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class HomepageActivityPageAdapter extends FragmentStateAdapter {
-    public HomepageActivityPageAdapter(@NonNull FragmentActivity fragmentActivity) {
+    String userID;
+    public HomepageActivityPageAdapter(@NonNull FragmentActivity fragmentActivity, String userID) {
         super(fragmentActivity);
+        this.userID = userID;
     }
 
     @NonNull
@@ -15,7 +17,8 @@ public class HomepageActivityPageAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position){
             case 0:
-                return new MyEventsFragment();
+                new MyEventsFragment();
+                return MyEventsFragment.newInstance(userID, "b");
             case 1:
                 return new AttendingEventsFragment();
             default:

@@ -5,18 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 /**
  * Displays a User's profile when an organizer selects an attendee from the list of users attending their event
  */
 public class ProfileInfoActivity extends AppCompatActivity {
-
+    User currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,13 +30,18 @@ public class ProfileInfoActivity extends AppCompatActivity {
         Event.CheckIn attendeeCheckIn = (Event.CheckIn) getIntent().getSerializableExtra("attendee");
         String eventID = getIntent().getStringExtra("eventID");
         DBAccessor database = new DBAccessor();
-        User user = database.accessUser(attendeeCheckIn.getUserID());
-        profileNameText.setText(user.getUserName());
-        profileEmailText.setText(user.getUserEmail());
-        profilePhoneText.setText(user.getUserPhoneNumber());
-        profileCountText.setText(user.getTimesAttended(eventID));
+        database.accessUser(attendeeCheckIn.getUserID(), new UserCallback() {
+            @Override
+            public void onUserRetrieved(User user) {
+                currentUser = user;
+            }
+        });
+        profileNameText.setText(currentUser.getUserName());
+        profileEmailText.setText(currentUser.getUserEmail());
+        profilePhoneText.setText(currentUser.getUserPhoneNumber());
+        profileCountText.setText(currentUser.getTimesAttended(eventID));
         profileCheckInText.setText((CharSequence) attendeeCheckIn.getCheckInTime());
-        database.accessUserProfileImage(user.getUserID(), new BitmapCallback() {
+        database.accessUserProfileImage(currentUser.getUserID(), new BitmapCallback() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap) {
                 profilePicture.setImageBitmap(bitmap);

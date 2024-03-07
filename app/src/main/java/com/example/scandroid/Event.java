@@ -1,11 +1,19 @@
 package com.example.scandroid;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -29,7 +37,11 @@ public class Event {
     private ArrayList<Integer> MilestoneSeries;
     private String EventName;
     private String EventOrganizerID;
-
+    public Event(){
+        this.EventLocation = new ArrayList<>(2); // Ensure initial capacity
+        this.EventLocation.add(0.0); // Initial latitude
+        this.EventLocation.add(0.0); // Initial longitude
+    }
 
     /* ----------- *
      * CONSTRUCTOR *
@@ -58,7 +70,7 @@ public class Event {
         this.EventName = eventName;
         this.EventOrganizerID = eventOrganizerID;
         this.addEventMilestone();   // adds first milestone of threshold of one attendee check-in
-    }
+   }
 
 
     /* ------- *
@@ -97,6 +109,45 @@ public class Event {
         int nextGreatest = this.MilestoneSeries.get(0) + this.MilestoneSeries.get(1);   // next milestone threshold
         this.MilestoneSeries.set(0, pastGreatest);
         this.MilestoneSeries.set(1, nextGreatest);                                      // i.e. [2,3] becomes [3,5]
+    }
+    public static Event fromSnapshot(DocumentSnapshot snapshot) {
+        Event event = new Event();
+        // Extract data from the DocumentSnapshot
+        event.EventID = snapshot.getString("eventID");
+        event.EventName = snapshot.getString("eventName");
+        event.EventDescription = snapshot.getString("eventDescription");
+        // ... extract other fields accordingly
+        // Convert Firestore Timestamp to Date
+        Log.d("Firestore", "Type of eventDate: " + snapshot.get("eventDate").getClass().getName());
+        HashMap<String, Object> dateMap = (HashMap<String, Object>) snapshot.get("eventDate");
+        if (dateMap != null) {
+            Timestamp timeInMillis = (Timestamp) dateMap.get("time");
+            if (timeInMillis != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(timeInMillis.toDate().getTime());
+                event.setEventDate(calendar);
+            }
+        }
+        Log.d("Firestore", "Type of eventLocation: " + snapshot.get("eventLocation").getClass().getName());
+        Object eventLocationObject = snapshot.get("eventLocation");
+        if (eventLocationObject instanceof GeoPoint) {
+            // Case 1: eventLocation is a GeoPoint
+            GeoPoint geoPoint = (GeoPoint) eventLocationObject;
+            event.EventLocation = new ArrayList<>(2);
+            event.EventLocation.add(geoPoint.getLatitude());
+            event.EventLocation.add(geoPoint.getLongitude());
+        } else if (eventLocationObject instanceof ArrayList) {
+            // Case 2: eventLocation is an ArrayList
+            event.EventLocation = (ArrayList<Double>) eventLocationObject;
+        } else if (eventLocationObject instanceof HashMap) {
+            // Case 3: eventLocation is a map
+            HashMap<String, Double> eventLocationMap = (HashMap<String, Double>) eventLocationObject;
+            event.EventLocation = new ArrayList<>(2);
+            event.EventLocation.add(eventLocationMap.get("latitude"));
+            event.EventLocation.add(eventLocationMap.get("longitude"));
+        }
+
+        return event;
     }
 
 

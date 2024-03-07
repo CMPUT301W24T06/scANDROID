@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MyEventsFragment">
 
-    <TextView
+    <ListView
+        android:id="@+id/my_events_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="My Events">
-    </TextView>
+        android:layout_height="752dp"
+        android:layout_marginTop="12dp"
+        android:outlineProvider="background"
+        android:textAlignment="center" />
 
 </FrameLayout>
