@@ -36,7 +36,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
     public void generatePromoQR(String eventID, DBAccessor dbAccessor){
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
-            BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE,650,650);
+            BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE,promoQRCodeImgView.getWidth(),promoQRCodeImgView.getHeight());
             BarcodeEncoder encoder = new BarcodeEncoder();
             Bitmap bitmap = encoder.createBitmap(matrix);
 
@@ -52,7 +52,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
     public void generateCheckInQR(String eventID, DBAccessor dbAccessor){
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
-            BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE,650,650);
+            BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE,checkInQRCodeImgView.getWidth(),checkInQRCodeImgView.getHeight());
             BarcodeEncoder encoder = new BarcodeEncoder();
             Bitmap bitmap = encoder.createBitmap(matrix);
 

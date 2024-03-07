@@ -36,6 +36,7 @@ public class HomepageActivity extends AppCompatActivity {
 
     AppCompatButton editProfileButton;
     AppCompatButton createEventButton;
+    ImageView profilePicture;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String userId;
     String userID;
@@ -47,7 +48,7 @@ public class HomepageActivity extends AppCompatActivity {
         setContentView(R.layout.homepage_activity);
         userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
         DBAccessor database = new DBAccessor();
-        displayWelcomeFragment();//Only here for now for testing
+       // displayWelcomeFragment();//Only here for now for testing
         database.accessUser(userID, user -> {
             currentUser = user;
             if (currentUser == null) {
@@ -58,7 +59,7 @@ public class HomepageActivity extends AppCompatActivity {
                 String userEmail = ""; // Set the user's email
                 User newUser = new User(userID, userName, userPhoneNumber, userAboutMe, userEmail);
                 database.storeUser(newUser); // Add the user to Firestore
-                //displayWelcomeFragment(); Only show welcome asking for name if first time user
+                displayWelcomeFragment(); //Only show welcome asking for name if first time user
             }
         });
 
@@ -75,7 +76,7 @@ public class HomepageActivity extends AppCompatActivity {
         createEventButton = findViewById(R.id.create_event_button);
 
         TextView profileName = findViewById(R.id.homepage_name_text);
-        ImageView profilePicture = findViewById(R.id.profile_image);
+        profilePicture = findViewById(R.id.profile_image);
         database.accessUser(userID, user -> {
             database.accessUserProfileImage(userID, new BitmapCallback() {
                 @Override
@@ -154,7 +155,6 @@ public class HomepageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         TextView profileName = findViewById(R.id.homepage_name_text);
-        ImageView profilePicture = findViewById(R.id.profile_image);
         DBAccessor database = new DBAccessor();
         String userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
         database.accessUser(userID, user -> {
