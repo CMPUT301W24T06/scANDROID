@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,6 +44,16 @@ public class CheckInScreenActivity extends AppCompatActivity {
 
         // Add the user to Firestore
         addUserToFirestore(newUser);
+
+        Button checkInButton = findViewById(R.id.check_in_button);
+        checkInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Handle check-in button click
+                Intent intent = new Intent(CheckInScreenActivity.this, HomepageActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public static String getDeviceId(Context context) {
