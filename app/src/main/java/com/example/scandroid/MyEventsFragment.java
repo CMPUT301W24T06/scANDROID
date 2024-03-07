@@ -58,36 +58,33 @@ public class MyEventsFragment extends Fragment {
             }
         });
 
-        myEventsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (Objects.equals(userType, "organizer")){
-                    String eventID = myEventsAdapter.getItem(position);
-                    Intent editEventIntent = new Intent(view.getContext(), CreateEventActivity.class);
-                    editEventIntent.putExtra("eventID", eventID);
-                    startActivity(editEventIntent);
-                } else {
-                    String eventID = myEventsAdapter.getItem(position);
-                    Intent viewEventIntent = new Intent(view.getContext(), EventInfoActivity.class);
-                    viewEventIntent.putExtra("eventID", eventID);
-                    startActivity(viewEventIntent);
-                }
-                //Retrieve the new information about the lists
-                new DBAccessor().accessUser(userID, user -> {
-                    if (Objects.equals(userType, "organizer")) {
-                        ArrayList<String> myEvents = user.getEventsOrganized();
-                        myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
-                        myEventsList.setAdapter(myEventsAdapter);
-                    }
-                    else if (Objects.equals(userType, "attendee")){
-                        ArrayList<String> myEvents = user.getEventsAttending();
-                        myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
-                        myEventsList.setAdapter(myEventsAdapter);
-                    }
-                    //Update the adapter
-                    myEventsAdapter.notifyDataSetChanged();
-                });
+        myEventsList.setOnItemClickListener((parent, view1, position, id) -> {
+            if (Objects.equals(userType, "organizer")){
+                String eventID = myEventsAdapter.getItem(position);
+                Intent editEventIntent = new Intent(view1.getContext(), CreateEventActivity.class);
+                editEventIntent.putExtra("eventID", eventID);
+                startActivity(editEventIntent);
+            } else {
+                String eventID = myEventsAdapter.getItem(position);
+                Intent viewEventIntent = new Intent(view1.getContext(), EventInfoActivity.class);
+                viewEventIntent.putExtra("eventID", eventID);
+                startActivity(viewEventIntent);
             }
+            //Retrieve the new information about the lists
+            new DBAccessor().accessUser(userID, user -> {
+                if (Objects.equals(userType, "organizer")) {
+                    ArrayList<String> myEvents = user.getEventsOrganized();
+                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
+                    myEventsList.setAdapter(myEventsAdapter);
+                }
+                else if (Objects.equals(userType, "attendee")){
+                    ArrayList<String> myEvents = user.getEventsAttending();
+                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
+                    myEventsList.setAdapter(myEventsAdapter);
+                }
+                //Update the adapter
+                myEventsAdapter.notifyDataSetChanged();
+            });
         });
     }
 

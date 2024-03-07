@@ -82,9 +82,6 @@ public class Event implements Serializable {
         this.EventMilestoneList = new ArrayList<>();
         this.MilestoneSeries = new ArrayList<>(Arrays.asList(1, 1));
     }
-    public void setEventID(String eventID){
-        EventID = eventID;
-    }
 
     /* ------- *
      * METHODS *
@@ -136,7 +133,7 @@ public class Event implements Serializable {
         Event event = new Event();
 
         // Extract data from the DocumentSnapshot
-        event.setEventID(snapshot.getString("eventID"));
+        event.EventID = snapshot.getString("eventID");
         event.EventOrganizerID = snapshot.getString("eventOrganizerID");
         event.EventName = snapshot.getString("eventName");
         event.EventDescription = snapshot.getString("eventDescription");
