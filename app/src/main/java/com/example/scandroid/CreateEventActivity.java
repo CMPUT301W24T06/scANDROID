@@ -65,10 +65,14 @@ public class CreateEventActivity extends AppCompatActivity {
 
         //Calendar calendar;
         //Fills in event details if this Activity was accessed by clicking on an existing event
-        eventID = getIntent().getStringExtra("eventID");
-        if (eventID != null) {
+        //eventID = getIntent().getStringExtra("eventID");
+        event = (Event)getIntent().getSerializableExtra("event");
+
+        //if (eventID != null) {
+        if (event != null){
             newEvent = false;
-            database.accessEvent(getIntent().getStringExtra("eventID"), retrievedEvent -> {
+            eventID = event.getEventID();
+            database.accessEvent(eventID, retrievedEvent -> {
                 event = retrievedEvent;
                 editEventName.setText(event.getEventName());
                 calendar = event.getEventDate();
@@ -142,19 +146,17 @@ public class CreateEventActivity extends AppCompatActivity {
 
             posterBitmap = drawableToBitmap(posterButton.getBackground());
 
-            //If this was a new event, create new Event object, new QR code and store those
+            //If this was a new event, create new Event object, new QR codes and store those
             if (newEvent) {
                 event = new Event(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(),
                         eventName, eventDescription, calendar, coords);
                 eventID = event.getEventID();
-                //new QRCoder().generateCheckInQR(eventID, database);
+                new EventQRCodesActivity().generateCheckInQR(eventID, database);
+                new EventQRCodesActivity().generatePromoQR(eventID, database);
 
-                database.accessUser(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(), new UserCallback() {
-                    @Override
-                    public void onUserRetrieved(User user) {
-                        user.addEventToEventsOrganized(eventID);
-                        database.storeUser(user);
-                    }
+                database.accessUser(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(), user -> {
+                    user.addEventToEventsOrganized(eventID);
+                    database.storeUser(user);
                 });
             } else { // Updating an old event
                 event.setEventDate(calendar);

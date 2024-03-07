@@ -1,15 +1,11 @@
 package com.example.scandroid;
 
-<<<<<<<<< Temporary merge branch 1
-=========
-import android.content.Context;
->>>>>>>>> Temporary merge branch 2
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -19,11 +15,8 @@ import androidx.fragment.app.Fragment;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-<<<<<<<<< Temporary merge branch 1
-=========
-import java.util.List;
 import java.util.Objects;
->>>>>>>>> Temporary merge branch 2
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,23 +51,7 @@ public class MyEventsFragment extends Fragment {
                 ArrayList<String> myEvents = user.getEventsOrganized();
                 myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
                 myEventsList.setAdapter(myEventsAdapter);
-            }
-            else if (Objects.equals(userType, "attendee")){
-                ArrayList<String> myEvents = user.getEventsAttending();
-                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
-                myEventsList.setAdapter(myEventsAdapter);
-
-                myEventsList.setOnItemClickListener((parent, view, position, id) -> {
-                    String event = myEvents.get(position);
-                    database.accessEvent(event, event1 -> {
-                        // Source: https://stackoverflow.com/a/24610673/20869063 Stack Overflow. Answered by Ahmad, Nisar. Downloaded 2024-03-07
-                        Intent i = new Intent(getActivity(), EditEventActivity.class);
-                        i.putExtra("event", (Serializable) event1);
-                        startActivity(i);
-                    });
-                });
-            }
-            else if (Objects.equals(userType, "attendee")){
+            } else if (Objects.equals(userType, "attendee")){
                 ArrayList<String> myEvents = user.getEventsAttending();
                 myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
                 myEventsList.setAdapter(myEventsAdapter);
@@ -82,13 +59,15 @@ public class MyEventsFragment extends Fragment {
         });
 
         myEventsList.setOnItemClickListener((parent, view1, position, id) -> {
+            String eventID = myEventsAdapter.getItem(position);
             if (Objects.equals(userType, "organizer")){
-                String eventID = myEventsAdapter.getItem(position);
-                Intent editEventIntent = new Intent(view1.getContext(), CreateEventActivity.class);
-                editEventIntent.putExtra("eventID", eventID);
-                startActivity(editEventIntent);
+                database.accessEvent(eventID, event -> {
+                    // Source: https://stackoverflow.com/a/24610673/20869063 Stack Overflow. Answered by Ahmad, Nisar. Downloaded 2024-03-07
+                    Intent i = new Intent(getActivity(), EditEventActivity.class);
+                    i.putExtra("event", (Serializable) event);
+                    startActivity(i);
+                });
             } else {
-                String eventID = myEventsAdapter.getItem(position);
                 Intent viewEventIntent = new Intent(view1.getContext(), EventInfoActivity.class);
                 viewEventIntent.putExtra("eventID", eventID);
                 startActivity(viewEventIntent);
@@ -144,7 +123,6 @@ public class MyEventsFragment extends Fragment {
         }
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
