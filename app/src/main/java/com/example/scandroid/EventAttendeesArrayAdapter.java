@@ -15,7 +15,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 
 public class EventAttendeesArrayAdapter extends ArrayAdapter<Event.CheckIn> {
     private String currentEventID;
+    User attendeeUser;
     public EventAttendeesArrayAdapter(Context context, ArrayList<Event.CheckIn> attendees, String eventID) {
         super(context,0, attendees);
         currentEventID = eventID;
@@ -44,12 +44,17 @@ public class EventAttendeesArrayAdapter extends ArrayAdapter<Event.CheckIn> {
         assert attendeeCheckIn != null;
         String userID = attendeeCheckIn.getUserID();
         DBAccessor database = new DBAccessor();
-        User attendeeUser = database.accessUser(userID);
+        database.accessUser(userID, new UserCallback() {
+            @Override
+            public void onUserRetrieved(User user) {
+                attendeeUser = user;
+            }
+        });
 
         TextView checkInTime = view.findViewById(R.id.event_attendees_list_checkin_time);
         TextView attendCount = view.findViewById(R.id.event_attendees_list_attendance_count);
-        TextView attendeeName = view.findViewById(R.id.event_attendees_list_attendee_name);
-        ImageView profilePicture = view.findViewById(R.id.event_attendees_list_profile_picture);
+        TextView attendeeName = view.findViewById(R.id.my_events_content_name);
+        ImageView profilePicture = view.findViewById(R.id.my_events_content_poster);
 
         String checkInTimeText = "Check-in Time: " + attendeeCheckIn.getCheckInTime();
         checkInTime.setText(checkInTimeText);

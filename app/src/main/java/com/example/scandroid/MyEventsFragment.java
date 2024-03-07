@@ -1,12 +1,20 @@
 package com.example.scandroid;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +31,28 @@ public class MyEventsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    ArrayAdapter<String> myEventsAdapter;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+        ListView myEventsList = view.findViewById(R.id.my_events_list);
+        new DBAccessor().accessUser(mParam1, new UserCallback() {
+            @Override
+            public void onUserRetrieved(User user) {
+                ArrayList<String> myEvents = user.getEventsOrganized();
+                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, mParam1);
+                myEventsList.setAdapter(myEventsAdapter);
+            }
+        });
+    }
+
+
 
     public MyEventsFragment() {
         // Required empty public constructor
@@ -53,7 +83,9 @@ public class MyEventsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,4 +93,5 @@ public class MyEventsFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.my_events_fragment, container, false);
     }
+
 }
