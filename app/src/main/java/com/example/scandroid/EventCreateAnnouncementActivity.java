@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 public class EventCreateAnnouncementActivity extends AppCompatActivity {
-    //incomplete, deal with editing the time later
+    // incomplete, deal with editing the time later
     AppCompatButton backButton;
     EditText editNotificationTitle;
     EditText editNotificationInfo;

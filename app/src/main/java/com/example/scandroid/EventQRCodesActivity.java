@@ -33,19 +33,15 @@ public class EventQRCodesActivity extends AppCompatActivity {
     AppCompatButton shareCheckInQRButton;
     AppCompatButton sharePromoQRButton;
 
-    Bitmap imgCheckIn;
-    Bitmap imgPromo;
-
-    private Bitmap generatePromoQR(String eventID, DBAccessor dbAccessor){
+    private void generatePromoQR(String eventID, DBAccessor dbAccessor){
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
             BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE,650,650);
             BarcodeEncoder encoder = new BarcodeEncoder();
             Bitmap bitmap = encoder.createBitmap(matrix);
 
-            promoQRCodeImgView.setImageBitmap(bitmap);
             dbAccessor.storeQRPromo(eventID,bitmap);
-            return bitmap;
+
         } catch (WriterException e) {
             throw new RuntimeException(e);
         }
@@ -53,19 +49,47 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
     //TODO - what do we want encoded in the QR code for check ins?
     // IMPORTANT - most of the work for the QR codes is actually done after you click the button, 'scan'
-    public Bitmap generateCheckInQR(String eventID, DBAccessor dbAccessor){
+    public void generateCheckInQR(String eventID, DBAccessor dbAccessor){
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
             BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE,650,650);
             BarcodeEncoder encoder = new BarcodeEncoder();
             Bitmap bitmap = encoder.createBitmap(matrix);
 
-            checkInQRCodeImgView.setImageBitmap(bitmap);
-            dbAccessor.storeQRPromo(eventID,bitmap);
-            return bitmap;
+            dbAccessor.storeQRMain(eventID,bitmap);
+
         } catch (WriterException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void checkForCheckInQR(String eventID, DBAccessor database) {
+        database.accessQRMain(eventID, new BitmapCallback() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap) {
+                // do not generate a QR code
+            }
+            @Override
+            public void onBitmapFailed(Exception e) {
+                generateCheckInQR(eventID, database);
+                checkForCheckInQR(eventID, database);
+
+            }
+        });
+    }
+
+    public void checkForPromoQR(String eventID, DBAccessor database) {
+        database.accessQRPromo(eventID, new BitmapCallback() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap) {
+                // do not generate a QR code
+            }
+            @Override
+            public void onBitmapFailed(Exception e) {
+                generatePromoQR(eventID, database);
+                checkForPromoQR(eventID, database);
+            }
+        });
     }
 
     /**
@@ -80,7 +104,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
         event = (Event) getIntent().getSerializableExtra("event");
         database = new DBAccessor();
 
-        File f = new File(getExternalCacheDir() + "/" + getResources().getString(R.string.app_name) + ".png");
+        File f = new File(getExternalCacheDir() + "/" + getResources().getString(R.string.app_name)+ "QRcode" + ".png");
         Intent shareInt;
 
         try {
@@ -112,16 +136,16 @@ public class EventQRCodesActivity extends AppCompatActivity {
         shareCheckInQRButton = findViewById(R.id.share_check_in_qr_button);
         sharePromoQRButton = findViewById(R.id.share_promo_qr_button);
 
+        backButton.setOnClickListener(v -> finish());
 
         event = (Event)getIntent().getSerializableExtra("event");
         database = new DBAccessor();
 
         if (event != null){
             String eventID = event.getEventID();
-            String eventName = event.getEventName();
 
-            imgCheckIn = generateCheckInQR(eventID,database);
-            imgPromo = generatePromoQR(eventName,database);
+            checkForCheckInQR(eventID,database);
+            checkForPromoQR(eventID,database);
 
             database.accessQRMain(event.getEventID(), new BitmapCallback() {
                 @Override
@@ -150,8 +174,6 @@ public class EventQRCodesActivity extends AppCompatActivity {
                     // bitmap load failure
                 }
             });
-
-            backButton.setOnClickListener(v -> finish());
 
             shareCheckInQRButton.setOnClickListener(v -> database.accessQRMain(event.getEventID(), new BitmapCallback() {
                 @Override
