@@ -3,13 +3,11 @@ package com.example.scandroid;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.Manifest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -23,10 +21,8 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 
 
@@ -39,7 +35,8 @@ import java.util.Calendar;
  * The view for when Users wish to create a new event or edit an existing event's parameters
  */
 public class CreateEventActivity extends AppCompatActivity {
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+//    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+
     ActivityResultLauncher<Intent> launcher;
     Button posterButton;
     Bitmap posterBitmap;
@@ -104,7 +101,9 @@ public class CreateEventActivity extends AppCompatActivity {
             qrNote.setVisibility(View.INVISIBLE);
         }
 
-        posterButton.setOnClickListener(v -> requestStoragePermission());
+//        posterButton.setOnClickListener(v -> requestStoragePermission());
+
+        posterButton.setOnClickListener(v -> pickImage());
 
         //Source: https://www.geeksforgeeks.org/datepicker-in-android/
         //User edits the event's date
@@ -176,26 +175,25 @@ public class CreateEventActivity extends AppCompatActivity {
      * Requests user for permission for app to access their files
      */
     //Source: https://stackoverflow.com/questions/39866869/how-to-ask-permission-to-access-gallery-on-android-m
-    private void requestStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        } else {
-            pickImage();
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                pickImage();
-            } else {
-                Toast.makeText(this, "Permission denied. Cannot pick image.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
+//    private void requestStoragePermission() {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//        } else {
+//            pickImage();
+//        }
+//    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                pickImage();
+//            } else {
+//                Toast.makeText(this, "Permission denied. Cannot pick image.", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
     /**
      * Retrieves the image user selected from their gallery
@@ -225,8 +223,13 @@ public class CreateEventActivity extends AppCompatActivity {
      * Starts an Intent for selecting an image from a user's gallery
      */
     //Source: https://www.youtube.com/watch?v=nOtlFl1aUCw
+//    private void pickImage(){
+//        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        launcher.launch(intent);
+//    }
+
     private void pickImage(){
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
         launcher.launch(intent);
     }
 
