@@ -36,13 +36,27 @@ public class HomepageActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String userId;
     String userID;
+    User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage_activity);
-        displayWelcomeFragment();
         userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
+        String userName = ""; // Set the user's name
+        String userPhoneNumber = ""; // Set the user's phone number
+        String userAboutMe = ""; // Set the user's about me information
+        String userEmail = ""; // Set the user's email
+        DBAccessor database = new DBAccessor();
+        database.accessUser(userID, user -> {
+            currentUser = user;
+            if (currentUser == null) {
+                //Create a new User object
+                User newUser = new User(userId, userName, userPhoneNumber, userAboutMe, userEmail);
+                database.storeUser(newUser); // Add the user to Firestore
+                displayWelcomeFragment();
+            }
+        });
 
         navigationBar = findViewById(R.id.navigation_bar);
         navigationBar.setSelectedItemId(R.id.home_button);
@@ -57,9 +71,8 @@ public class HomepageActivity extends AppCompatActivity {
 
         TextView profileName = findViewById(R.id.homepage_name_text);
         ImageView profilePicture = findViewById(R.id.profile_image);
-        DBAccessor database = new DBAccessor();
         database.accessUser(userID, user -> {
-            profileName.setText(user.getUserName());
+
             database.accessUserProfileImage(userID, new BitmapCallback() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
@@ -71,6 +84,7 @@ public class HomepageActivity extends AppCompatActivity {
                     Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
                 }
             });
+            profileName.setText(user.getUserName());
         });
 
         homepageTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -187,7 +201,7 @@ public class HomepageActivity extends AppCompatActivity {
         // Handle "Enter" button click
         // Close the fragment and set the entered name as the activity name
         updateActivityName(enteredName);
-        updateNameInFirebase(enteredName);
+        currentUser.setUserName(enteredName);
 
     }
     private void updateActivityName(String newName) {
