@@ -93,12 +93,12 @@ public class DBAccessor {
      * METHODS : ACCESS[document] *
      * -------------------------- */
     /**
-     * {@link EventDBAccessor#accessEvent(String)}
+     * {@link EventDBAccessor#accessEvent(String, EventCallback)}
      * @param EventID Unique identifier for Event to be accessed
-     * @return Event that matches EventID if exists in Firestore Database
+     * @param callback Handle the asynchronous nature of the Firestore get operation.
      */
-    public Event accessEvent(String EventID) {
-        return this.EventDB.accessEvent(EventID);
+    public void accessEvent(String EventID, EventCallback callback) {
+        this.EventDB.accessEvent(EventID, callback);
     }
 
     /**
@@ -134,12 +134,12 @@ public class DBAccessor {
     }
 
     /**
-     * {@link UserDBAccessor#accessUser(String)}
+     * {@link UserDBAccessor#accessUser(String, UserCallback)}
      * @param UserID Unique identifier for User to be accessed
-     * @return User that matches UserID if exists in Firestore Database
+     * @param callback Handle the asynchronous nature of the Firestore get operation.
      */
-    public User accessUser(String UserID) {
-        return this.UserDB.accessUser(UserID);
+    public void accessUser(String UserID, UserCallback callback) {
+        this.UserDB.accessUser(UserID, callback);
     }
 
     /**
@@ -314,31 +314,27 @@ public class DBAccessor {
         /**
          * Get Event stored in Firestore Database
          * @param EventID Unique identifier for Event to be accessed
-         * @return Event that matches EventID if exists in Firestore Database
          */
-        private Event accessEvent(String EventID) {
-            final Event[] retrievedEvent = new Event[1];
-
+        private void accessEvent(String EventID, EventCallback callback) {
             // Get an Event via EventID
-            // Source: https://firebase.google.com/docs/firestore/query-data/get-data
+            // Source: https://chat.openai.com/share/e135f2dc-cd2f-47ca-b48e-55115d41e6bf
             this.EventRef.document(EventID).get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-                                retrievedEvent[0] = task.getResult().toObject(Event.class);
+                                Event retrievedEvent = task.getResult().toObject(Event.class);
+                                callback.onEventRetrieved(retrievedEvent);
                             } else {
                                 Log.d("Firestore", "No such document");
-                                retrievedEvent[0] = null;
+                                callback.onEventRetrieved(null);
                             }
                         } else {
                             Log.d("Firestore", "get failed with ", task.getException());
-                            retrievedEvent[0] = null;
+                            callback.onEventRetrieved(null);
                         }
                     });
-
-            return retrievedEvent[0];
         }
 
         /**
@@ -758,31 +754,31 @@ public class DBAccessor {
         /**
          * Get User stored in Firestore Database
          * @param UserID Unique identifier for User
-         * @return User that matches UserID if exists in Firestore Database
          */
-        private User accessUser(String UserID) {
-            final User[] retrievedUser = new User[1];
+        private void accessUser(String UserID, UserCallback callback) {
+//            final User[] retrievedUser = new User[1];
 
             // Get a User via UserID
-            // Source: https://firebase.google.com/docs/firestore/query-data/get-data
+            // Source: https://chat.openai.com/share/e135f2dc-cd2f-47ca-b48e-55115d41e6bf
             this.UserRef.document(UserID).get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-                                retrievedUser[0] = task.getResult().toObject(User.class);
+                                User retrievedUser = task.getResult().toObject(User.class);
+                                callback.onUserRetrieved(retrievedUser);
                             } else {
                                 Log.d("Firestore", "No such document");
-                                retrievedUser[0] = null;
+                                callback.onUserRetrieved(null);
                             }
                         } else {
                             Log.d("Firestore", "get failed with ", task.getException());
-                            retrievedUser[0] = null;
+                            callback.onUserRetrieved(null);
                         }
                     });
 
-            return retrievedUser[0];
+//            return retrievedUser[0];
         }
 
         /**
