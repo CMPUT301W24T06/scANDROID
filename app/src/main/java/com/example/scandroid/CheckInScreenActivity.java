@@ -30,25 +30,6 @@ public class CheckInScreenActivity extends AppCompatActivity {
         backgroundImageView.setBackgroundResource(R.drawable.check_in_image);
         Button checkInButton = findViewById(R.id.check_in_button);
 
-        // Obtain the necessary user information
-        String userId = new DeviceIDRetriever(CheckInScreenActivity.this).getDeviceId();
-        String userName = ""; // Set the user's name
-        String userPhoneNumber = ""; // Set the user's phone number
-        String userAboutMe = ""; // Set the user's about me information
-        String userEmail = ""; // Set the user's email
-
-        DBAccessor database = new DBAccessor();
-        database.accessUser(userId, user -> {
-            currentUser = user;
-            if (currentUser == null) {
-                //Create a new User object
-                User newUser = new User(userId, userName, userPhoneNumber, userAboutMe, userEmail);
-                database.storeUser(newUser); // Add the user to Firestore
-            }
-        });
-        // Create a new User object
-        User newUser = new User(userId, userName, userPhoneNumber, userAboutMe, userEmail);
-
         checkInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
