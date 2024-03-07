@@ -142,7 +142,6 @@
     <list default="true" id="49c4a012-67cd-4f5e-a640-6ac57d121d35" name="Changes" comment="navigation between EditProfileActivity and HomepageActivity">
       <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventAttendeesArrayAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventAttendeesArrayAdapter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

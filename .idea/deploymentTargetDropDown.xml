@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="CheckInScreenActivity">
+        <State />
+      </entry>
       <entry key="EditEventActivity">
         <State />
       </entry>
@@ -12,9 +15,6 @@
         <State />
       </entry>
       <entry key="HomepageActivity">
-        <State />
-      </entry>
-      <entry key="QRScannerActivity">
         <State />
       </entry>
       <entry key="app">
