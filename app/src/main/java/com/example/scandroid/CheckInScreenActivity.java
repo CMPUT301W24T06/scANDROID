@@ -1,12 +1,16 @@
 package com.example.scandroid;
 
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import android.content.Intent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+
+import android.widget.Button;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -14,38 +18,37 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class CheckInScreenActivity extends AppCompatActivity {
-    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-
-    //
-    ImageView backgroundImageView; // declare the ImageView
+    User currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_in_screen_activity);
         ImageView backgroundImageView = findViewById(R.id.check_in_image);
         backgroundImageView.setBackgroundResource(R.drawable.check_in_image);
+        Button checkInButton = findViewById(R.id.check_in_button);
 
         // Obtain the necessary user information
-        String userId = getDeviceId(this); // You might want to use a more robust method to generate a user ID
+        String userId = new DeviceIDRetriever(CheckInScreenActivity.this).getDeviceId();
         String userName = ""; // Set the user's name
         String userPhoneNumber = ""; // Set the user's phone number
         String userAboutMe = ""; // Set the user's about me information
         String userEmail = ""; // Set the user's email
 
+        DBAccessor database = new DBAccessor();
+        database.accessUser(userId, user -> {
+            currentUser = user;
+            if (currentUser == null) {
+                //Create a new User object
+                User newUser = new User(userId, userName, userPhoneNumber, userAboutMe, userEmail);
+                database.storeUser(newUser); // Add the user to Firestore
+            }
+        });
         // Create a new User object
         User newUser = new User(userId, userName, userPhoneNumber, userAboutMe, userEmail);
 
-        // Add the user to Firestore
-        addUserToFirestore(newUser);
-
-        Button checkInButton = findViewById(R.id.check_in_button);
         checkInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,32 +59,4 @@ public class CheckInScreenActivity extends AppCompatActivity {
         });
     }
 
-    public static String getDeviceId(Context context) {
-        // Use Settings.Secure.ANDROID_ID for a unique device identifier
-        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-    }
-
-    public static void addUserToFirestore(User user) {
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        CollectionReference usersCollection = firestore.collection("Users");
-
-        usersCollection
-                .document(user.getUserID()) // Use the user's ID as the document ID
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // User added successfully
-                        Log.d("FirebaseUtils", "User added to Firestore");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Handle the failure
-                        Log.e("FirebaseUtils", "Error adding user to Firestore", e);
-                    }
-                });
-
-    }
 }

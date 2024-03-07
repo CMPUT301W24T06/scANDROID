@@ -143,7 +143,8 @@ public class CreateEventActivity extends AppCompatActivity {
             String eventID;
 
             if (newEvent) {
-                event = new Event("Organizer ID", eventName, eventDescription, calendar, coords);
+                event = new Event(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(),
+                        eventName, eventDescription, calendar, coords);
                 eventID = event.getEventID();
             } else {
                 eventID = event.getEventID();
@@ -152,6 +153,13 @@ public class CreateEventActivity extends AppCompatActivity {
                 event.setEventDescription(eventDescription);
                 event.setEventLocation(coords);
             }
+            database.accessUser(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(), new UserCallback() {
+                @Override
+                public void onUserRetrieved(User user) {
+                    user.addEventToEventsOrganized(eventID);
+                    database.storeUser(user);
+                }
+            });
 
             database.storeEvent(event);
             database.storeEventPoster(eventID, posterBitmap);
