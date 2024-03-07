@@ -8,11 +8,11 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,7 @@ import java.util.UUID;
  * Events are stored via an EventDB object.
  * @author Jordan Beaubien & Moyo Dawodu
  */
-public class Event {
+public class Event implements Serializable {
 
     /* ------------------- *
      * ATTRIBUTES / FIELDS *
@@ -55,7 +55,7 @@ public class Event {
      * @param eventLocation    Geographical coordinates of Event {latitude, longitude}
      */
     public Event(@NonNull String eventOrganizerID, @NonNull String eventName, String eventDescription,
-            @NonNull Calendar eventDate, ArrayList<Double> eventLocation) {
+                 @NonNull Calendar eventDate, ArrayList<Double> eventLocation) {
 
         EventID = UUID.randomUUID().toString(); // unique identifier for database key
         this.EventAttendeeList = new ArrayList<>();
@@ -68,7 +68,7 @@ public class Event {
         this.EventName = eventName;
         this.EventOrganizerID = eventOrganizerID;
         this.addEventMilestone();   // adds first milestone of threshold of one attendee check-in
-   }
+    }
 
     /**
      * Necessary empty constructor for Event.fromSnapshot method. <br>
@@ -304,7 +304,7 @@ public class Event {
      * Represents an Attendee of the Event. <br>
      * Organizers use a list of CheckIn's when viewing Users attending their Event.
      */
-    public static class CheckIn {
+    public static class CheckIn implements Serializable {
         private String UserID;
         private Time CheckInTime;
         private ArrayList<Double> CheckInLocation;
@@ -350,7 +350,7 @@ public class Event {
      * Announcements are created by the creator of the Event. <br>
      * Attendees see Announcements for Events they attend if desired.
      */
-    public class EventAnnouncement {
+    public class EventAnnouncement implements Serializable {
         private String AnnouncementAbout;
         private String AnnouncementOrganizerID;
         private Time AnnouncementTime;
@@ -407,7 +407,7 @@ public class Event {
      * Organizers see Milestones that have been met by the Event. <br>
      * Milestones are automatically created upon meeting highest milestone and follow fibonacci sequence. <br>
      */
-    public static class EventMilestone {
+    public static class EventMilestone implements Serializable {
         private static Integer Threshold;
 
         /**
@@ -429,7 +429,6 @@ public class Event {
     } // end public static class EventMilestone
 
 } // end public class Event
-
 
 
 
