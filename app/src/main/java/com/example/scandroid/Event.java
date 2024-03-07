@@ -53,7 +53,7 @@ public class Event implements Serializable {
      * @param eventLocation    Geographical coordinates of Event {latitude, longitude}
      */
     public Event(@NonNull String eventOrganizerID, @NonNull String eventName, String eventDescription,
-            @NonNull Calendar eventDate, ArrayList<Double> eventLocation) {
+                 @NonNull Calendar eventDate, ArrayList<Double> eventLocation) {
 
         EventID = UUID.randomUUID().toString(); // unique identifier for database key
         this.EventAttendeeList = new ArrayList<>();
@@ -66,7 +66,7 @@ public class Event implements Serializable {
         this.EventName = eventName;
         this.EventOrganizerID = eventOrganizerID;
         this.addEventMilestone();   // adds first milestone of threshold of one attendee check-in
-   }
+    }
 
     /**
      * Necessary empty constructor for Event.fromSnapshot method. <br>
@@ -392,7 +392,6 @@ public class Event implements Serializable {
     } // end public static class EventMilestone
 
 } // end public class Event
-
 
 
 
