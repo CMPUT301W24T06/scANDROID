@@ -10,11 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
@@ -26,11 +29,14 @@ public class HomepageActivity extends AppCompatActivity {
 
     AppCompatButton editProfileButton;
     AppCompatButton createEventButton;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage_activity);
+        displayWelcomeFragment();
 
         navigationBar = findViewById(R.id.navigation_bar);
         navigationBar.setSelectedItemId(R.id.home_button);
@@ -42,6 +48,8 @@ public class HomepageActivity extends AppCompatActivity {
 
         editProfileButton = findViewById(R.id.edit_profile_button);
         createEventButton = findViewById(R.id.create_event_button);
+
+        userId = CheckInScreenActivity.getDeviceId(this);
 
         homepageTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -93,7 +101,6 @@ public class HomepageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(HomepageActivity.this, EditProfileActivity.class);
                 startActivity(intent);
-                // Check if there is data passed from EditProfileActivity
             }
         });
 
@@ -113,11 +120,46 @@ public class HomepageActivity extends AppCompatActivity {
 
     private void updateProfile() {
         // Retrieve the updated user name from SharedPreferences or any other storage mechanism
-        SharedPreferences sharedPreferences = getSharedPreferences("YourPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("namePref", MODE_PRIVATE);
         String updatedUserName = sharedPreferences.getString("updatedUserName", "");
 
         // Update the TextView with the updated user name
         TextView homepageNameText = findViewById(R.id.homepage_name_text);
         homepageNameText.setText(updatedUserName);
     }
+
+    private void displayWelcomeFragment() {
+        // Create an instance of the WelcomeFragment
+        WelcomeFragment welcomeFragment = new WelcomeFragment();
+
+        // Use a FragmentTransaction to add the fragment to the layout
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(android.R.id.content, welcomeFragment);
+        transaction.commit();
+    }
+    public void onMaybeLaterClicked(String randomName) {
+        // Handle "Maybe Later" button click
+        // Close the fragment and set the generated random name as the activity name
+        updateActivityName(randomName);
+        updateNameInFirebase(randomName);
+    }
+
+    public void onEnterClicked(String enteredName) {
+        // Handle "Enter" button click
+        // Close the fragment and set the entered name as the activity name
+        updateActivityName(enteredName);
+        updateNameInFirebase(enteredName);
+
+    }
+    private void updateActivityName(String newName) {
+        TextView homepageNameText = findViewById(R.id.homepage_name_text);
+        homepageNameText.setText(newName);
+    }
+    private void updateNameInFirebase(String newName) {
+        // Update the user's name in Firebase
+        db.collection("Users").document(userId)
+                .update("userName", newName);
+    }
+
+
 }

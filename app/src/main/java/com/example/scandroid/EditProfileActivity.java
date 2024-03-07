@@ -28,9 +28,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText nameEditText, emailEditText, phoneEditText, aboutMeEditText, homepageNameText;
     private CheckBox pushNotificationCheckBox;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String userId;  // Replace with the actual user ID
+    private String userId;
     private static final int PICK_IMAGE_REQUEST = 1;
-
     private String profilePictureURL;
     private Uri selectedImageUri;
 
@@ -146,7 +145,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     nameEditText.setText(name);
                     // Save the updated user name in SharedPreferences
-                    SharedPreferences sharedPreferences = getSharedPreferences("YourPrefs", MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = getSharedPreferences("namePref", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("updatedUserName", name);
                     editor.apply();
