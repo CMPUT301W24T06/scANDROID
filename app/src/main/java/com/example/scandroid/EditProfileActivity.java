@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -20,16 +21,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends AppCompatActivity implements AllowAccessCameraRollFragment.OnImageChangedListener{
 
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private EditText nameEditText, emailEditText, phoneEditText, aboutMeEditText;
     private CheckBox pushNotificationCheckBox;
+    private ImageView profileImageView;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String userID;
     private User currentUser;
@@ -47,11 +50,7 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_profile_activity); // Replace with the actual layout file name
         // Get the unique device ID
-        String deviceId = new DeviceIDRetriever(this).getDeviceId();
-
-        // Now you can use the deviceId as needed in your application
-        Toast.makeText(this, "Device ID: " + deviceId, Toast.LENGTH_SHORT).show();
-        userID = deviceId;
+        userID = new DeviceIDRetriever(this).getDeviceId();
 
         // Initialize views
         nameEditText = findViewById(R.id.nameEditText);
@@ -59,31 +58,28 @@ public class EditProfileActivity extends AppCompatActivity {
         phoneEditText = findViewById(R.id.phoneEditText);
         aboutMeEditText = findViewById(R.id.aboutMeEditText);
         pushNotificationCheckBox = findViewById(R.id.pushNotificationCheckBox);
-        ImageView profileImageView = findViewById(R.id.image_inside_card);
+        profileImageView = findViewById(R.id.image_inside_card);
 
         DBAccessor database = new DBAccessor();
-        database.accessUser(userID, new UserCallback() {
-            @Override
-            public void onUserRetrieved(User user) {
-                nameEditText.setText(user.getUserName());
-                phoneEditText.setText(user.getUserPhoneNumber());
-                emailEditText.setText(user.getUserEmail());
-                aboutMeEditText.setText(user.getUserAboutMe());
-                database.accessUserProfileImage(userID, new BitmapCallback() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap) {
-                        profileImageView.setImageBitmap(bitmap);
-                    }
+        database.accessUser(userID, user -> {
+            nameEditText.setText(user.getUserName());
+            phoneEditText.setText(user.getUserPhoneNumber());
+            emailEditText.setText(user.getUserEmail());
+            aboutMeEditText.setText(user.getUserAboutMe());
+            database.accessUserProfileImage(userID, new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    profileImageView.setImageBitmap(bitmap);
+                }
 
-                    @Override
-                    public void onBitmapFailed(Exception e) {
-                        Toast.makeText(EditProfileActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    Toast.makeText(EditProfileActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
+                }
+            });
 
-                currentUser = user;
+            currentUser = user;
 
-            }
         });
         if (currentUser == null) {
             currentUser = new User();
@@ -91,27 +87,22 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         Button updateButton = findViewById(R.id.updateButton);
-        updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Handle update button click
-                //updateProfile(currentUser);
-                String name = nameEditText.getText().toString();
-                String email = emailEditText.getText().toString();
-                String phone = phoneEditText.getText().toString();
-                String aboutMe = aboutMeEditText.getText().toString();
-                boolean receiveNotifications = pushNotificationCheckBox.isChecked();
-                ImageView profileImageView = findViewById(R.id.image_inside_card);
-                Bitmap profilePicBitmap = new BitmapConfigurator().drawableToBitmap(profileImageView.getDrawable());
-                DBAccessor database = new DBAccessor();
-                currentUser.setUserName(name);
-                currentUser.setUserEmail(email);
-                currentUser.setUserPhoneNumber(phone);
-                currentUser.setUserAboutMe(aboutMe);
-                database.storeUser(currentUser);
-                database.storeUserProfileImage(userID, profilePicBitmap);
-                finish();
-            }
+        updateButton.setOnClickListener(view -> {
+            //updateProfile(currentUser);
+            String name = nameEditText.getText().toString();
+            String email = emailEditText.getText().toString();
+            String phone = phoneEditText.getText().toString();
+            String aboutMe = aboutMeEditText.getText().toString();
+            boolean receiveNotifications = pushNotificationCheckBox.isChecked();
+            Bitmap profilePicBitmap = new BitmapConfigurator().drawableToBitmap(profileImageView.getDrawable());
+            DBAccessor database1 = new DBAccessor();
+            currentUser.setUserName(name);
+            currentUser.setUserEmail(email);
+            currentUser.setUserPhoneNumber(phone);
+            currentUser.setUserAboutMe(aboutMe);
+            database1.storeUser(currentUser);
+            database1.storeUserProfileImage(userID, profilePicBitmap);
+            finish();
         });
 
         Button backButton = findViewById(R.id.back_arrow);
@@ -121,9 +112,13 @@ public class EditProfileActivity extends AppCompatActivity {
         changePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Call the method to open the gallery or camera
-                //openGallery();
-                requestStoragePermission();
+                AllowAccessCameraRollFragment chooseImageFragment = AllowAccessCameraRollFragment.newInstance(userID);
+                chooseImageFragment.setImageChangedListener(EditProfileActivity.this);
+                // Use a FragmentTransaction to add the fragment to the layout
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.add(android.R.id.content, chooseImageFragment);
+                transaction.commit();
+
             }
         });
 
@@ -135,6 +130,33 @@ public class EditProfileActivity extends AppCompatActivity {
                 showAdminKeyFragment();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DBAccessor database = new DBAccessor();
+        database.accessUser(userID, user -> {
+            nameEditText.setText(user.getUserName());
+            phoneEditText.setText(user.getUserPhoneNumber());
+            emailEditText.setText(user.getUserEmail());
+            aboutMeEditText.setText(user.getUserAboutMe());
+            database.accessUserProfileImage(userID, new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    profileImageView.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    Toast.makeText(EditProfileActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            currentUser = user;
+
+        });
+
     }
 
     private void updateProfile() {
@@ -217,6 +239,17 @@ public class EditProfileActivity extends AppCompatActivity {
         AdminKeyFragment adminKeyFragment = new AdminKeyFragment();
         adminKeyFragment.show(getSupportFragmentManager(), "AdminKeyFragment");
     }
+
+    /**
+     * Allows for communication of the change in profile picture between EditProfileActivity and AllowAccessCameraRollFragment
+     * @param newBitmap The new bitmap profile picture
+     */
+    @Override
+    public void onImageChanged(Bitmap newBitmap) {
+        Log.d("AllowAccessCameraRollFragment", "onImageChanged is called");
+        profileImageView.setImageBitmap(newBitmap);
+    }
 }
+
 
 
