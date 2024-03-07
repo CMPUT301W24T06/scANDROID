@@ -44,7 +44,9 @@ public class CreateEventActivity extends AppCompatActivity {
     Button posterButton;
     Bitmap posterBitmap;
     Boolean newEvent = true;
+    String eventID;
     Event event;
+    Calendar calendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,45 +60,48 @@ public class CreateEventActivity extends AppCompatActivity {
         Button confirmButton = findViewById(R.id.create_event_button);
         Button backButton = findViewById(R.id.back_arrow);
         posterButton = findViewById(R.id.add_poster_icon);
-        Button cancelButton = findViewById(R.id.cancel_update_event_button);
         registerResult();
         DBAccessor database = new DBAccessor();
 
-        Calendar calendar;
+        //Calendar calendar;
         //Fills in event details if this Activity was accessed by clicking on an existing event
-        if (getIntent().getSerializableExtra("event") != null) {
+        //eventID = getIntent().getStringExtra("eventID");
+        event = (Event)getIntent().getSerializableExtra("event");
+
+        //if (eventID != null) {
+        if (event != null){
             newEvent = false;
-            event = (Event)getIntent().getSerializableExtra("event");
+            eventID = event.getEventID();
+            database.accessEvent(eventID, retrievedEvent -> {
+                event = retrievedEvent;
+                editEventName.setText(event.getEventName());
+                calendar = event.getEventDate();
+                String eventDate = calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+                editEventDate.setText(eventDate);
+                String eventTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+                editEventTime.setText(eventTime);
+                editEventLocation.setText(new LocationGeocoder(CreateEventActivity.this).coordinatesToAddress(event.getEventLocation()));
+                editEventDescription.setText(event.getEventDescription());
+                database.accessEventPoster(eventID, new BitmapCallback() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap) {
+                        if (bitmap != null) {
+                            BitmapDrawable imageDrawable = new BitmapDrawable(getResources(), bitmap);
+                            posterButton.setBackground(imageDrawable);
+                        } else {
+                            Log.d("BitmapInfo", "Retrieved null Bitmap");
+                        }
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Exception e) {
+                        Log.e("BitmapInfo", "Bitmap loading failed", e);
+                    }
+                });
+            });
             confirmButton.setText(R.string.update_my_event);
-            cancelButton.setVisibility(View.VISIBLE);
             TextView qrNote = findViewById(R.id.create_event_note_text);
             qrNote.setVisibility(View.INVISIBLE);
-            editEventName.setText(event.getEventName());
-            calendar = event.getEventDate();
-            String eventDate = calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
-            editEventDate.setText(eventDate);
-            String eventTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
-            editEventTime.setText(eventTime);
-            editEventLocation.setText(new LocationGeocoder(CreateEventActivity.this).coordinatesToAddress(event.getEventLocation()));
-            editEventDescription.setText(event.getEventDescription());
-            database.accessEventPoster(event.getEventID(), new BitmapCallback() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap) {
-                    if (bitmap != null) {
-                        BitmapDrawable imageDrawable = new BitmapDrawable(getResources(), bitmap);
-                        posterButton.setBackground(imageDrawable);
-                    }else{
-                        Log.d("BitmapInfo", "Retrieved null Bitmap");
-                    }
-                }
-
-                @Override
-                public void onBitmapFailed(Exception e) {
-                    Log.e("BitmapInfo", "Bitmap loading failed", e);
-                }
-            });
-        } else {
-            calendar = Calendar.getInstance();
         }
 
         posterButton.setOnClickListener(v -> requestStoragePermission());
@@ -140,27 +145,25 @@ public class CreateEventActivity extends AppCompatActivity {
             }
 
             posterBitmap = drawableToBitmap(posterButton.getBackground());
-            String eventID;
 
+            //If this was a new event, create new Event object, new QR codes and store those
             if (newEvent) {
                 event = new Event(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(),
                         eventName, eventDescription, calendar, coords);
                 eventID = event.getEventID();
-            } else {
-                eventID = event.getEventID();
+                new EventQRCodesActivity().generateCheckInQR(eventID, database);
+                new EventQRCodesActivity().generatePromoQR(eventID, database);
+
+                database.accessUser(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(), user -> {
+                    user.addEventToEventsOrganized(eventID);
+                    database.storeUser(user);
+                });
+            } else { // Updating an old event
                 event.setEventDate(calendar);
                 event.setEventName(eventName);
                 event.setEventDescription(eventDescription);
                 event.setEventLocation(coords);
             }
-            database.accessUser(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(), new UserCallback() {
-                @Override
-                public void onUserRetrieved(User user) {
-                    user.addEventToEventsOrganized(eventID);
-                    database.storeUser(user);
-                }
-            });
-
             database.storeEvent(event);
             database.storeEventPoster(eventID, posterBitmap);
             finish();

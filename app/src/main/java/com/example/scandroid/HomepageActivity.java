@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
@@ -43,18 +46,19 @@ public class HomepageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage_activity);
         userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
-        String userName = ""; // Set the user's name
-        String userPhoneNumber = ""; // Set the user's phone number
-        String userAboutMe = ""; // Set the user's about me information
-        String userEmail = ""; // Set the user's email
         DBAccessor database = new DBAccessor();
+        displayWelcomeFragment();//Only here for now for testing
         database.accessUser(userID, user -> {
             currentUser = user;
             if (currentUser == null) {
                 //Create a new User object
-                User newUser = new User(userId, userName, userPhoneNumber, userAboutMe, userEmail);
+                String userName = ""; // Set the user's name
+                String userPhoneNumber = ""; // Set the user's phone number
+                String userAboutMe = ""; // Set the user's about me information
+                String userEmail = ""; // Set the user's email
+                User newUser = new User(userID, userName, userPhoneNumber, userAboutMe, userEmail);
                 database.storeUser(newUser); // Add the user to Firestore
-                displayWelcomeFragment();
+                //displayWelcomeFragment(); Only show welcome asking for name if first time user
             }
         });
 
@@ -66,13 +70,13 @@ public class HomepageActivity extends AppCompatActivity {
         homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
         homepagePager.setAdapter(homepageActivityPageAdapter);
 
+
         editProfileButton = findViewById(R.id.edit_profile_button);
         createEventButton = findViewById(R.id.create_event_button);
 
         TextView profileName = findViewById(R.id.homepage_name_text);
         ImageView profilePicture = findViewById(R.id.profile_image);
         database.accessUser(userID, user -> {
-
             database.accessUserProfileImage(userID, new BitmapCallback() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
@@ -143,6 +147,7 @@ public class HomepageActivity extends AppCompatActivity {
             Intent intent = new Intent(HomepageActivity.this, CreateEventActivity.class);
             startActivity(intent);
         });
+
     }
 
     @Override
@@ -158,6 +163,7 @@ public class HomepageActivity extends AppCompatActivity {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
                     profilePicture.setImageBitmap(bitmap);
+                    profilePicture.postInvalidate();
                 }
 
                 @Override
@@ -201,7 +207,7 @@ public class HomepageActivity extends AppCompatActivity {
         // Handle "Enter" button click
         // Close the fragment and set the entered name as the activity name
         updateActivityName(enteredName);
-        currentUser.setUserName(enteredName);
+        updateNameInFirebase(enteredName);
 
     }
     private void updateActivityName(String newName) {
