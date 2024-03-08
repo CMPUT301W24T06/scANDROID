@@ -37,6 +37,9 @@ import java.util.Objects;
  * It extends AppCompatActivity in order to be compatible with
  * older versions of Android as well as use modern Android features.
  */
+
+// source for navigation bar logic: https://www.youtube.com/watch?v=lOTIedfP1OA
+// gradle dependency for switch case:https://stackoverflow.com/questions/76430646/constant-expression-required-when-trying-to-create-a-switch-case-block
 public class HomepageActivity extends AppCompatActivity {
     TabLayout homepageTabs;
     ViewPager2 homepagePager;

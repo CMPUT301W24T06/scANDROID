@@ -26,6 +26,8 @@ import com.journeyapps.barcodescanner.ScanOptions;
  */
 // credit for QR Scanner
 // code sourced from https://www.youtube.com/watch?v=jtT60yFPelI
+// source for navigation bar logic: https://www.youtube.com/watch?v=lOTIedfP1OA
+// gradle dependency for switch case:https://stackoverflow.com/questions/76430646/constant-expression-required-when-trying-to-create-a-switch-case-block
 public class QRScannerActivity extends AppCompatActivity {
     BottomNavigationView navigationBar;
     Button qr_scanner_button;
