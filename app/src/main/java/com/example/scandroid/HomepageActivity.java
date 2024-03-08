@@ -51,7 +51,7 @@ public class HomepageActivity extends AppCompatActivity {
        // displayWelcomeFragment();//Only here for now for testing
         database.accessUser(userID, user -> {
             currentUser = user;
-            if (currentUser == null) {
+            if (Objects.equals(currentUser.getUserName(), "")) {
                 //Create a new User object
                 String userName = ""; // Set the user's name
                 String userPhoneNumber = ""; // Set the user's phone number
