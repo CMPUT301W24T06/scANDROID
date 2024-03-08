@@ -44,10 +44,12 @@ jobs:
   
     - name: Wait for Emulators to Start
       run: |
-        sleep 1m
+        sleep 10
         
     - name: Run Tests
-      run: ./gradlew test
+      run: |
+        ./gradlew test
+        ./gradlew connectedAndroidTest com.example.DBAFirestoreTest
 
     # - name: Stop Firebase Emulators
     #   run: |
