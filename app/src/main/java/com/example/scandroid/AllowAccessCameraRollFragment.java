@@ -1,6 +1,7 @@
 package com.example.scandroid;
 
 import android.app.Activity;
+import java.io.InputStream;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,13 +38,11 @@ import java.util.Objects;
  * from their gallery as their new profile picture
  */
 public class AllowAccessCameraRollFragment extends DialogFragment {
-    ActivityResultLauncher<Intent> launcher;
+//    ActivityResultLauncher<Intent> launcher;
     String userID;
     DBAccessor database = new DBAccessor();
     Bitmap profilePic;
     private OnImageChangedListener imageChangedListener;
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
-    private static final int PICK_IMAGE_REQUEST = 2;
 
     public AllowAccessCameraRollFragment() {
 
@@ -62,6 +61,7 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.choose_image_fragment, container, false);
         Button backButton = view.findViewById(R.id.back_arrow);
         Button choosePicture = view.findViewById(R.id.camera_roll_access_button);
@@ -80,11 +80,7 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
             });
         }
         choosePicture.setOnClickListener(v -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2) {
-                pickImage();
-            } else {
-                pickImageLegacy();
-            }
+            pickImage();
             dismiss();
         });
         backButton.setOnClickListener(v -> dismiss());
@@ -130,42 +126,41 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
         this.imageChangedListener = listener;
     }
 
-//    private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
-//            new ActivityResultContracts.StartActivityForResult(),
-//            result -> {
-//                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-//                    // Get the selected image URI
-//                    Uri selectedImageUri = result.getData().getData();
-//                    //profilePic = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), selectedImageUri);
-//                    // imageChangedListener.onImageChanged(profilePic);
-//                    //database.storeUserProfileImage(userID, profilePic);
-//                    InputStream inputStream;
-//                    try {
-//                        inputStream = requireContext().getContentResolver().openInputStream(selectedImageUri);
-//                    } catch (FileNotFoundException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                    Drawable drawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
-//
-//                    // Convert Drawable to Bitmap
-//                    profilePic = BitmapFactory.decodeStream(inputStream);
-//
-//                    // Notify the listener about the image change
-//                    imageChangedListener.onImageChanged(profilePic);
-//
-//                    // Close the InputStream
-//                    try {
-//                        assert inputStream != null;
-//                        inputStream.close();
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                    Drawable posterDrawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
-//                    profilePic = BitmapFactory.decodeStream(inputStream);
-//                    imageChangedListener.onImageChanged(profilePic);
-//
-//                }
-//            });
+    private ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    // Get the selected image URI
+                    Uri selectedImageUri = result.getData().getData();
+                    //profilePic = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), selectedImageUri);
+                    // imageChangedListener.onImageChanged(profilePic);
+//                    database.storeUserProfileImage(userID, profilePic);
+                    InputStream inputStream;
+                    try {
+                        inputStream = requireContext().getContentResolver().openInputStream(selectedImageUri);
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Drawable drawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
+
+                    // Convert Drawable to Bitmap
+                    profilePic = BitmapFactory.decodeStream(inputStream);
+
+                    // Notify the listener about the image change
+                    imageChangedListener.onImageChanged(profilePic);
+
+                    // Close the InputStream
+                    try {
+                        assert inputStream != null;
+                        inputStream.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Drawable posterDrawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
+                    profilePic = BitmapFactory.decodeStream(inputStream);
+                    imageChangedListener.onImageChanged(profilePic);
+                }
+            });
 
     /**
      * Creates a Bitmap object from a Drawable object
