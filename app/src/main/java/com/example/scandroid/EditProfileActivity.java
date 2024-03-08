@@ -33,7 +33,6 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
     private EditText nameEditText, emailEditText, phoneEditText, aboutMeEditText;
     private CheckBox pushNotificationCheckBox;
     private ImageView profileImageView;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String userID;
     private User currentUser;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -71,15 +70,6 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
             phoneEditText.setText(user.getUserPhoneNumber());
             emailEditText.setText(user.getUserEmail());
             aboutMeEditText.setText(user.getUserAboutMe());
-
-            // Button to change the picture
-            Button changePictureButton = findViewById(R.id.changePictureTextView);
-            changePictureButton.setOnClickListener(view -> {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                pickImageLauncher.launch("image/*");
-            });
-
             database.accessUserProfileImage(userID, new BitmapCallback() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
@@ -102,7 +92,6 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
 
         Button updateButton = findViewById(R.id.updateButton);
         updateButton.setOnClickListener(view -> {
-            //updateProfile(currentUser);
             String name = nameEditText.getText().toString();
             String email = emailEditText.getText().toString();
             String phone = phoneEditText.getText().toString();
@@ -127,7 +116,7 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
         changePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AllowAccessCameraRollFragment chooseImageFragment = AllowAccessCameraRollFragment.newInstance(userID);
+                AllowAccessCameraRollFragment chooseImageFragment = AllowAccessCameraRollFragment.newInstance(userID, profileImageView.getId());
                 chooseImageFragment.setImageChangedListener(EditProfileActivity.this);
                 // Use a FragmentTransaction to add the fragment to the layout
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -145,58 +134,6 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
             }
         });
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        DBAccessor database = new DBAccessor();
-        database.accessUser(userID, user -> {
-            nameEditText.setText(user.getUserName());
-            phoneEditText.setText(user.getUserPhoneNumber());
-            emailEditText.setText(user.getUserEmail());
-            aboutMeEditText.setText(user.getUserAboutMe());
-            database.accessUserProfileImage(userID, new BitmapCallback() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap) {
-                    profileImageView.setImageBitmap(bitmap);
-                }
-
-                @Override
-                public void onBitmapFailed(Exception e) {
-                    Toast.makeText(EditProfileActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
-                }
-            });
-            currentUser = user;
-        });
-
-    }
-
-    private void updateProfile() {
-        // Implement the logic to update the user's profile
-        // Retrieve data from EditText fields and perform the necessary actions
-        String name = nameEditText.getText().toString();
-        String email = emailEditText.getText().toString();
-        String phone = phoneEditText.getText().toString();
-        String aboutMe = aboutMeEditText.getText().toString();
-        boolean receiveNotifications = pushNotificationCheckBox.isChecked();
-
-        String currentProfilePictureUrl = profilePictureURL; // Replace with the actual way you retrieve the current URL
-        String newProfilePictureUrl = currentProfilePictureUrl; // Default to the existing URL
-
-
-
-        Map<String, Object> updatedUserData = new HashMap<>();
-        updatedUserData.put("userName", name);
-        updatedUserData.put("userPhoneNumber", phone);
-        updatedUserData.put("userEmail", email);
-        updatedUserData.put("userAboutMe", aboutMe);
-        updatedUserData.put("profilePictureUrl", newProfilePictureUrl); // Include the new profile picture URL
-
-    }
-
-    // Handle the result from the gallery intent
-
-
     private void showAdminKeyFragment() {
         AdminKeyFragment adminKeyFragment = new AdminKeyFragment();
         adminKeyFragment.show(getSupportFragmentManager(), "AdminKeyFragment");
@@ -250,7 +187,6 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
             Toast.makeText(this, "Error converting image to bitmap", Toast.LENGTH_SHORT).show();
         }
     }
-
 }
 
 
