@@ -46,6 +46,7 @@ public class HomepageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage_activity);
+
         userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
         DBAccessor database = new DBAccessor();
        // displayWelcomeFragment();//Only here for now for testing
@@ -63,15 +64,17 @@ public class HomepageActivity extends AppCompatActivity {
             }
         });
 
+        // deals with the bottom bar
         navigationBar = findViewById(R.id.navigation_bar);
         navigationBar.setSelectedItemId(R.id.home_button);
 
+        // logic for tabs that toggle between events going to and events organized
         homepageTabs = findViewById(R.id.homepage_tabs);
         homepagePager = findViewById(R.id.homepage_pager);
         homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
         homepagePager.setAdapter(homepageActivityPageAdapter);
 
-
+        // initialize buttons for navigation between activities
         editProfileButton = findViewById(R.id.edit_profile_button);
         createEventButton = findViewById(R.id.create_event_button);
 
@@ -173,10 +176,12 @@ public class HomepageActivity extends AppCompatActivity {
             });
         });
 
-
-
     }
 
+    /**
+     * Updates the user profile by retrieving the updated user name from SharedPreferences
+     * and updating the TextView with the updated user name.
+     */
     private void updateProfile() {
         // Retrieve the updated user name from SharedPreferences or any other storage mechanism
         SharedPreferences sharedPreferences = getSharedPreferences("namePref", MODE_PRIVATE);
@@ -187,6 +192,11 @@ public class HomepageActivity extends AppCompatActivity {
         homepageNameText.setText(updatedUserName);
     }
 
+
+    /**
+     * Displays the welcome fragment
+     * and gives the user the option to enter their name upon first using the app
+     */
     private void displayWelcomeFragment() {
         // Create an instance of the WelcomeFragment
         WelcomeFragment welcomeFragment = new WelcomeFragment();
@@ -196,6 +206,11 @@ public class HomepageActivity extends AppCompatActivity {
         transaction.add(android.R.id.content, welcomeFragment);
         transaction.commit();
     }
+
+    /**
+     * Deals with if the user chooses not to enter their name when prompted by the fragment
+     * by updating the database and giving a randomly generated Guest ID
+     */
     public void onMaybeLaterClicked(String randomName) {
         // Handle "Maybe Later" button click
         // Close the fragment and set the generated random name as the activity name
@@ -203,17 +218,22 @@ public class HomepageActivity extends AppCompatActivity {
         updateNameInFirebase(randomName);
     }
 
+    /**
+     * Deals with if the user chooses to enter their name when prompted by the fragment
+     * by updating the database and giving a randomly generated Guest ID
+     */
     public void onEnterClicked(String enteredName) {
         // Handle "Enter" button click
         // Close the fragment and set the entered name as the activity name
         updateActivityName(enteredName);
         updateNameInFirebase(enteredName);
-
     }
+
     private void updateActivityName(String newName) {
         TextView homepageNameText = findViewById(R.id.homepage_name_text);
         homepageNameText.setText(newName);
     }
+
     private void updateNameInFirebase(String newName) {
         // Update the user's name in Firebase
         db.collection("Users").document(userID)
