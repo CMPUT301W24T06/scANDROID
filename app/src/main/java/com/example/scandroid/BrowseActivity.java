@@ -15,6 +15,11 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
 
+/**
+ * BrowseActivity activity
+ * It extends AppCompatActivity in order to be compatible with
+ * older versions of Android as well as use modern Android features.
+ */
 public class BrowseActivity extends AppCompatActivity {
     TabLayout browseTabs;
     ViewPager2 browsePager;
