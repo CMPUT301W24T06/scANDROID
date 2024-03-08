@@ -1,13 +1,9 @@
 package com.example.scandroid;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,11 +12,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,8 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EditProfileActivity extends AppCompatActivity implements AllowAccessCameraRollFragment.OnImageChangedListener{
-
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
+    ActivityResultLauncher<Intent> launcher;
     private EditText nameEditText, emailEditText, phoneEditText, aboutMeEditText;
     private CheckBox pushNotificationCheckBox;
     private ImageView profileImageView;
@@ -40,10 +34,6 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
 
     private String profilePictureURL;
     private Uri selectedImageUri;
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +108,6 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.add(android.R.id.content, chooseImageFragment);
                 transaction.commit();
-
             }
         });
 
@@ -152,9 +141,7 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
                     Toast.makeText(EditProfileActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
                 }
             });
-
             currentUser = user;
-
         });
 
     }
@@ -180,18 +167,6 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
         updatedUserData.put("userAboutMe", aboutMe);
         updatedUserData.put("profilePictureUrl", newProfilePictureUrl); // Include the new profile picture URL
 
-
-
-    }   //
-    public void changeProfilePicture(View view) {
-        // Call the method to open the gallery or camera
-        openGallery();
-    }
-
-    private void openGallery() {
-        // Create an Intent to open the device's gallery
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
     }
 
     // Handle the result from the gallery intent
@@ -209,32 +184,6 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
         }
     }
 
-    /**
-     * Requests user for permission for app to access their files
-     */
-    //Source: https://stackoverflow.com/questions/39866869/how-to-ask-permission-to-access-gallery-on-android-m
-    private void requestStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        } else if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_DENIED){
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        } else {
-            openGallery();
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery();
-            } else {
-                Toast.makeText(this, "Permission denied. Cannot pick image.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     private void showAdminKeyFragment() {
         AdminKeyFragment adminKeyFragment = new AdminKeyFragment();
         adminKeyFragment.show(getSupportFragmentManager(), "AdminKeyFragment");
@@ -247,8 +196,11 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
     @Override
     public void onImageChanged(Bitmap newBitmap) {
         Log.d("AllowAccessCameraRollFragment", "onImageChanged is called");
-        profileImageView.setImageBitmap(newBitmap);
+        if (newBitmap != null && profileImageView != null) {
+            profileImageView.setImageBitmap(newBitmap);
+        }
     }
+
 }
 
 
