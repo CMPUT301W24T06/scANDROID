@@ -2,8 +2,10 @@ package com.example.scandroid;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,12 +15,16 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +40,15 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
 
     private String profilePictureURL;
     private Uri selectedImageUri;
+
+    // ActivityResultLauncher for image selection
+    // Replace the previous ActivityResultLauncher with GetContent
+    private final ActivityResultLauncher<String> pickImageLauncher =
+            registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
+                if (result != null) {
+                    handleImageSelection(result);
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +71,15 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
             phoneEditText.setText(user.getUserPhoneNumber());
             emailEditText.setText(user.getUserEmail());
             aboutMeEditText.setText(user.getUserAboutMe());
+
+            // Button to change the picture
+            Button changePictureButton = findViewById(R.id.changePictureTextView);
+            changePictureButton.setOnClickListener(view -> {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                pickImageLauncher.launch("image/*");
+            });
+
             database.accessUserProfileImage(userID, new BitmapCallback() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
@@ -86,6 +110,7 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
             boolean receiveNotifications = pushNotificationCheckBox.isChecked();
             Bitmap profilePicBitmap = new BitmapConfigurator().drawableToBitmap(profileImageView.getDrawable());
             DBAccessor database1 = new DBAccessor();
+            currentUser.setProfilePictureUrl(""); // Clear the existing URL if any
             currentUser.setUserName(name);
             currentUser.setUserEmail(email);
             currentUser.setUserPhoneNumber(phone);
@@ -170,19 +195,7 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
     }
 
     // Handle the result from the gallery intent
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            // Handle the selected image URI, you may want to update the ImageView or store the URI
-            Uri selectedImageUri = data.getData();
-            // Do something with the selected image URI
-            CardView cardView = findViewById(R.id.edit_profile_image);
-            ImageView profileImageView = findViewById(R.id.image_inside_card);
-            profileImageView.setImageURI(selectedImageUri);
-        }
-    }
 
     private void showAdminKeyFragment() {
         AdminKeyFragment adminKeyFragment = new AdminKeyFragment();
@@ -198,6 +211,43 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
         Log.d("AllowAccessCameraRollFragment", "onImageChanged is called");
         if (newBitmap != null && profileImageView != null) {
             profileImageView.setImageBitmap(newBitmap);
+        }
+    }
+    private void handleImageSelection(Uri imageUri) {
+        // Clear the existing URL from the currentUser object
+        currentUser.setProfilePictureUrl("");
+
+        // Update the selectedImageUri
+        selectedImageUri = imageUri;
+
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+            if (profileImageView != null) {
+                // Update the ImageView directly
+                profileImageView.setImageBitmap(bitmap);
+                Log.d("EditProfileActivity", "ImageView updated successfully");
+
+                if (bitmap != null) {
+                    // Update the backend with the new image
+                    DBAccessor database = new DBAccessor();
+                    database.storeUserProfileImage(userID, bitmap);
+                } else {
+                    Log.e("EditProfileActivity", "Bitmap is null");
+                }
+            } else {
+                Log.e("EditProfileActivity", "ImageView is null");
+            }
+
+            // Optionally close the InputStream
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("EditProfileActivity", "Error converting image to bitmap: " + e.getMessage());
+            Toast.makeText(this, "Error converting image to bitmap", Toast.LENGTH_SHORT).show();
         }
     }
 
