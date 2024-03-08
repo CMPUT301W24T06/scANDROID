@@ -40,29 +40,31 @@
         android:fontFamily="@font/inter_medium"
         android:text="@string/check_in_qr_code_text"
         android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.236"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.113" />
+        app:layout_constraintTop_toBottomOf="@+id/top_border"
+        app:layout_constraintVertical_bias="0.029" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/share_check_in_qr_button"
         android:layout_width="280dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="440dp"
+        android:layout_marginBottom="32dp"
         android:background="@drawable/rectangle_button"
         android:fontFamily="@font/inter_bold"
         android:text="@string/share_button_text"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/promo_in_qr_code_textview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/check_in_qr_code_textview"
+        app:layout_constraintVertical_bias="1.0" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -74,8 +76,8 @@
 
         <ImageView
             android:id="@+id/check_in_qr_code_img"
-            android:layout_width="214dp"
-            android:layout_height="214dp"
+            android:layout_width="175dp"
+            android:layout_height="175dp"
             app:srcCompat="@android:drawable/progress_indeterminate_horizontal" />
     </androidx.cardview.widget.CardView>
 
@@ -86,14 +88,13 @@
         android:fontFamily="@font/inter_medium"
         android:text="@string/promotion_qr_code_text"
         android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.236"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.558">
-    </TextView>
+        app:layout_constraintVertical_bias="0.571" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -107,8 +108,8 @@
 
         <ImageView
             android:id="@+id/promo_qr_code_img"
-            android:layout_width="214dp"
-            android:layout_height="214dp"
+            android:layout_width="175dp"
+            android:layout_height="175dp"
             app:srcCompat="@android:drawable/progress_indeterminate_horizontal" />
     </androidx.cardview.widget.CardView>
 
