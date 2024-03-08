@@ -6,16 +6,30 @@ import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 
+import static com.example.scandroid.AllowAccessCameraRollFragment.drawableToBitmap;
+
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.view.View;
+import android.widget.ImageView;
+
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -64,21 +78,44 @@ public class EditProfileActivityTests {
 
     @Test
     public void testEditProfilePicture() {
+        // simulate image change
+        // choose an image from the drawable resources
+        Drawable newImageDrawable = ContextCompat.getDrawable(
+                InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                R.drawable.guest_default_image);
+
+        // update the ImageView in your UI with the new image drawable
+        onView(withId(R.id.image_inside_card)).perform(setImageDrawable(newImageDrawable));
         // checks if camera roll opens
         onView(withId(R.id.changePictureTextView)).perform(click());
         onView(withId(R.id.choose_image_fragment)).check(matches(isDisplayed()));
         onView(withId(R.id.camera_roll_access_button)).perform(click());
     }
 
+    private ViewAction setImageDrawable(Drawable newImageDrawable) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(ImageView.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "Set drawable to image view";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                ((ImageView) view).setImageDrawable(newImageDrawable);
+            }
+        };
+    }
+
     @Test
     public void testRemoveProfilePicture() {
-        // click on the "Remove Picture" button
+        // remove the current profile picture if it is not a default
         onView(withId(R.id.changePictureTextView)).perform(click());
-
         onView(withId(R.id.remove_picture_button)).perform(click());
-
-        // verify that the profile picture ImageView is now empty or has a placeholder
-//        onView(withId(R.id.profile_image)).check(matches(isDisplayed()));
     }
 
 }
