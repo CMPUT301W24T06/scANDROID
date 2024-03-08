@@ -17,6 +17,8 @@ import com.journeyapps.barcodescanner.CaptureActivity;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+// credit for QR Scanner
+// code sourced from https://www.youtube.com/watch?v=jtT60yFPelI
 public class QRScannerActivity extends AppCompatActivity {
     BottomNavigationView navigationBar;
     Button qr_scanner_button;
@@ -55,6 +57,11 @@ public class QRScannerActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Opens the camera and scans QR codes
+     * Before opening the QR Scanner, orientation, auditory confirmation, capture activity
+     * and prompt are configured.
+     */
     private void scanCode() {
         ScanOptions options = new ScanOptions();
         options.setPrompt("Please center barcode in box to scan. Volume up for flash!");
@@ -64,7 +71,7 @@ public class QRScannerActivity extends AppCompatActivity {
         barLauncher.launch(options);
     }
 
-    // replace this with our actual content design in the future
+    // shows the content in the QR Code scanned
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->{
         if(result.getContents() != null){
             AlertDialog.Builder builder = new AlertDialog.Builder(QRScannerActivity.this);

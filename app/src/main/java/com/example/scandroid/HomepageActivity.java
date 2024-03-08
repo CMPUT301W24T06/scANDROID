@@ -154,6 +154,12 @@ public class HomepageActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Called when the activity is resumed from a paused state.
+     * It updates the user profile information in the database.
+     * It retrieves the user ID associated with the device, accesses the user's information from the database.
+     * The corresponding UI elements are also updated accordingly.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -209,7 +215,7 @@ public class HomepageActivity extends AppCompatActivity {
 
     /**
      * Deals with if the user chooses not to enter their name when prompted by the fragment
-     * by updating the database and giving a randomly generated Guest ID
+     * by displaying a randomly generated Guest ID and updating the database
      */
     public void onMaybeLaterClicked(String randomName) {
         // Handle "Maybe Later" button click
@@ -220,7 +226,7 @@ public class HomepageActivity extends AppCompatActivity {
 
     /**
      * Deals with if the user chooses to enter their name when prompted by the fragment
-     * by updating the database and giving a randomly generated Guest ID
+     * by saving and displaying the name entered and updating the database
      */
     public void onEnterClicked(String enteredName) {
         // Handle "Enter" button click
@@ -229,16 +235,20 @@ public class HomepageActivity extends AppCompatActivity {
         updateNameInFirebase(enteredName);
     }
 
+    /**
+     * Updates the user's name displayed on the homepage profile
+     */
     private void updateActivityName(String newName) {
         TextView homepageNameText = findViewById(R.id.homepage_name_text);
         homepageNameText.setText(newName);
     }
 
+    /**
+     * Updates the user's name in the database
+     */
     private void updateNameInFirebase(String newName) {
         // Update the user's name in Firebase
         db.collection("Users").document(userID)
                 .update("userName", newName);
     }
-
-
 }
