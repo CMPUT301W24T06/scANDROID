@@ -86,8 +86,6 @@ public class QRScannerActivity extends AppCompatActivity {
         barLauncher.launch(options);
     }
 
-    // shows the content in the QR Code scanned
-    // replace this with our actual content class
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->{
         if(result.getContents() != null){
             // source: https://stackoverflow.com/a/15392591
@@ -100,16 +98,6 @@ public class QRScannerActivity extends AppCompatActivity {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(android.R.id.content, checkInPrompt);
             transaction.commit();
-
-//            AlertDialog.Builder builder = new AlertDialog.Builder(QRScannerActivity.this);
-//            builder.setTitle("Content");
-//            builder.setMessage(result.getContents());
-//            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    dialog.dismiss();
-//                }
-//            }).show();
         }
     });
 }

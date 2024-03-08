@@ -20,6 +20,13 @@ import org.w3c.dom.Text;
 
 import java.util.Calendar;
 
+/**
+ * EventInfoActivity is an activity that is shown
+ * when an event attendee clicks on their event from
+ * their "Attending Events" tab on their HomepageActivity.
+ * This activity displays the event's details
+ * (title, location, date, time, and poster).
+ */
 public class EventInfoActivity extends AppCompatActivity {
     private ImageView posterButton;
     private TextView bigEventName;

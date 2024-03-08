@@ -20,6 +20,11 @@ import java.util.Calendar;
 
 import javax.annotation.Nullable;
 
+/**
+ * EventCheckInFragment is shown when a check-in QR code
+ * is scanned in QRScannerActivity, and allows a user to see event details, allow push
+ * notifications, allow location tracking, and check into an event.
+ */
 public class EventCheckInFragment extends DialogFragment {
     private Event event;
     private DBAccessor database;
