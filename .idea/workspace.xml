@@ -123,11 +123,6 @@
           <theme>@style/Theme.ScANDROID</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/xml/file_paths.xml">
-        <config>
-          <theme>@style/Theme.ScANDROID</theme>
-        </config>
-      </layout>
     </layouts>
   </component>
   <component name="AutoImportSettings">
@@ -135,7 +130,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49c4a012-67cd-4f5e-a640-6ac57d121d35" name="Changes" comment="fixed gallery access, bitmap still broken">
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventCheckInFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventCheckInFragment.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +142,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/Users/aaliyahwusu/.android/avd/Pixel_API_34.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/Users/aaliyahwusu/.android/avd/Pixel_7_Pro_API_34.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />

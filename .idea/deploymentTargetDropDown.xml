@@ -3,29 +3,20 @@
   <component name="deploymentTargetDropDown">
     <value>
       <entry key="CheckInScreenActivity">
-        <State />
-      </entry>
-      <entry key="EditEventActivity">
-        <State />
-      </entry>
-      <entry key="EventQRCodesActivity">
         <State>
-          <runningDeviceTargetSelectedWithDropDown>
+          <targetSelectedWithDropDown>
             <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
+              <type value="QUICK_BOOT_TARGET" />
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_2_API_UpsideDownCakePrivacySandbox.avd" />
+                  <value value="$PROJECT_DIR$/../.android/avd/Pixel_7_Pro_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
-          </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-08T00:07:41.181520Z" />
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-03-08T07:43:08.490383Z" />
         </State>
-      </entry>
-      <entry key="EventViewAnnouncementsActivity">
-        <State />
       </entry>
       <entry key="HomepageActivity">
         <State />
