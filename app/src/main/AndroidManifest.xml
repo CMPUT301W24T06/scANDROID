@@ -58,6 +58,9 @@
             android:name=".EventQRCodesActivity"
             android:exported="true" />
         <activity
+            android:name=".CheckInOrPromoActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditProfileActivity"
             android:exported="true" />
         <activity
