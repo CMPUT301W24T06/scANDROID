@@ -24,7 +24,7 @@ public class BrowseActivityPageAdapter extends FragmentStateAdapter {
     /**
      * There are 2 tabs in the ViewPager2, so it returns the fragment associated
      * with a specific position in the ViewPager2.
-     * @param position position of the fragment in the ViewPager2 (tabs).
+     * @param position position of the fragment in the ViewPager2 (tabs)
      * @return corresponding Fragment (BrowseUsersFragment or BrowseEventsFragment)
      */
     @NonNull
@@ -40,6 +40,10 @@ public class BrowseActivityPageAdapter extends FragmentStateAdapter {
         }
     }
 
+    /**
+     * returns the total number of fragments managed by the adapter (2 in this case)
+     * @return The number of fragments.
+     */
     @Override
     public int getItemCount() {
         return 2;
