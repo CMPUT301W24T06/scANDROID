@@ -66,8 +66,8 @@ public class EventCheckInFragment extends DialogFragment {
 
                         if (trackLocationBox.isChecked()) {
                             // track location something in database?
-                                database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
-                                    // would set check in location here
+                            database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
+                                // would set check in location here
 //                                    FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 //                                    if (ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //                                        // TODO: Consider calling
@@ -80,7 +80,7 @@ public class EventCheckInFragment extends DialogFragment {
 //                                        return;
 //                                    }
 //                                    fusedLocationClient.getLastLocation();
-                                });
+                            });
 
                             cancelCheckInButton.setOnClickListener(v -> {
                                 // cancel check in
