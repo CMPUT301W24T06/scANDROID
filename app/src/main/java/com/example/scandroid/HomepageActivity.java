@@ -28,6 +28,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
+/**
+ * HomepageActivity extends AppCompatActivity in order to be compatible with
+ * older versions of Android and use modern Android features.
+ * It is the main page of the app, and deals with displaying and updating the user's profile.
+ * It interacts with the database in order to keep all information in the UI and
+ * in the database up to date and consistent.
+ * This includes a profile image, contact information, and most importantly
+ * events, both being organized and being attended by the user.
+ */
 public class HomepageActivity extends AppCompatActivity {
     TabLayout homepageTabs;
     ViewPager2 homepagePager;
@@ -95,6 +104,7 @@ public class HomepageActivity extends AppCompatActivity {
             profileName.setText(user.getUserName());
         });
 
+        // handle navigation between tabs
         homepageTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
