@@ -37,6 +37,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 public class QRScannerActivity extends AppCompatActivity {
     BottomNavigationView navigationBar;
     Button qr_scanner_button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +50,7 @@ public class QRScannerActivity extends AppCompatActivity {
         navigationBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.home_button:
                         startActivity(new Intent(getApplicationContext(), HomepageActivity.class));
                         return true;
@@ -86,18 +87,13 @@ public class QRScannerActivity extends AppCompatActivity {
         barLauncher.launch(options);
     }
 
-    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->{
-        if(result.getContents() != null){
-            // source: https://stackoverflow.com/a/15392591
-            DialogFragment checkInPrompt = new EventCheckInFragment();
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
+        if (result.getContents() != null) {
             String eventID = result.getContents();
-            Bundle bundle = new Bundle();
-            bundle.putString("eventID", eventID);
-            checkInPrompt.setArguments(bundle);
 
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(android.R.id.content, checkInPrompt);
-            transaction.commit();
+            Intent intent = new Intent(QRScannerActivity.this, CheckInOrPromoActivity.class);
+            intent.putExtra("eventID", eventID);
+            startActivity(intent);
         }
     });
 }

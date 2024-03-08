@@ -66,7 +66,6 @@ public class EventTest {
 
         Location projectLocation;
         projectLocation = new Location("building_ETLC");
-        projectLocation.setLongitude(1.1234456);
         projectLocation.setLatitude(locationValues.get(0));  // Lat  = 53.52726211381912
         projectLocation.setLongitude(locationValues.get(1)); // Long = -113.53023539331814
 

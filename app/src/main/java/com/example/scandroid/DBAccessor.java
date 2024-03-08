@@ -406,7 +406,7 @@ public class DBAccessor {
             final long ONE_MEGABYTE = 1024 * 1024;
 
             // download bitmap with EventID as key
-            this.EventPosterRef.getBytes(ONE_MEGABYTE)
+            this.EventPosterRef.getBytes(ONE_MEGABYTE * 3)
                     .addOnSuccessListener(bytes -> {
                         Log.d("FireStorage", "EventPoster successfully accessed!");
                         new Handler(Looper.getMainLooper()).post(() -> {
@@ -508,7 +508,7 @@ public class DBAccessor {
             final long ONE_MEGABYTE = 1024 * 1024;
 
             // download bitmap with EventID as key
-            ImageAssetRef.getBytes(ONE_MEGABYTE)
+            ImageAssetRef.getBytes(ONE_MEGABYTE * 3)
                     .addOnSuccessListener(bytes -> {
                         Log.d("FireStorage", "ImageAsset successfully accessed!");
                         new Handler(Looper.getMainLooper()).post(() -> {
@@ -596,7 +596,7 @@ public class DBAccessor {
             final long ONE_MEGABYTE = 1024 * 1024;
 
             // download bitmap with EventID as key
-            this.QRCodeMainRef.getBytes(ONE_MEGABYTE)
+            this.QRCodeMainRef.getBytes(ONE_MEGABYTE * 3)
                     .addOnSuccessListener(bytes -> {
                         Log.d("FireStorage", "QRCodeMain successfully accessed!");
                         new Handler(Looper.getMainLooper()).post(() -> {
@@ -628,7 +628,7 @@ public class DBAccessor {
             final long ONE_MEGABYTE = 1024 * 1024;
 
             // download bitmap with EventID as key
-            this.QRCodePromoRef.getBytes(ONE_MEGABYTE)
+            this.QRCodePromoRef.getBytes(ONE_MEGABYTE * 3)
                     .addOnSuccessListener(bytes -> {
                         Log.d("FireStorage", "QRCodePromo successfully accessed!");
                         new Handler(Looper.getMainLooper()).post(() -> {
@@ -851,7 +851,7 @@ public class DBAccessor {
             final long ONE_MEGABYTE = 1024 * 1024;
 
             // download bitmap with EventID as key
-            this.UserProfileImageRef.getBytes(ONE_MEGABYTE)
+            this.UserProfileImageRef.getBytes(ONE_MEGABYTE * 3)
                     .addOnSuccessListener(bytes -> {
                         Log.d("FireStorage", "UserProfileImage successfully accessed!");
                         new Handler(Looper.getMainLooper()).post(() -> {
