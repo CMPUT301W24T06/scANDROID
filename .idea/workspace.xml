@@ -8,6 +8,11 @@
       </config>
     </shared>
     <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_event_info.xml">
+        <config>
+          <theme>@style/Theme.ScANDROID</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/allow_access_camera_roll_fragment.xml">
         <config>
           <theme>@style/Theme.ScANDROID</theme>
@@ -88,6 +93,11 @@
           <theme>@style/Theme.ScANDROID</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_admin_key.xml">
+        <config>
+          <theme>@style/Theme.ScANDROID</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/homepage_activity.xml">
         <config>
           <theme>@style/Theme.ScANDROID</theme>
@@ -108,6 +118,16 @@
           <theme>@style/Theme.ScANDROID</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/my_events_list_content.xml">
+        <config>
+          <theme>@style/Theme.ScANDROID</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/profile_info_activity.xml">
+        <config>
+          <theme>@style/Theme.ScANDROID</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/qrscanner_activity.xml">
         <config>
           <theme>@style/Theme.ScANDROID</theme>
@@ -124,18 +144,16 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="49c4a012-67cd-4f5e-a640-6ac57d121d35" name="Changes" comment="fixed gallery access, bitmap still broken">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/robot_image.png" afterDir="false" />
+    <list default="true" id="49c4a012-67cd-4f5e-a640-6ac57d121d35" name="Changes" comment="conflict fixing">
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.2/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/homepage_activity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/homepage_activity.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/qrscanner_activity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/qrscanner_activity.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +163,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/Users/jaderpana/.android/avd/Pixel_7_Pro_API_UpsideDownCakePrivacySandbox.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[/Users/jaderpana/.android/avd/Pixel_3a_API_34_extension_level_7_arm64-v8a.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -236,21 +254,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ScreenRecorder.SavePath&quot;: &quot;/Users/jaderpana/Downloads&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Jade&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/jaderpana/scANDROID/app/src/main/res/drawable&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ScreenRecorder.SavePath": "/Users/jaderpana/Downloads",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "Jade",
+    "last_opened_file_path": "/Users/jaderpana/scANDROID/app/src/main/res/drawable",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/src/main/res/drawable" />
@@ -259,7 +277,7 @@
       <recent name="com.example.scandroid" />
     </key>
   </component>
-  <component name="RunManager" selected="Android App.CheckInScreenActivity">
+  <component name="RunManager" selected="Android App.QRScannerActivity">
     <configuration name="CheckInScreenActivity" type="AndroidRunConfigurationType" factoryName="Android App" temporary="true">
       <module name="scANDROID.app.main" />
       <option name="DEPLOY" value="true" />
@@ -664,11 +682,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Android App.CheckInScreenActivity" />
+        <item itemvalue="Android App.QRScannerActivity" />
         <item itemvalue="Android App.HomepageActivity" />
         <item itemvalue="Android App.EditProfileActivity" />
         <item itemvalue="Android App.CreateEventActivity" />
-        <item itemvalue="Android App.QRScannerActivity" />
+        <item itemvalue="Android App.CheckInScreenActivity" />
       </list>
     </recent_temporary>
   </component>
@@ -745,7 +763,95 @@
       <option name="project" value="LOCAL" />
       <updated>1709864332549</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="UML to fix issue on smaller devices">
+      <option name="closed" value="true" />
+      <created>1709878504120</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1709878504120</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Edited Scanner Message">
+      <option name="closed" value="true" />
+      <created>1709878736644</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1709878736644</updated>
+    </task>
+    <task id="LOCAL-00011" summary="JavaDocs for HomepageActivity">
+      <option name="closed" value="true" />
+      <created>1709879919113</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1709879919113</updated>
+    </task>
+    <task id="LOCAL-00012" summary="QR Scanner JavaDocs">
+      <option name="closed" value="true" />
+      <created>1709881130575</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1709881130575</updated>
+    </task>
+    <task id="LOCAL-00013" summary="QR Scanner Class Javadoc">
+      <option name="closed" value="true" />
+      <created>1709882911732</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1709882911732</updated>
+    </task>
+    <task id="LOCAL-00014" summary="QR Scanner Class Javadoc">
+      <option name="closed" value="true" />
+      <created>1709883023992</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1709883023992</updated>
+    </task>
+    <task id="LOCAL-00015" summary="BrowseActivityPageAdapter JavaDocs">
+      <option name="closed" value="true" />
+      <created>1709888265353</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1709888265353</updated>
+    </task>
+    <task id="LOCAL-00016" summary="BrowseActivityPageAdapter JavaDocs">
+      <option name="closed" value="true" />
+      <created>1709888311958</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1709888311958</updated>
+    </task>
+    <task id="LOCAL-00017" summary="DeviceIDRetriever JavaDoc">
+      <option name="closed" value="true" />
+      <created>1709889014102</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1709889014103</updated>
+    </task>
+    <task id="LOCAL-00018" summary="citations">
+      <option name="closed" value="true" />
+      <created>1709889411012</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1709889411012</updated>
+    </task>
+    <task id="LOCAL-00019" summary="conflict fixing">
+      <option name="closed" value="true" />
+      <created>1709890010252</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1709890010252</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -756,6 +862,15 @@
     <MESSAGE value="navigation between EditProfileActivity and HomepageActivity" />
     <MESSAGE value="fixed gallery access" />
     <MESSAGE value="fixed gallery access, bitmap still broken" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed gallery access, bitmap still broken" />
+    <MESSAGE value="UML to fix issue on smaller devices" />
+    <MESSAGE value="Edited Scanner Message" />
+    <MESSAGE value="JavaDocs for HomepageActivity" />
+    <MESSAGE value="QR Scanner JavaDocs" />
+    <MESSAGE value="QR Scanner Class Javadoc" />
+    <MESSAGE value="BrowseActivityPageAdapter JavaDocs" />
+    <MESSAGE value="DeviceIDRetriever JavaDoc" />
+    <MESSAGE value="citations" />
+    <MESSAGE value="conflict fixing" />
+    <option name="LAST_COMMIT_MESSAGE" value="conflict fixing" />
   </component>
 </project>
