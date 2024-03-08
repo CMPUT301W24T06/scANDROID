@@ -19,6 +19,7 @@ import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.assertion.ViewAssertions;
@@ -29,6 +30,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+
+import com.journeyapps.barcodescanner.ScanOptions;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -37,10 +41,10 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class HomepageActivityTest {
+public class QRScannerActivityTest {
     @Rule
     public
-    ActivityScenarioRule<HomepageActivity> scenario = new ActivityScenarioRule<HomepageActivity>(HomepageActivity.class);
+    ActivityScenarioRule<QRScannerActivity> scenario = new ActivityScenarioRule<QRScannerActivity>(QRScannerActivity.class);
 
     @Before
     public void setUp() {
@@ -52,38 +56,16 @@ public class HomepageActivityTest {
         Intents.release();
     }
 
-    // test editProfileButton
-    @Test
-    public void testEditProfileButton(){
-        // press the button
-        onView(withId(R.id.edit_profile_button)).perform(click());
-        // check if the activity switched by confirming that the UI elements
-        // in EditProfileActivity appear
-        onView(withId(R.id.edit_profile_image)).check(matches(isDisplayed()));
-        onView(withId(R.id.emailLayout)).check(matches(isDisplayed()));
-        onView(withId(R.id.aboutMeLayout)).check(matches(isDisplayed()));
-    }
-
-    // test createEventButton
-    @Test
-    public void testCreateEventButton(){
-        // press the button
-        onView(withId(R.id.create_event_button)).perform(click());
-        // check if the activity switched by confirming that the unique UI elements
-        // in CreateEventActivity appear
-        onView(withId(R.id.create_event_name_text)).check(matches(isDisplayed()));
-        onView(withId(R.id.event_name_edit_text)).check(matches(isDisplayed()));
-        onView(withId(R.id.add_poster_icon)).check(matches(isDisplayed()));
-    }
-
     // tests for the navigation bar icons
     @Test
-    public void testQRScannerButton(){
+    public void testHomeButton(){
         // press the button
-        onView(withId(R.id.qr_button)).perform(click());
+        onView(withId(R.id.home_button)).perform(click());
         // check if the activity switched by confirming that the unique UI elements
-        // in QRScannerActivity appear
-        onView(withId(R.id.QR_scan_code_button)).check(matches(isDisplayed()));
+        // in HomepageActivity appear
+        onView(withId(R.id.edit_profile_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.create_event_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.homepage_name_text)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -96,15 +78,12 @@ public class HomepageActivityTest {
         onView(withId(R.id.browse_pager)).check(matches(isDisplayed()));
     }
 
-    // test if edited profile changes have been added to be displayed on homepage
+    // test if the QR Code Scanner opens and runs
     @Test
-    public void testEditProfileName(){
+    public void testQRScanner(){
         // press the button
-        onView(withId(R.id.edit_profile_button)).perform(click());
-        // change the name
-        onView(withId(R.id.nameEditText)).perform(click(), clearText(), typeText("Test Name"));
-        closeSoftKeyboard();
-        onView(withId(R.id.updateButton)).perform(click());
-        onView(withId(R.id.homepage_name_text)).check(matches(withText("Test Name")));
+        onView(withId(R.id.QR_scan_code_button)).perform(click());
+        // verify if the camera activity is launched
+        intended(hasComponent(CaptureAct.class.getName()));
     }
 }

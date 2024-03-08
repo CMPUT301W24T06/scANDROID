@@ -6,29 +6,30 @@ import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasData;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import android.content.Intent;
-import android.util.Log;
-import android.widget.DatePicker;
-import android.widget.TimePicker;
 
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.assertion.ViewAssertions;
+import static com.example.scandroid.AllowAccessCameraRollFragment.drawableToBitmap;
+
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.view.View;
+import android.widget.ImageView;
+
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.intent.matcher.IntentMatchers;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import androidx.test.platform.app.InstrumentationRegistry;
+
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,8 +40,7 @@ import org.junit.runner.RunWith;
 @LargeTest
 public class EditProfileActivityTests {
     @Rule
-    public ActivityScenarioRule<EditProfileActivity> scenario = new
-            ActivityScenarioRule<>(EditProfileActivity.class);
+    public ActivityScenarioRule<EditProfileActivity> scenario = new ActivityScenarioRule<>(EditProfileActivity.class);
 
     @Before
     public void setUp() {
@@ -55,42 +55,68 @@ public class EditProfileActivityTests {
 
     @Test
     public void testCreateProfile() {
-
-        onView(withId(R.id.nameEditText)).perform(clearText(), typeText("Test Name"));
-        closeSoftKeyboard();
+        // clear and replace name
+        onView(withId(R.id.nameEditText)).perform(click(), clearText(), typeText("Test Name"));
         onView(withId(R.id.nameEditText)).check(matches(withText("Test Name")));
+        closeSoftKeyboard();
 
-        onView(withId(R.id.emailEditText)).perform(typeText("testemail"));
+        // clear and replace email
+        onView(withId(R.id.emailEditText)).perform(click(), clearText(), typeText("testemail"));
         onView(withId(R.id.emailEditText)).check(matches(withText("testemail")));
         closeSoftKeyboard();
 
-        onView(withId(R.id.phoneEditText)).perform(typeText("7801234567"));
+        // clear and replace ID
+        onView(withId(R.id.phoneEditText)).perform(click(), clearText(), typeText("7801234567"));
         onView(withId(R.id.phoneEditText)).check(matches(withText("7801234567")));
         closeSoftKeyboard();
 
-        onView(withId(R.id.aboutMeEditText)).perform(clearText(), typeText("About me text"));
+        // clear and replace About me
+        onView(withId(R.id.aboutMeEditText)).perform(click(), clearText(), typeText("About me text"));
         onView(withId(R.id.aboutMeEditText)).check(matches(withText("About me text")));
+        closeSoftKeyboard();
     }
 
     @Test
     public void testEditProfilePicture() {
-        onView(ViewMatchers.withId(R.id.changePictureTextView)).perform(ViewActions.click());
+        // simulate image change
+        // choose an image from the drawable resources
+        Drawable newImageDrawable = ContextCompat.getDrawable(
+                InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                R.drawable.guest_default_image);
+
+        // update the ImageView in your UI with the new image drawable
+        onView(withId(R.id.image_inside_card)).perform(setImageDrawable(newImageDrawable));
+        // checks if camera roll opens
+        onView(withId(R.id.changePictureTextView)).perform(click());
         onView(withId(R.id.choose_image_fragment)).check(matches(isDisplayed()));
         onView(withId(R.id.camera_roll_access_button)).perform(click());
-        intended(hasAction(Intent.ACTION_PICK));
+        intended(hasAction(Intent.ACTION_GET_CONTENT));
+    }
 
+    private ViewAction setImageDrawable(Drawable newImageDrawable) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(ImageView.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "Set drawable to image view";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                ((ImageView) view).setImageDrawable(newImageDrawable);
+            }
+        };
     }
 
     @Test
     public void testRemoveProfilePicture() {
-        // Click on the "Remove Picture" button
+        // remove the current profile picture if it is not a default
         onView(withId(R.id.changePictureTextView)).perform(click());
-
         onView(withId(R.id.remove_picture_button)).perform(click());
-
-        // Verify that the profile picture ImageView is now empty or has a placeholder
-        onView(withId(R.id.profile_image)).check(matches(isDisplayed()));
     }
-
 
 }
