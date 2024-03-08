@@ -12,9 +12,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 
-import static com.example.scandroid.AllowAccessCameraRollFragment.drawableToBitmap;
-
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
@@ -83,7 +80,6 @@ public class EditProfileActivityTests {
         Drawable newImageDrawable = ContextCompat.getDrawable(
                 InstrumentationRegistry.getInstrumentation().getTargetContext(),
                 R.drawable.guest_default_image);
-
         // update the ImageView in UI with the new image drawable
         onView(withId(R.id.image_inside_card)).perform(setImageDrawable(newImageDrawable));
         // checks if camera roll opens

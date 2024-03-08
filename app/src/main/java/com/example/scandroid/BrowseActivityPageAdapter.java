@@ -22,6 +22,7 @@ public class BrowseActivityPageAdapter extends FragmentStateAdapter {
     }
 
     /**
+     * Creates a new fragment based on position.
      * There are 2 tabs in the ViewPager2, so it returns the fragment associated
      * with a specific position in the ViewPager2.
      * @param position position of the fragment in the ViewPager2 (tabs)
