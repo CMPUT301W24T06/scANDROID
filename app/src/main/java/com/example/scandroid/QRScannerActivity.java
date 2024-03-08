@@ -85,18 +85,15 @@ public class QRScannerActivity extends AppCompatActivity {
         options.setCaptureActivity(CaptureAct.class);
         barLauncher.launch(options);
     }
-
-    // shows the content in the QR Code scanned
-    // replace this with our actual content class
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->{
         if(result.getContents() != null){
             String eventID = result.getContents();
-            //TODO : IF QR IS PROMO
+//          TODO : If the QR Code is for looking at promo for an event.
 //          Intent intent = new Intent(QRScannerActivity.this, EventInfoActivity.class);
 //          intent.putExtra("eventID", eventID);
 //          startActivity(intent);
 
-            // IF QR IS CHECK IN:
+            // If the QR Code is for checking into an event.
             // source: https://stackoverflow.com/a/15392591
             DialogFragment checkInPrompt = new EventCheckInFragment();
             Bundle bundle = new Bundle();
@@ -106,16 +103,6 @@ public class QRScannerActivity extends AppCompatActivity {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(android.R.id.content, checkInPrompt);
             transaction.commit();
-
-//            AlertDialog.Builder builder = new AlertDialog.Builder(QRScannerActivity.this);
-//            builder.setTitle("Content");
-//            builder.setMessage(result.getContents());
-//            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    dialog.dismiss();
-//                }
-//            }).show();
         }
     });
 }

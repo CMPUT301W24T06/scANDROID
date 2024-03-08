@@ -54,6 +54,7 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
             });
 
     public AllowAccessCameraRollFragment() {
+        // Required Empty Constructor
 
     }
 

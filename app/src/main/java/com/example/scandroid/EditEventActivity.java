@@ -7,6 +7,13 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+/**
+ * EditEventActivity is an activity that links all of
+ * the necessary activities for an event organizer:
+ * CreateEventActivity, EventAttendeesActivity, EventQRCodesActivity,
+ * EventQRCodesActivity, EventCreateAnnouncementsActivity, EventLocationTrackingActivity,
+ * and EventMilestonesActivity.
+ */
 public class EditEventActivity extends AppCompatActivity {
     Event event;
     AppCompatButton backButton;
