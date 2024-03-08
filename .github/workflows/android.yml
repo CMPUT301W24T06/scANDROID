@@ -41,7 +41,7 @@ jobs:
 
     - name: Start Firebase Emulators
       run: |
-        npm firebase emulators:start --only firestore,storage --export-on-exit=./emulator-export --debug &
+        firebase emulators:start --only firestore,storage --export-on-exit=./emulator-export --debug &
   
     - name: Wait for Emulators to Start
       run: |
