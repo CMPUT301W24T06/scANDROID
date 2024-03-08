@@ -26,7 +26,7 @@ jobs:
     - name: Install Node.js and npm
       uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '20'
 
     - name: Install Firebase CLI
       run: |
