@@ -1,4 +1,4 @@
-name: Android CI
+name: Android CI # https://chat.openai.com/share/d004e660-2cea-4ac3-8831-1e384d6c71ac
 
 on:
   push:
@@ -49,6 +49,6 @@ jobs:
     - name: Run Tests
       run: ./gradlew test
 
-    - name: Stop Firebase Emulators
-      run: |
-        firebase emulators:exec 'echo "action complete"'
+    # - name: Stop Firebase Emulators
+    #   run: |
+    #     firebase emulators:exec 'echo "action complete"'
