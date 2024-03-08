@@ -89,6 +89,7 @@ public class EditProfileActivityTests {
         onView(withId(R.id.changePictureTextView)).perform(click());
         onView(withId(R.id.choose_image_fragment)).check(matches(isDisplayed()));
         onView(withId(R.id.camera_roll_access_button)).perform(click());
+        intended(hasAction(Intent.ACTION_GET_CONTENT));
     }
 
     @Test
