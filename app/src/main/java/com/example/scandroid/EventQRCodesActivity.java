@@ -27,6 +27,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
  * the Promo and Check-In QR Codes for an event, and allows the event
  * organizer to share the QR Codes to other apps or email.
  */
+// source for generating qr code: https://youtu.be/n8HdrLYL9DA?si=u515CzkVDgDhSd3K
 
 public class EventQRCodesActivity extends AppCompatActivity {
     DBAccessor database;

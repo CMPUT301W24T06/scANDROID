@@ -28,6 +28,9 @@
             android:name=".EventViewAnnouncementsActivity"
             android:exported="false" />
         <activity
+            android:name=".CheckInOrPromoActivity"
+            android:exported="false" />
+        <activity
             android:name=".BrowseActivity"
             android:exported="true" />
         <activity
