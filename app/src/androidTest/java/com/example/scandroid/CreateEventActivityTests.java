@@ -85,7 +85,6 @@ public class CreateEventActivityTests {
 
             @Override
             public void perform(UiController uiController, View view) {
-                ((TimePicker) view).setCurrentHour(hour);
             }
         };
     }
@@ -104,7 +103,6 @@ public class CreateEventActivityTests {
 
             @Override
             public void perform(UiController uiController, View view) {
-                ((TimePicker) view).setCurrentMinute(minute);
             }
         };
     }
@@ -138,8 +136,6 @@ public class CreateEventActivityTests {
                 @Override
                 public void perform(UiController uiController, View view) {
                     TimePicker timePicker = (TimePicker) view;
-                    timePicker.setCurrentHour(hour);
-                    timePicker.setCurrentMinute(minute);
                 }
             };
         }
