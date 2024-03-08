@@ -1,5 +1,6 @@
 package com.example.scandroid;
 
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 
 import java.sql.Time;
@@ -55,33 +57,31 @@ public class EventCheckInFragment extends DialogFragment {
                     eventLocation.setText(new LocationGeocoder(getActivity()).coordinatesToAddress(event.getEventLocation()));
 
                     if (pushNotifBox.isChecked()) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                            database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
-                                user.addEventToNotifiedBy(eventID);
-                                database.storeUser(user);
-                            });
+                        database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
+                            user.addEventToNotifiedBy(eventID);
+                            database.storeUser(user);
+                        });
 
-                        }
+
 
                         if (trackLocationBox.isChecked()) {
                             // track location something in database?
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                                 database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
                                     // would set check in location here
-//                                            FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
-//                                            if (ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                                                // TODO: Consider calling
-//                                                //    ActivityCompat#requestPermissions
-//                                                // here to request the missing permissions, and then overriding
-//                                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                                                //                                          int[] grantResults)
-//                                                // to handle the case where the user grants the permission. See the documentation
-//                                                // for ActivityCompat#requestPermissions for more details.
-//                                                return;
-//                                            }
-//                                            fusedLocationClient.getLastLocation();
+//                                    FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+//                                    if (ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                                        // TODO: Consider calling
+//                                        //    ActivityCompat#requestPermissions
+//                                        // here to request the missing permissions, and then overriding
+//                                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                                        //                                          int[] grantResults)
+//                                        // to handle the case where the user grants the permission. See the documentation
+//                                        // for ActivityCompat#requestPermissions for more details.
+//                                        return;
+//                                    }
+//                                    fusedLocationClient.getLastLocation();
                                 });
-                            }
+
                             cancelCheckInButton.setOnClickListener(v -> {
                                 // cancel check in
                                 dismiss();
@@ -89,15 +89,14 @@ public class EventCheckInFragment extends DialogFragment {
 
                             confirmCheckInButton.setOnClickListener(v -> {
                                 // check in
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                                    database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
-                                        user.addEventToEventsAttending(eventID);
-                                        // source: https://www.tabnine.com/code/java/classes/java.sql.Time
-                                        event.addEventAttendee(user.getUserID(), new Time(((Date)checkInTime).getTime()), checkInLocation);
-                                        database.storeUser(user);
-                                    });
-                                    dismiss();
-                                }
+                                database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
+                                    user.addEventToEventsAttending(eventID);
+                                    // source: https://www.tabnine.com/code/java/classes/java.sql.Time
+                                    event.addEventAttendee(user.getUserID(), new Time(((Date)checkInTime).getTime()), checkInLocation);
+                                    database.storeUser(user);
+                                });
+                                dismiss();
+
                             });
 
                         }
