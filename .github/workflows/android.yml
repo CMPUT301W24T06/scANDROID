@@ -31,7 +31,8 @@ jobs:
 
     - name: Install Firebase CLI
       run: |
-        sudo npm install -g firebase-tools
+        sudo npm install -g firebase-tools@latest
+        npm list -g firebase-tools 
       
     - name: Build with Gradle
       run: ./gradlew build
@@ -42,7 +43,7 @@ jobs:
   
     - name: Wait for Emulators to Start
       run: |
-        sleep 1
+        sleep 1m
         
     - name: Run Tests
       run: ./gradlew test
