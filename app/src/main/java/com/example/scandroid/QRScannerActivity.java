@@ -11,6 +11,12 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.journeyapps.barcodescanner.CaptureActivity;
@@ -81,17 +87,29 @@ public class QRScannerActivity extends AppCompatActivity {
     }
 
     // shows the content in the QR Code scanned
+    // replace this with our actual content class
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->{
         if(result.getContents() != null){
-            AlertDialog.Builder builder = new AlertDialog.Builder(QRScannerActivity.this);
-            builder.setTitle("Content");
-            builder.setMessage(result.getContents());
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            }).show();
+            // source: https://stackoverflow.com/a/15392591
+            DialogFragment checkInPrompt = new EventCheckInFragment();
+            String eventID = result.getContents();
+            Bundle bundle = new Bundle();
+            bundle.putString("eventID", eventID);
+            checkInPrompt.setArguments(bundle);
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(android.R.id.content, checkInPrompt);
+            transaction.commit();
+
+//            AlertDialog.Builder builder = new AlertDialog.Builder(QRScannerActivity.this);
+//            builder.setTitle("Content");
+//            builder.setMessage(result.getContents());
+//            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    dialog.dismiss();
+//                }
+//            }).show();
         }
     });
 }

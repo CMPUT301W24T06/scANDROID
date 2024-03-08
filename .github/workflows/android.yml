@@ -1,4 +1,4 @@
-name: Android CI
+name: Android CI # https://chat.openai.com/share/d004e660-2cea-4ac3-8831-1e384d6c71ac
 
 on:
   push:
@@ -10,7 +10,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    timeout-minutes: 5
 
     steps:
     - uses: actions/checkout@v3
@@ -41,8 +40,7 @@ jobs:
 
     - name: Start Firebase Emulators
       run: |
-        FIREBASE_BIN=$(npm bin -g)/firebase
-        $FIREBASE_BIN emulators:start --only firestore,storage --export-on-exit=./emulator-export --debug &
+        firebase emulators:start --only firestore,storage --export-on-exit=./emulator-export --debug &
   
     - name: Wait for Emulators to Start
       run: |
@@ -51,7 +49,6 @@ jobs:
     - name: Run Tests
       run: ./gradlew test
 
-    - name: Stop Firebase Emulators
-      run: |
-        FIREBASE_BIN=$(npm bin -g)/firebase
-        $FIREBASE_BIN firebase emulators:stop
+    # - name: Stop Firebase Emulators
+    #   run: |
+    #     firebase emulators:exec 'echo "action complete"'

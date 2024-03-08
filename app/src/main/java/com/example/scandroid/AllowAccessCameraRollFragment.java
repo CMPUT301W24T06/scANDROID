@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,15 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
     String userID;
     DBAccessor database = new DBAccessor();
     Bitmap profilePic;
+    ImageView profileImageView;
     private OnImageChangedListener imageChangedListener;
+
+    private final ActivityResultLauncher<String> pickImageLauncher =
+            registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
+                if (result != null) {
+                    handleImageSelection(result);
+                }
+            });
 
     public AllowAccessCameraRollFragment() {
 
@@ -66,22 +75,29 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
         Button backButton = view.findViewById(R.id.back_arrow);
         Button choosePicture = view.findViewById(R.id.camera_roll_access_button);
         Button removePicture = view.findViewById(R.id.remove_picture_button);
-        registerResult();
+        //registerResult();
         if (getArguments().getString("userID") != null) {
             userID = getArguments().getString("userID");
+            int viewID = getArguments().getInt("viewID");
+            profileImageView = findImageView(viewID);
+
             removePicture.setOnClickListener(v -> {
                 database.accessUser(userID, user -> {
                     String name = user.getUserName();
                     profilePic = new ProfilePictureGenerator().generatePictureBitmap(name);
                     database.storeUserProfileImage(userID, profilePic);
-                    imageChangedListener.onImageChanged(profilePic);
+                    //imageChangedListener.onImageChanged(profilePic);
+                    profileImageView.setImageBitmap(profilePic);
                     dismiss();
                 });
             });
         }
         choosePicture.setOnClickListener(v -> {
-            pickImage();
-            dismiss();
+            //pickImage();
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            pickImageLauncher.launch("image/*");
+
         });
         backButton.setOnClickListener(v -> dismiss());
         return view;
@@ -98,10 +114,11 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
      * @param userID String of the user's ID
      * @return Returns the AllowAccessCameraRollFragment
      */
-    public static AllowAccessCameraRollFragment newInstance(String userID) {
+    public static AllowAccessCameraRollFragment newInstance(String userID, int viewID) {
         AllowAccessCameraRollFragment fragment = new AllowAccessCameraRollFragment();
         Bundle args = new Bundle();
         args.putString("userID", userID);
+        args.putInt("viewID", viewID);
         fragment.setArguments(args);
         return fragment;
     }
@@ -125,42 +142,6 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
     public void setImageChangedListener(OnImageChangedListener listener) {
         this.imageChangedListener = listener;
     }
-
-    private ActivityResultLauncher<Intent> launcher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                    // Get the selected image URI
-                    Uri selectedImageUri = result.getData().getData();
-                    //profilePic = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), selectedImageUri);
-                    // imageChangedListener.onImageChanged(profilePic);
-//                    database.storeUserProfileImage(userID, profilePic);
-                    InputStream inputStream;
-                    try {
-                        inputStream = requireContext().getContentResolver().openInputStream(selectedImageUri);
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                    Drawable drawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
-
-                    // Convert Drawable to Bitmap
-                    profilePic = BitmapFactory.decodeStream(inputStream);
-
-                    // Notify the listener about the image change
-                    imageChangedListener.onImageChanged(profilePic);
-
-                    // Close the InputStream
-                    try {
-                        assert inputStream != null;
-                        inputStream.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    Drawable posterDrawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
-                    profilePic = BitmapFactory.decodeStream(inputStream);
-                    imageChangedListener.onImageChanged(profilePic);
-                }
-            });
 
     /**
      * Creates a Bitmap object from a Drawable object
@@ -191,36 +172,47 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
         return bitmap;
     }
 
-    /**
-     * Retrieves the image user selected from their gallery
-     */
-    //Source: https://www.youtube.com/watch?v=nOtlFl1aUCw
-    private void registerResult() {
-        launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    try {
-                        assert result.getData() != null;
-                        Uri imageUri = result.getData().getData();
-                        assert imageUri != null;
-                        ImageView profile = requireView().findViewById(R.id.profile_image);
-                        profile.setImageURI(imageUri);
+    private void handleImageSelection(Uri imageUri) {
 
-                    } catch (Exception e) {
-                        Toast.makeText(requireContext(), "No image selected", Toast.LENGTH_SHORT).show();
-                    }
+        try {
+            InputStream inputStream = requireContext().getContentResolver().openInputStream(imageUri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+            if (profileImageView != null) {
+                // Update the ImageView directly
+                profileImageView.setImageBitmap(bitmap);
+                Log.d("EditProfileActivity", "ImageView updated successfully");
+
+                if (bitmap != null) {
+                    // Update the backend with the new image
+                    DBAccessor database = new DBAccessor();
+                    database.storeUserProfileImage(userID, bitmap);
+                } else {
+                    Log.e("EditProfileActivity", "Bitmap is null");
                 }
-        );
-    }
+            } else {
+                Log.e("EditProfileActivity", "ImageView is null");
+            }
 
-    private void pickImage() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        launcher.launch(intent);
+            // Optionally close the InputStream
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("EditProfileActivity", "Error converting image to bitmap: " + e.getMessage());
+            Toast.makeText(requireContext(), "Error converting image to bitmap", Toast.LENGTH_SHORT).show();
+        }
+        dismiss();
     }
-
-    private void pickImageLegacy() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        launcher.launch(intent);
+    public ImageView findImageView(int viewID){
+        Activity hostActivity = getActivity();
+        if (hostActivity != null) {
+            // Access views or perform actions in the hosting Activity
+            ImageView someView = hostActivity.findViewById(viewID);
+            return someView;
+        }
+        return null;
     }
 }
 
