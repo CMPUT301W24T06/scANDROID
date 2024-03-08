@@ -34,7 +34,7 @@ public class ProfilePictureGenerator {
         // Create a Paint object for drawing text
         Paint paint = new Paint();
         paint.setColor(generateColor(name.charAt(name.length() - 1), "letter"));
-        paint.setTextSize(275);
+        paint.setTextSize(250);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
         paint.setAntiAlias(true);
 
@@ -45,7 +45,7 @@ public class ProfilePictureGenerator {
         float y = (height - paint.ascent() - paint.descent()) / 2;
 
         // Draw the random letter on the canvas
-        canvas.drawText(String.valueOf(firstLetter), x, y-20, paint);
+        canvas.drawText(String.valueOf(firstLetter), x, y-30, paint);
 
         return bitmap;
     }
