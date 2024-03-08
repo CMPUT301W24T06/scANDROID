@@ -30,7 +30,7 @@ jobs:
         node-version: '20'
 
     - name: Add npm Global Bin to PATH
-      run: echo "::add-path::$(npm bin -g)"
+      run: echo 'export PATH=$PATH:$(npm bin -g)' >> $GITHUB_ENV
 
     - name: Install Firebase CLI
       run: |
