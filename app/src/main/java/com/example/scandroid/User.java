@@ -49,16 +49,6 @@ public class User {
         this.userLocation = null; // Default to null for userLocation
     }
 
-    public User(String userID) {
-        this.userID = userID;
-        this.userName = ""; // Default to an empty string for userName
-        this.eventsAttending = new ArrayList<>();
-        this.eventsOrganized = new ArrayList<>();
-        this.notifiedBy = new ArrayList<>();
-        this.timesAttended = new HashMap<>();
-        this.userLocation = null; // Default to null for userLocation
-    }
-
     /* ----------- *
      * CONSTRUCTOR *
      * ----------- */

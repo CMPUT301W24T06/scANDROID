@@ -12,8 +12,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 
-import static com.example.scandroid.AllowAccessCameraRollFragment.drawableToBitmap;
-
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.View;

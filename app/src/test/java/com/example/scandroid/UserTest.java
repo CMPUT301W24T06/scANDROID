@@ -2,6 +2,7 @@ package com.example.scandroid;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.location.Location;
@@ -168,6 +169,11 @@ public class UserTest {
         assertEquals(times,mockUser.getTimesAttended(eventID));
 
     }
+    @Test
+    public void testGetProfilePictureURL(){
+        User mockUser = mockUser();
+        assertNull(mockUser.getProfilePictureUrl());
+    }
 
 
     /* -------------- *
@@ -198,4 +204,12 @@ public class UserTest {
         mock.setUserAboutMe("My name is Cinderella.");
         assertEquals("My name is Cinderella.",mock.getUserAboutMe());
     }
+    @Test
+    public void testSetProfilePictureURL(){
+        User mock = mockUser();
+        String newURl = "mydirectory/mygallery/photo";
+        mock.setProfilePictureUrl(newURl);
+        assertEquals(newURl,mock.getProfilePictureUrl());
+    }
+
 }
