@@ -229,6 +229,7 @@ public class HomepageActivity extends AppCompatActivity {
     /**
      * Deals with if the user chooses not to enter their name when prompted by the fragment
      * by displaying a randomly generated Guest ID and updating the database
+     * @param randomName The randomly generated name to be used as the guest ID.
      */
     public void onMaybeLaterClicked(String randomName) {
         // Handle "Maybe Later" button click
@@ -240,6 +241,7 @@ public class HomepageActivity extends AppCompatActivity {
     /**
      * Deals with if the user chooses to enter their name when prompted by the fragment
      * by saving and displaying the name entered and updating the database
+     * @param enteredName the name entered by the user
      */
     public void onEnterClicked(String enteredName) {
         // Handle "Enter" button click
@@ -250,6 +252,7 @@ public class HomepageActivity extends AppCompatActivity {
 
     /**
      * Updates the user's name displayed on the homepage profile
+     * @param newName the new name to be displayed
      */
     private void updateActivityName(String newName) {
         TextView homepageNameText = findViewById(R.id.homepage_name_text);
@@ -258,6 +261,7 @@ public class HomepageActivity extends AppCompatActivity {
 
     /**
      * Updates the user's name in the database
+     * @param newName the new name to be updated in the database
      */
     private void updateNameInFirebase(String newName) {
         // Update the user's name in Firebase
