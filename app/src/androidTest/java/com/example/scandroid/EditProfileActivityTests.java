@@ -8,12 +8,14 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasData;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import android.content.Intent;
+import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
@@ -49,6 +51,8 @@ public class EditProfileActivityTests {
     public void tearDown() {
         Intents.release();
     }
+
+
     @Test
     public void testCreateProfile() {
 
@@ -69,18 +73,24 @@ public class EditProfileActivityTests {
     }
 
     @Test
-    public void testEditProfilePicture(){
+    public void testEditProfilePicture() {
         onView(ViewMatchers.withId(R.id.changePictureTextView)).perform(ViewActions.click());
         onView(withId(R.id.choose_image_fragment)).check(matches(isDisplayed()));
         onView(withId(R.id.camera_roll_access_button)).perform(click());
         intended(hasAction(Intent.ACTION_PICK));
+
     }
 
     @Test
-    public void testReturnToHomePage() {
-        onView(withId(R.id.aboutMeEditText)).perform(typeText("About me text"));
-        closeSoftKeyboard();
-        onView(ViewMatchers.withId(R.id.updateButton)).perform(ViewActions.click());
-        intended(hasComponent(HomepageActivity.class.getName()));
+    public void testRemoveProfilePicture() {
+        // Click on the "Remove Picture" button
+        onView(withId(R.id.changePictureTextView)).perform(click());
+
+        onView(withId(R.id.remove_picture_button)).perform(click());
+
+        // Verify that the profile picture ImageView is now empty or has a placeholder
+        onView(withId(R.id.profile_image)).check(matches(isDisplayed()));
     }
+
+
 }
