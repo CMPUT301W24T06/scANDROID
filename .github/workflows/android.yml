@@ -50,7 +50,7 @@ jobs:
       run: |
         ./gradlew test
         ./gradlew connectedAndroidTest --dry-run
-      # ./gradlew app:connectedAndroidTest DBAFirestoreTest --continue
+        ./gradlew app:connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.example.scandroid.DBAFirestoreTest
 
     # - name: Stop Firebase Emulators
     #   run: |
