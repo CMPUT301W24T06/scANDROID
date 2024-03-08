@@ -152,4 +152,17 @@ public class HomepageActivityTest {
             }
         };
     }
+    @Test
+    public void testRemoveProfilePicture(){
+        // press the button
+        onView(withId(R.id.edit_profile_button)).perform(click());
+        // simulate deleting the picture displayed
+        onView(withId(R.id.changePictureTextView)).perform(click());
+        onView(withId(R.id.remove_picture_button)).perform(click());
+
+        // update and check if displayed
+        onView(withId(R.id.updateButton)).perform(click());
+        onView(withId(R.id.profile_image)).check(matches(isDisplayed()));
+    }
+
 }
