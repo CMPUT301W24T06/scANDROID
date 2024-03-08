@@ -57,14 +57,14 @@ public class QRScannerActivity extends AppCompatActivity {
 
     private void scanCode() {
         ScanOptions options = new ScanOptions();
-        options.setPrompt("Temporary Message");
+        options.setPrompt("Please center barcode in box to scan. Volume up for flash!");
         options.setBeepEnabled(true);
         options.setOrientationLocked(true);
         options.setCaptureActivity(CaptureAct.class);
         barLauncher.launch(options);
     }
 
-    // replace this with our actual content class
+    // replace this with our actual content design in the future
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->{
         if(result.getContents() != null){
             AlertDialog.Builder builder = new AlertDialog.Builder(QRScannerActivity.this);
