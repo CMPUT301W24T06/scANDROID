@@ -95,4 +95,16 @@ public class HomepageActivityTest {
         onView(withId(R.id.browse_tabs)).check(matches(isDisplayed()));
         onView(withId(R.id.browse_pager)).check(matches(isDisplayed()));
     }
+
+    // test if edited profile changes have been added to be displayed on homepage
+    @Test
+    public void testEditProfileName(){
+        // press the button
+        onView(withId(R.id.edit_profile_button)).perform(click());
+        // change the name
+        onView(withId(R.id.nameEditText)).perform(click(), clearText(), typeText("Test Name"));
+        closeSoftKeyboard();
+        onView(withId(R.id.updateButton)).perform(click());
+        onView(withId(R.id.homepage_name_text)).check(matches(withText("Test Name")));
+    }
 }
