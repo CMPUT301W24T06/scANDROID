@@ -13,6 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
+/**
+ * EventAttendeesActivity is a class responsible for
+ * displaying event attendees and providing search functionality.
+ */
 public class EventAttendeesActivity extends AppCompatActivity {
 
     @Override

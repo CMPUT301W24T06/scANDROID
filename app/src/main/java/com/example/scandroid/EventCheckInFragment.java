@@ -1,6 +1,7 @@
 package com.example.scandroid;
 
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -75,6 +76,9 @@ public class EventCheckInFragment extends DialogFragment {
                     if (trackLocationBox.isChecked()) {
                         database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
                             // would set check in location here
+                            Location userLocation = new LocationRetriever(requireContext()).getLastKnownLocation();
+                            checkInLocation.add(userLocation.getLatitude());
+                            checkInLocation.add(userLocation.getLongitude());
 //                            FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 //                            if (ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //                                // TODO: Consider calling

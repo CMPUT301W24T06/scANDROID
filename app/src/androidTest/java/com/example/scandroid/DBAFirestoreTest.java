@@ -11,6 +11,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.checkerframework.checker.units.qual.C;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -120,7 +121,37 @@ public class DBAFirestoreTest {
         assertEquals(mockEvent.getEventID(), recievedEvent[0].getEventID());
         assertEquals(mockEvent.getEventName(), recievedEvent[0].getEventName());
         assertEquals(mockEvent.getEventDescription(), recievedEvent[0].getEventDescription());
-    }
 
+    } // end public void testWriteEventToFirestore
+
+    @Test
+    public void testWriteUserToFirestore() throws InterruptedException {
+        // create User object to test with
+        User mockUser = mockUser();
+
+        // initialize wait to ensure database write takes place before testing
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // store User in database and give time to take place
+        this.dbA.storeUser(mockUser);
+        latch.await(5, TimeUnit.SECONDS);
+
+        // set location to save accessedUser and get accessedUser
+        final User[] recievedUser = new User[1];
+        this.dbA.accessUser(mockUser.getUserID(), user -> {
+            if (user != null) {
+                recievedUser[0] = user;
+            }
+        });
+
+        // after delay to ensure user access, assert attributes
+        latch.await(5, TimeUnit.SECONDS);
+        assertEquals(mockUser.getUserID(), recievedUser[0].getUserID());
+        assertEquals(mockUser.getUserName(), recievedUser[0].getUserName());
+        assertEquals(mockUser.getUserPhoneNumber(), recievedUser[0].getUserPhoneNumber());
+        assertEquals(mockUser.getUserAboutMe(), recievedUser[0].getUserAboutMe());
+        assertEquals(mockUser.getUserEmail(), recievedUser[0].getUserEmail());
+
+    } // end public void testWriteUserToFirestore
 
 } // end public class DBAFirestoreTest

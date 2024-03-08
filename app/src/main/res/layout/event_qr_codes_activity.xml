@@ -2,8 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/qr_codes"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:id="@+id/top_border"
         android:layout_width="match_parent"
@@ -19,8 +21,7 @@
             android:id="@+id/back_button"
             android:layout_width="35dp"
             android:layout_height="36dp"
-            android:background="@drawable/back_arrow_icon">
-        </androidx.appcompat.widget.AppCompatButton>
+            android:background="@drawable/back_arrow_icon"></androidx.appcompat.widget.AppCompatButton>
 
         <TextView
             android:id="@+id/event_qr_codes_bar"
