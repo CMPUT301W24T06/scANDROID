@@ -29,9 +29,20 @@ jobs:
       with:
         node-version: '20'
 
+    - name: Add npm Global Bin to PATH
+      run: echo "::add-path::$(npm bin -g)"
+
     - name: Install Firebase CLI
       run: |
         sudo npm install -g firebase-tools@latest
+
+    - name: Debug Environment
+      run: |
+        echo "PATH=$PATH"
+        which npm
+        npm --version
+        npm list -g
+        firebase --version
 
     - name: Print Firebase Tools Path
       run: |
