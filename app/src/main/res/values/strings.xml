@@ -64,7 +64,6 @@
     <string name="allow_scandroid_to_access_your_camera_roll_text">Allow scANDROID to access your Camera Roll?</string>
     <string name="users_text">Users</string>
     <string name="events_text">Events</string>
-    <string name="fragment_event_title">Event Title</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_with_event_name_text">Search with event name</string>
