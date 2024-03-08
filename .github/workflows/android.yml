@@ -41,7 +41,8 @@ jobs:
 
     - name: Start Firebase Emulators
       run: |
-        npx firebase emulators:start --only firestore,storage --export-on-exit=./emulator-export --debug &
+        FIREBASE_BIN=$(npm bin -g)/firebase
+        $FIREBASE_BIN emulators:start --only firestore,storage --export-on-exit=./emulator-export --debug &
   
     - name: Wait for Emulators to Start
       run: |
@@ -51,4 +52,6 @@ jobs:
       run: ./gradlew test
 
     - name: Stop Firebase Emulators
-      run: npx firebase emulators:stop
+      run: |
+        FIREBASE_BIN=$(npm bin -g)/firebase
+        $FIREBASE_BIN firebase emulators:stop
