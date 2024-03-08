@@ -10,6 +10,10 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+/**
+ * EventViewAnnouncementsActivity is an Activity which allows for
+ * viewing announcements related to an event.
+ */
 public class EventViewAnnouncementsActivity extends AppCompatActivity {
     BottomNavigationView navigationBar;
     @Override

@@ -32,8 +32,6 @@ import java.util.Calendar;
  * The view for when Users wish to create a new event or edit an existing event's parameters
  */
 public class CreateEventActivity extends AppCompatActivity {
-//    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
-
     ActivityResultLauncher<Intent> launcher;
     Button posterButton;
     Bitmap posterBitmap;
@@ -57,12 +55,10 @@ public class CreateEventActivity extends AppCompatActivity {
         registerResult();
         DBAccessor database = new DBAccessor();
 
-        //Calendar calendar;
+
         //Fills in event details if this Activity was accessed by clicking on an existing event
-        //eventID = getIntent().getStringExtra("eventID");
         event = (Event)getIntent().getSerializableExtra("event");
 
-        //if (eventID != null) {
         if (event != null){
             newEvent = false;
             eventID = event.getEventID();
