@@ -46,6 +46,7 @@
             android:layout_marginTop="7dp"
             android:layout_marginBottom="25dp"
             android:layout_toEndOf="@+id/profile_pic_card"
+            android:layout_toStartOf="@+id/create_event_button"
             android:background="@drawable/button_outline_white"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
