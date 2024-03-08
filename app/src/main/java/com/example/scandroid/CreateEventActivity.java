@@ -223,13 +223,8 @@ public class CreateEventActivity extends AppCompatActivity {
      * Starts an Intent for selecting an image from a user's gallery
      */
     //Source: https://www.youtube.com/watch?v=nOtlFl1aUCw
-//    private void pickImage(){
-//        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        launcher.launch(intent);
-//    }
-
-    private void pickImage(){
-        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+    private void pickImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         launcher.launch(intent);
     }
 

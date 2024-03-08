@@ -44,9 +44,11 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
     private OnImageChangedListener imageChangedListener;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private static final int PICK_IMAGE_REQUEST = 2;
-    public AllowAccessCameraRollFragment(){
+
+    public AllowAccessCameraRollFragment() {
 
     }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -65,7 +67,7 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
         Button choosePicture = view.findViewById(R.id.camera_roll_access_button);
         Button removePicture = view.findViewById(R.id.remove_picture_button);
         registerResult();
-        if (getArguments().getString("userID") != null){
+        if (getArguments().getString("userID") != null) {
             userID = getArguments().getString("userID");
             removePicture.setOnClickListener(v -> {
                 database.accessUser(userID, user -> {
@@ -96,9 +98,9 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
 
     /**
      * Creates an AllowAccessCameraRollFragment and allows the transfer of user IDs between edit profile page
+     *
      * @param userID String of the user's ID
-     * @return
-     * Returns the AllowAccessCameraRollFragment
+     * @return Returns the AllowAccessCameraRollFragment
      */
     public static AllowAccessCameraRollFragment newInstance(String userID) {
         AllowAccessCameraRollFragment fragment = new AllowAccessCameraRollFragment();
@@ -111,74 +113,78 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
     /**
      * Interface for communication between AllowAccessCameraRollFragment and any activities that show profile picture
      * Communication allows for updating the profile picture ImageView
+     *
      * @author Simon Thang
      */
     //OpenAI, 2024, ChatGPT, Change ImageView in an activity from a fragment called by it
     public interface OnImageChangedListener {
         /**
          * Passes the new bitmap profile picture to activities
+         *
          * @param bitmap The new bitmap profile picture
          */
         void onImageChanged(Bitmap bitmap);
     }
-    public void setImageChangedListener(OnImageChangedListener listener){
+
+    public void setImageChangedListener(OnImageChangedListener listener) {
         this.imageChangedListener = listener;
     }
-    private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                    // Get the selected image URI
-                    Uri selectedImageUri = result.getData().getData();
-                    //profilePic = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), selectedImageUri);
-                   // imageChangedListener.onImageChanged(profilePic);
-                    //database.storeUserProfileImage(userID, profilePic);
-                    InputStream inputStream;
-                    try {
-                        inputStream  = requireContext().getContentResolver().openInputStream(selectedImageUri);
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                    Drawable drawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
 
-                    // Convert Drawable to Bitmap
-                    profilePic = BitmapFactory.decodeStream(inputStream);
-
-                    // Notify the listener about the image change
-                    imageChangedListener.onImageChanged(profilePic);
-
-                    // Close the InputStream
-                    try {
-                        assert inputStream != null;
-                        inputStream.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    Drawable posterDrawable = Drawable.createFromStream(inputStream, selectedImageUri.toString() );
-                    profilePic = BitmapFactory.decodeStream(inputStream);
-                    imageChangedListener.onImageChanged(profilePic);
-
-                    }
-                });
+//    private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+//            new ActivityResultContracts.StartActivityForResult(),
+//            result -> {
+//                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+//                    // Get the selected image URI
+//                    Uri selectedImageUri = result.getData().getData();
+//                    //profilePic = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), selectedImageUri);
+//                    // imageChangedListener.onImageChanged(profilePic);
+//                    //database.storeUserProfileImage(userID, profilePic);
+//                    InputStream inputStream;
+//                    try {
+//                        inputStream = requireContext().getContentResolver().openInputStream(selectedImageUri);
+//                    } catch (FileNotFoundException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    Drawable drawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
+//
+//                    // Convert Drawable to Bitmap
+//                    profilePic = BitmapFactory.decodeStream(inputStream);
+//
+//                    // Notify the listener about the image change
+//                    imageChangedListener.onImageChanged(profilePic);
+//
+//                    // Close the InputStream
+//                    try {
+//                        assert inputStream != null;
+//                        inputStream.close();
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    Drawable posterDrawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
+//                    profilePic = BitmapFactory.decodeStream(inputStream);
+//                    imageChangedListener.onImageChanged(profilePic);
+//
+//                }
+//            });
 
     /**
      * Creates a Bitmap object from a Drawable object
+     *
      * @param drawable Drawable object that is being converted
-     * @return
-     * Returns a Bitmap object created from parameters of the Drawable object
+     * @return Returns a Bitmap object created from parameters of the Drawable object
      */
     //Source: https://stackoverflow.com/questions/3035692/how-to-convert-a-drawable-to-a-bitmap
-    public static Bitmap drawableToBitmap (Drawable drawable) {
+    public static Bitmap drawableToBitmap(Drawable drawable) {
         Bitmap bitmap;
 
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
+            if (bitmapDrawable.getBitmap() != null) {
                 return bitmapDrawable.getBitmap();
             }
         }
 
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
             bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
         } else {
             bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -194,7 +200,7 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
      * Retrieves the image user selected from their gallery
      */
     //Source: https://www.youtube.com/watch?v=nOtlFl1aUCw
-    private void registerResult(){
+    private void registerResult() {
         launcher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -205,19 +211,15 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
                         ImageView profile = requireView().findViewById(R.id.profile_image);
                         profile.setImageURI(imageUri);
 
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         Toast.makeText(requireContext(), "No image selected", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
     }
 
-
-    @RequiresExtension(extension = Build.VERSION_CODES.R, version = 2)
-    private void pickImage(){
-        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
+    private void pickImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         launcher.launch(intent);
     }
 
@@ -225,8 +227,5 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         launcher.launch(intent);
     }
-
-
-
 }
 
