@@ -1,0 +1,8 @@
+19:18:22.028 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+19:18:22.100 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
+19:18:23.870 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.NamespaceActor - scandroid-cmput301-w24-t06-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 60ms, init: 0ms
+19:18:23.892 [NamespaceSystem-blocking-namespace-operation-dispatcher-7] INFO com.firebase.core.namespace.StateManager - Namespace scandroid-cmput301-w24-t06-default-rtdb status Active to Active
+19:20:07.526 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
+19:20:07.532 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: scandroid-cmput301-w24-t06-default-rtdb
+19:20:07.537 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.NamespaceActor - stopped namespace actor for scandroid-cmput301-w24-t06-default-rtdb
+19:20:07.540 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.
