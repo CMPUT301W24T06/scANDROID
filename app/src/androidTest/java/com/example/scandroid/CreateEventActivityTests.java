@@ -6,6 +6,7 @@ import androidx.test.espresso.ViewAction;
 
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -13,6 +14,7 @@ import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
@@ -52,18 +54,61 @@ public class CreateEventActivityTests {
     }
     @Test
     public void testAddEvent() {
-        onView(withId(R.id.event_name_edit_text)).perform(typeText("Test Event"));
-        onView(withId(R.id.event_location_edit_text)).perform(typeText("Edmonton"));
-        onView(withId(R.id.edit_event_time_button)).perform(click());
-        onView(isAssignableFrom(TimePicker.class)).perform(PickerAction.setTimeInTimePicker(12, 0));
-        onView(withText("OK")).perform(click());
+        // fill in all fields
+        onView(withId(R.id.event_name_edit_text)).perform(click(), clearText(), typeText("Test Event"));
+        onView(withId(R.id.event_location_edit_text)).perform(click(), clearText(), typeText("Edmonton"));
         onView(withId(R.id.edit_event_date_button)).perform(click());
+        closeSoftKeyboard();
         onView(isAssignableFrom(DatePicker.class)).perform(PickerAction.setDateInDatePicker(2024, 6, 23));
         onView(withText("OK")).perform(click());
-        onView(withId(R.id.event_description_edit_text)).perform(typeText("Making a Test Event"));
+        closeSoftKeyboard();
+        onView(withId(R.id.edit_event_time_button)).perform(click());
+                onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(setHour(12));
+        onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(setMinute(0));
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.event_description_edit_text)).perform(click(), clearText(), typeText("Making a Test Event"));
         closeSoftKeyboard();
         onView(withId(R.id.create_event_confirm_button)).perform(click());
     }
+
+    public static ViewAction setHour(final int hour) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(TimePicker.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "Set the hour";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                ((TimePicker) view).setCurrentHour(hour);
+            }
+        };
+    }
+
+    public static ViewAction setMinute(final int minute) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(TimePicker.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "Set the minute";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                ((TimePicker) view).setCurrentMinute(minute);
+            }
+        };
+    }
+
 
     @Test
     public void testEditEventPoster() {
