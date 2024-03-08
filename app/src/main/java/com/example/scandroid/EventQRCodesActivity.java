@@ -1,14 +1,20 @@
 package com.example.scandroid;
 
+import static com.google.firebase.appcheck.internal.util.Logger.TAG;
+
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.FileProvider;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -18,9 +24,11 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Represents the screen where event organizers can share the Event Check-In and Promo QR Codes.
+ *
  * @author Aaliyah Wusu and Moyo Dawodu
  */
 
@@ -33,14 +41,15 @@ public class EventQRCodesActivity extends AppCompatActivity {
     AppCompatButton shareCheckInQRButton;
     AppCompatButton sharePromoQRButton;
 
-    public void generatePromoQR(String eventID, DBAccessor dbAccessor){
+    public void generatePromoQR(String eventID, DBAccessor dbAccessor) {
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
-            BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE,promoQRCodeImgView.getWidth(),promoQRCodeImgView.getHeight());
+            BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE, 650, 650);
+            // removed: promoQRCodeImgView.getWidth(), promoQRCodeImgView.getHeight()
             BarcodeEncoder encoder = new BarcodeEncoder();
             Bitmap bitmap = encoder.createBitmap(matrix);
 
-            dbAccessor.storeQRPromo(eventID,bitmap);
+            dbAccessor.storeQRPromo(eventID, bitmap);
 
         } catch (WriterException e) {
             throw new RuntimeException(e);
@@ -49,14 +58,16 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
     //TODO - what do we want encoded in the QR code for check ins?
     // IMPORTANT - most of the work for the QR codes is actually done after you click the button, 'scan'
-    public void generateCheckInQR(String eventID, DBAccessor dbAccessor){
+    public void generateCheckInQR(String eventID, DBAccessor dbAccessor) {
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
-            BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE,checkInQRCodeImgView.getWidth(),checkInQRCodeImgView.getHeight());
+            BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE, 650, 650);
+            // removed: checkInQRCodeImgView.getWidth(), checkInQRCodeImgView.getHeight()
+
             BarcodeEncoder encoder = new BarcodeEncoder();
             Bitmap bitmap = encoder.createBitmap(matrix);
 
-            dbAccessor.storeQRMain(eventID,bitmap);
+            dbAccessor.storeQRMain(eventID, bitmap);
 
         } catch (WriterException e) {
             throw new RuntimeException(e);
@@ -69,6 +80,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
             public void onBitmapLoaded(Bitmap bitmap) {
                 // do not generate a QR code
             }
+
             @Override
             public void onBitmapFailed(Exception e) {
                 generateCheckInQR(eventID, database);
@@ -84,6 +96,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
             public void onBitmapLoaded(Bitmap bitmap) {
                 // do not generate a QR code
             }
+
             @Override
             public void onBitmapFailed(Exception e) {
                 generatePromoQR(eventID, database);
@@ -93,38 +106,26 @@ public class EventQRCodesActivity extends AppCompatActivity {
     }
 
     /**
-     * Method for sharing a QR Code.
-     * @param qrCodeToShare Bitmap of the QR code to be shared
+     * Method to share QR code.
+     * @param context Context of the activity
+     * @param bitmap Bitmap of the QR code
      */
-    // Source: https://www.youtube.com/watch?v=_vqWgyuexmY
-    private void shareQRCode(Bitmap qrCodeToShare) {
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
+    // sources: https://stackoverflow.com/questions/35966487/how-to-share-image-to-social-media-with-bitmap,
+    // https://stackoverflow.com/a/35966511
+    private void shareQRCode(Context context, Bitmap bitmap) {
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                bitmap, event.getEventName() + " QR Code", null);
 
-        event = (Event) getIntent().getSerializableExtra("event");
-        database = new DBAccessor();
+        Uri uri = Uri.parse(path);
 
-        File f = new File(getExternalCacheDir() + "/" + getResources().getString(R.string.app_name)+ "QRcode" + ".png");
-        Intent shareInt;
-
-        try {
-            FileOutputStream outputStream = new FileOutputStream(f);
-            qrCodeToShare.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-
-            outputStream.flush();
-            outputStream.close();
-
-            shareInt = new Intent(Intent.ACTION_SEND);
-            shareInt.setType("image/*");
-            shareInt.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
-            shareInt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        startActivity(Intent.createChooser(shareInt, "Share QR Code"));
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/png");
+        share.putExtra(Intent.EXTRA_STREAM, uri);
+        share.putExtra(Intent.EXTRA_TEXT, "You're Invited!");
+        context.startActivity(Intent.createChooser(share, event.getEventName() + " QR Code"));
     }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,14 +139,14 @@ public class EventQRCodesActivity extends AppCompatActivity {
 
         backButton.setOnClickListener(v -> finish());
 
-        event = (Event)getIntent().getSerializableExtra("event");
+        event = (Event) getIntent().getSerializableExtra("event");
         database = new DBAccessor();
 
-        if (event != null){
+        if (event != null) {
             String eventID = event.getEventID();
 
-            checkForCheckInQR(eventID,database);
-            checkForPromoQR(eventID,database);
+            checkForCheckInQR(eventID, database);
+            checkForPromoQR(eventID, database);
 
             database.accessQRMain(event.getEventID(), new BitmapCallback() {
                 @Override
@@ -179,7 +180,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
                     if (bitmap != null) {
-                        shareQRCode(bitmap);
+                        shareQRCode(v.getContext(), bitmap);
                     }
                 }
 
@@ -192,7 +193,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
                     if (bitmap != null) {
-                        shareQRCode(bitmap);
+                        shareQRCode(v.getContext(), bitmap);
                     }
                 }
 
