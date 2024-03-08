@@ -32,6 +32,11 @@ jobs:
     - name: Install Firebase CLI
       run: |
         sudo npm install -g firebase-tools@latest
+
+    - name: Print Firebase Tools Path
+      run: |
+        npm list -g firebase-tools
+        firebase --version
       
     - name: Build with Gradle
       run: ./gradlew build
