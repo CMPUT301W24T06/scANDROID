@@ -48,15 +48,15 @@ public class EventInfoActivity extends AppCompatActivity {
 
         backButton.setOnClickListener(v -> finish());
 
-        event = (Event) getIntent().getSerializableExtra("event");
+        eventID = (String) getIntent().getSerializableExtra("eventID");
 
-        if (event != null) {
-            this.runOnUiThread(() -> {
+        database.accessEvent(eventID, new EventCallback() {
+            @Override
+            public void onEventReceived(Event event) {
                 bigEventName.setText(event.getEventName());
-                bigEventName.postInvalidate();
                 eventName.setText(event.getEventName());
                 calendar = event.getEventDate();
-                String eventDateText = calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+                String eventDateText = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
                 eventDate.setText(eventDateText);
                 eventLocation.setText(new LocationGeocoder(EventInfoActivity.this).coordinatesToAddress(event.getEventLocation()));
                 eventDescription.setText(event.getEventDescription());
@@ -78,7 +78,7 @@ public class EventInfoActivity extends AppCompatActivity {
                         posterButton.setVisibility(View.INVISIBLE);
                     }
                 });
-            });
-        }
+            }
+        });
     }
 }

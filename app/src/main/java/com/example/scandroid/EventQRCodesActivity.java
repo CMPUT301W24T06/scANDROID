@@ -22,10 +22,6 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 /**
  * Represents the screen where event organizers can share the Event Check-In and Promo QR Codes.
  *
@@ -42,6 +38,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
     AppCompatButton sharePromoQRButton;
 
     public void generatePromoQR(String eventID, DBAccessor dbAccessor) {
+        // TODO: need to differentiate between promo and check in qr code
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
             BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE, 650, 650);
@@ -56,8 +53,6 @@ public class EventQRCodesActivity extends AppCompatActivity {
         }
     }
 
-    //TODO - what do we want encoded in the QR code for check ins?
-    // IMPORTANT - most of the work for the QR codes is actually done after you click the button, 'scan'
     public void generateCheckInQR(String eventID, DBAccessor dbAccessor) {
         MultiFormatWriter writer = new MultiFormatWriter();
         try {

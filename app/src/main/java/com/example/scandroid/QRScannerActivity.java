@@ -1,5 +1,6 @@
 package com.example.scandroid;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -15,6 +16,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class QRScannerActivity extends AppCompatActivity {
     BottomNavigationView navigationBar;
@@ -66,9 +70,15 @@ public class QRScannerActivity extends AppCompatActivity {
     // replace this with our actual content class
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->{
         if(result.getContents() != null){
+            String eventID = result.getContents();
+            //TODO : IF QR IS PROMO
+//          Intent intent = new Intent(QRScannerActivity.this, EventInfoActivity.class);
+//          intent.putExtra("eventID", eventID);
+//          startActivity(intent);
+
+            // IF QR IS CHECK IN:
             // source: https://stackoverflow.com/a/15392591
             DialogFragment checkInPrompt = new EventCheckInFragment();
-            String eventID = result.getContents();
             Bundle bundle = new Bundle();
             bundle.putString("eventID", eventID);
             checkInPrompt.setArguments(bundle);
