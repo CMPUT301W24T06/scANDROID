@@ -84,7 +84,7 @@ public class EditProfileActivityTests {
                 InstrumentationRegistry.getInstrumentation().getTargetContext(),
                 R.drawable.guest_default_image);
 
-        // update the ImageView in your UI with the new image drawable
+        // update the ImageView in UI with the new image drawable
         onView(withId(R.id.image_inside_card)).perform(setImageDrawable(newImageDrawable));
         // checks if camera roll opens
         onView(withId(R.id.changePictureTextView)).perform(click());
