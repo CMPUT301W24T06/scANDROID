@@ -18,13 +18,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -54,7 +51,7 @@ public class CreateEventActivity extends AppCompatActivity {
         Button editEventDate = findViewById(R.id.edit_event_date_button);
         Button editEventTime = findViewById(R.id.edit_event_time_button);
         EditText editEventDescription = findViewById(R.id.event_description_edit_text);
-        Button confirmButton = findViewById(R.id.create_event_button);
+        Button confirmButton = findViewById(R.id.create_event_confirm_button);
         Button backButton = findViewById(R.id.back_arrow);
         posterButton = findViewById(R.id.add_poster_icon);
         registerResult();
