@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Looper;
 
 import androidx.core.app.ActivityCompat;
@@ -51,9 +52,23 @@ public class LocationRetriever {
                 == PackageManager.PERMISSION_GRANTED;
     }
 
+    private void getLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted, request it
+                ActivityCompat.requestPermissions(new Activity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+            }
+        }
+    }
+
     Location getLastKnownLocation() {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
+        if (!hasLocationPermission()){
+            getLocationPermission();
+        }
         // Check for location permission
         if (hasLocationPermission() && locationManager != null) {
             try {
