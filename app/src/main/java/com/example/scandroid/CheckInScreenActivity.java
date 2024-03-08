@@ -19,9 +19,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 
-
+/**
+ * The {@link AppCompatActivity} representing the Check-In screen activity.
+ * This activity allows the user to perform check-in actions.
+ */
 public class CheckInScreenActivity extends AppCompatActivity {
     User currentUser;
+    /**
+     * Called when the activity is starting. Calling {@code setContentView(int)} to inflate the activity's UI,
+     * using {@code findViewById} to programmatically interact with widgets in the UI,
+     * and calling additional methods to configure the activity.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously
+     *                           being shut down, then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -13,12 +13,33 @@ import androidx.fragment.app.Fragment;
 
 import java.util.Random;
 
+/**
+ * A {@link DialogFragment} that represents a welcome screen prompting the user
+ * to enter their name or proceed as a guest. The fragment provides options to
+ * either enter a name or continue as a guest with a randomly generated name.
+ */
 public class WelcomeFragment extends DialogFragment {
-
+    /**
+     * Default constructor for the WelcomeFragment.
+     * Required empty public constructor.
+     */
     public WelcomeFragment() {
-        // Required empty public constructor
     }
 
+    /**
+     * Called to create the view for this fragment, using the given layout inflater
+     * and container. Initializes views and handles UI interactions such as maybe
+     * later and enter buttons.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to. Can be used to generate the LayoutParams
+     *                           of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
+     *                           saved state as given here.
+     * @return A View inflated from the mock_homepage_activity layout.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mock_homepage_activity, container, false);
@@ -53,6 +74,10 @@ public class WelcomeFragment extends DialogFragment {
 
         return view;
     }
+    /**
+     * Helper method to hide the keyboard.
+     * This method is used to hide the soft keyboard when necessary.
+     */
     private void hideKeyboard() {
         View view = getView();
         if (view != null) {
