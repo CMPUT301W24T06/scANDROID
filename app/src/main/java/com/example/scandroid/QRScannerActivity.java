@@ -18,11 +18,11 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 /**
- * QRScannerActivity extends AppCompatActivity in order to be compatible with
- * older versions of Android and use modern Android features.
- * This activity provides functionality for scanning QR Codes using the device's camera.
+ * QRScannerActivity activity provides functionality for scanning QR Codes using the device's camera.
  * It initializes the camera, handles scanning event details and check-in information,
  * and subsequent user actions for attending or RSVPing to the event shown.
+ * It extends AppCompatActivity in order to be compatible with
+ * older versions of Android as well as use modern Android features.
  */
 // credit for QR Scanner
 // code sourced from https://www.youtube.com/watch?v=jtT60yFPelI
