@@ -36,16 +36,12 @@ import java.util.Map;
  *
  */
 
-public class EditProfileActivity extends AppCompatActivity implements AllowAccessCameraRollFragment.OnImageChangedListener{
-    ActivityResultLauncher<Intent> launcher;
+public class EditProfileActivity extends AppCompatActivity{
     private EditText nameEditText, emailEditText, phoneEditText, aboutMeEditText;
     private CheckBox pushNotificationCheckBox;
     private ImageView profileImageView;
     private String userID;
     private User currentUser;
-    private static final int PICK_IMAGE_REQUEST = 1;
-
-    private String profilePictureURL;
     private Uri selectedImageUri;
 
     /**
@@ -131,7 +127,6 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
             @Override
             public void onClick(View view) {
                 AllowAccessCameraRollFragment chooseImageFragment = AllowAccessCameraRollFragment.newInstance(userID, profileImageView.getId());
-                chooseImageFragment.setImageChangedListener(EditProfileActivity.this);
                 // Use a FragmentTransaction to add the fragment to the layout
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.add(android.R.id.content, chooseImageFragment);
@@ -153,17 +148,7 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
         adminKeyFragment.show(getSupportFragmentManager(), "AdminKeyFragment");
     }
 
-    /**
-     * Allows for communication of the change in profile picture between EditProfileActivity and AllowAccessCameraRollFragment
-     * @param newBitmap The new bitmap profile picture
-     */
-    @Override
-    public void onImageChanged(Bitmap newBitmap) {
-        Log.d("AllowAccessCameraRollFragment", "onImageChanged is called");
-        if (newBitmap != null && profileImageView != null) {
-            profileImageView.setImageBitmap(newBitmap);
-        }
-    }
+
     /**
      * Handles the selection of an image, updates the UI, and stores the new image in the backend.
      *

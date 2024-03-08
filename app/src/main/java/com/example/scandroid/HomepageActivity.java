@@ -178,6 +178,8 @@ public class HomepageActivity extends AppCompatActivity {
         super.onResume();
         TextView profileName = findViewById(R.id.homepage_name_text);
         DBAccessor database = new DBAccessor();
+        homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
+        homepagePager.setAdapter(homepageActivityPageAdapter);
         String userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
         database.accessUser(userID, user -> {
             profileName.setText(user.getUserName());
