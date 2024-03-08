@@ -48,4 +48,4 @@ jobs:
       run: ./gradlew test
 
     - name: Stop Firebase Emulators
-      run: firebase emulators:stop
+      run: firebase emulators:exec
