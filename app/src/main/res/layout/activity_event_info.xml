@@ -1,9 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EventInfoActivity">
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/blue_background"
+        android:layout_width="420dp"
+        android:layout_height="250dp"
+        android:background="@color/blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" >
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/add_poster_icon"
+        android:layout_width="350dp"
+        android:layout_height="175dp"
+        app:srcCompat="@drawable/add_poster_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/blue_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="@+id/blue_background"
+        app:layout_constraintTop_toTopOf="@+id/blue_background"
+        app:layout_constraintVertical_bias="0.715" />
+
+    <TextView
+        android:id="@+id/fetch_event_title_big"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_semibold"
+        android:text="@string/event_name_text"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/add_poster_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/blue_background"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/back_arrow"
+        android:layout_width="48dp"
+        android:layout_height="52dp"
+        android:background="@drawable/back_arrow_icon"
+        android:backgroundTint="@color/white"
+        android:contentDescription="@string/app_name"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/fetch_event_title_big"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/create_event_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Event Title"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.084"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/blue_background" />
+
+    <TextView
+        android:id="@+id/fetch_event_title"
+        android:layout_width="360dp"
+        android:layout_height="48dp"
+        android:autofillHints="AUTOFILL_TYPE_TEXT"
+        android:background="@drawable/button_outline_grey"
+        android:padding="10dp"
+        android:text="Event Title"
+        android:textAllCaps="false"
+        android:textColorHint="#757575"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_name_text" />
+
+    <TextView
+        android:id="@+id/create_event_location_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/event_location_text"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.084"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fetch_event_title" />
+
+    <TextView
+        android:id="@+id/fetch_event_location"
+        android:layout_width="360dp"
+        android:layout_height="48dp"
+        android:autofillHints="AUTOFILL_TYPE_TEXT"
+        android:background="@drawable/button_outline_grey"
+        android:padding="10dp"
+        android:text="Event Location"
+        android:textAllCaps="false"
+        android:textColorHint="#757575"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_location_text" />
+
+    <TextView
+        android:id="@+id/create_event_date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/event_date_text"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.078"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fetch_event_location" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/fetch_event_date"
+        android:layout_width="170dp"
+        android:layout_height="48dp"
+        android:background="@drawable/button_outline_grey"
+        android:inputType="date"
+        android:padding="10dp"
+        android:text="Event Date"
+        android:textAllCaps="false"
+        android:textColorHint="#757575"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.108"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_date_text" />
+
+    <TextView
+        android:id="@+id/fetch_event_description"
+        android:layout_width="359dp"
+        android:layout_height="77dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/button_outline_grey"
+        android:importantForAutofill="no"
+        android:padding="10dp"
+        android:text="Event Description"
+        android:textAllCaps="false"
+        android:textColorHint="#757575"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.538"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_description_text" />
+
+    <TextView
+        android:id="@+id/create_event_description_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/event_description_text"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.093"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fetch_event_date" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

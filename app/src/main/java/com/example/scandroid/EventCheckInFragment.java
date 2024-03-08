@@ -16,6 +16,7 @@ import androidx.fragment.app.DialogFragment;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Calendar;
 
 import javax.annotation.Nullable;
 
@@ -28,7 +29,8 @@ public class EventCheckInFragment extends DialogFragment {
     private CheckBox trackLocationBox;
     private AppCompatButton cancelCheckInButton;
     private AppCompatButton confirmCheckInButton;
-    @Nullable private ArrayList<Double> checkInLocation;
+    @Nullable
+    private ArrayList<Double> checkInLocation;
     private Time checkInTime;
 
     public EventCheckInFragment() {
@@ -61,46 +63,46 @@ public class EventCheckInFragment extends DialogFragment {
                             user.addEventToNotifiedBy(eventID);
                             database.storeUser(user);
                         });
-
-
-
-                        if (trackLocationBox.isChecked()) {
-                            // track location something in database?
-                            database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
-                                // would set check in location here
-//                                    FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
-//                                    if (ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                                        // TODO: Consider calling
-//                                        //    ActivityCompat#requestPermissions
-//                                        // here to request the missing permissions, and then overriding
-//                                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                                        //                                          int[] grantResults)
-//                                        // to handle the case where the user grants the permission. See the documentation
-//                                        // for ActivityCompat#requestPermissions for more details.
-//                                        return;
-//                                    }
-//                                    fusedLocationClient.getLastLocation();
-                            });
-
-                            cancelCheckInButton.setOnClickListener(v -> {
-                                // cancel check in
-                                dismiss();
-                            });
-
-                            confirmCheckInButton.setOnClickListener(v -> {
-                                // check in
-                                database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
-                                    user.addEventToEventsAttending(eventID);
-                                    // source: https://www.tabnine.com/code/java/classes/java.sql.Time
-                                    event.addEventAttendee(user.getUserID(), new Time(((Date)checkInTime).getTime()), checkInLocation);
-                                    database.storeUser(user);
-                                });
-                                dismiss();
-
-                            });
-
-                        }
                     }
+
+                    if (trackLocationBox.isChecked()) {
+                        // track location something in database?
+                        database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
+                            // would set check in location here
+//                            FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+//                            if (ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                                // TODO: Consider calling
+//                                //    ActivityCompat#requestPermissions
+//                                // here to request the missing permissions, and then overriding
+//                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                                //                                          int[] grantResults)
+//                                // to handle the case where the user grants the permission. See the documentation
+//                                // for ActivityCompat#requestPermissions for more details.
+//                                return;
+//                            }
+//                            fusedLocationClient.getLastLocation();
+                        });
+                    }
+
+                    cancelCheckInButton.setOnClickListener(v -> {
+                        // cancel check in
+                        dismiss();
+                    });
+
+                    confirmCheckInButton.setOnClickListener(v -> {
+                        // check in
+                        database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
+                            user.addEventToEventsAttending(eventID);
+                            // need to check at click time if check boxes are checked and update accordingly
+                            // source: https://stackoverflow.com/a/5369753
+                            Date currentTime = Calendar.getInstance().getTime();
+                            event.addEventAttendee(user.getUserID(), new Time((currentTime).getTime()), checkInLocation);
+                            database.storeUser(user);
+                        });
+                        dismiss();
+
+                    });
+
                 } else {
                     dismiss();
                 }
