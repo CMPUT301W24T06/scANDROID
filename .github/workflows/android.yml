@@ -49,7 +49,7 @@ jobs:
     - name: Run Tests
       run: |
         ./gradlew test
-    # ./gradlew connectedAndroidTest com.example.DBAFirestoreTest
+        ./gradlew connectedAndroidTest com.example.scandroid.DBAFirestoreTest
 
     # - name: Stop Firebase Emulators
     #   run: |
