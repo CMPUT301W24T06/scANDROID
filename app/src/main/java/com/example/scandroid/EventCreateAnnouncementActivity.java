@@ -7,6 +7,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+/**
+ * EventCreateAnnouncementActivity allows an event organizer
+ * create notifications and schedule for them to be sent
+ * to event attendees.
+ */
 public class EventCreateAnnouncementActivity extends AppCompatActivity {
     // incomplete, deal with editing the time later
     AppCompatButton backButton;

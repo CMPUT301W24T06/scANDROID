@@ -27,11 +27,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Represents the screen where event organizers can share the Event Check-In and Promo QR Codes.
- *
- * @author Aaliyah Wusu and Moyo Dawodu
+ * EventQRCodesActivity is an activity that displays
+ * the Promo and Check-In QR Codes for an event, and allows the event
+ * organizer to share the QR Codes to other apps or email.
  */
-
 public class EventQRCodesActivity extends AppCompatActivity {
     DBAccessor database;
     Event event;
@@ -41,6 +40,12 @@ public class EventQRCodesActivity extends AppCompatActivity {
     AppCompatButton shareCheckInQRButton;
     AppCompatButton sharePromoQRButton;
 
+    /**
+     * This method generates a QR Code
+     * that links to a Promo page for an event.
+     * @param eventID The eventID of the event that is being promoted.
+     * @param dbAccessor DBAccessor, interface between scANDROID and Firestore database.
+     */
     public void generatePromoQR(String eventID, DBAccessor dbAccessor) {
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
@@ -56,8 +61,12 @@ public class EventQRCodesActivity extends AppCompatActivity {
         }
     }
 
-    //TODO - what do we want encoded in the QR code for check ins?
-    // IMPORTANT - most of the work for the QR codes is actually done after you click the button, 'scan'
+    /**
+     * This method generates a QR Code
+     * that links to a check-in fragment for an event.
+     * @param eventID The eventID of the event that is being shared.
+     * @param dbAccessor DBAccessor, interface between scANDROID and Firestore database.
+     */
     public void generateCheckInQR(String eventID, DBAccessor dbAccessor) {
         MultiFormatWriter writer = new MultiFormatWriter();
         try {
@@ -74,6 +83,13 @@ public class EventQRCodesActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks if a Check-In QR code
+     * already exists for the event in the database,
+     * and if not it will generate a new one.
+     * @param eventID The eventID of the event that is being shared.
+     * @param database DBAccessor, interface between scANDROID and Firestore database.
+     */
     public void checkForCheckInQR(String eventID, DBAccessor database) {
         database.accessQRMain(eventID, new BitmapCallback() {
             @Override
@@ -90,6 +106,13 @@ public class EventQRCodesActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This function checks if a Promo QR code
+     * already exists for the event in the database,
+     * and if not it will generate a new one.
+     * @param eventID The eventID of the event that is being promoted.
+     * @param database DBAccessor, interface between scANDROID and Firestore database.
+     */
     public void checkForPromoQR(String eventID, DBAccessor database) {
         database.accessQRPromo(eventID, new BitmapCallback() {
             @Override
@@ -106,7 +129,7 @@ public class EventQRCodesActivity extends AppCompatActivity {
     }
 
     /**
-     * Method to share QR code.
+     * Method to share a QR code.
      * @param context Context of the activity
      * @param bitmap Bitmap of the QR code
      */

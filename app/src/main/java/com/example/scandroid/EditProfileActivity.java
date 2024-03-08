@@ -28,6 +28,14 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The EditProfileActivity class allows users to edit their profile information,
+ * including name, email, phone number, about me, push notification preferences,
+ * and profile picture. It implements the AllowAccessCameraRollFragment.OnImageChangedListener
+ * interface to communicate changes in the profile picture between the activity and the fragment.
+ *
+ */
+
 public class EditProfileActivity extends AppCompatActivity implements AllowAccessCameraRollFragment.OnImageChangedListener{
     ActivityResultLauncher<Intent> launcher;
     private EditText nameEditText, emailEditText, phoneEditText, aboutMeEditText;
@@ -40,8 +48,9 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
     private String profilePictureURL;
     private Uri selectedImageUri;
 
-    // ActivityResultLauncher for image selection
-    // Replace the previous ActivityResultLauncher with GetContent
+    /**
+     * ActivityResultLauncher for image selection, using the GetContent contract.
+     */
     private final ActivityResultLauncher<String> pickImageLauncher =
             registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
                 if (result != null) {
@@ -49,6 +58,11 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
                 }
             });
 
+    /**
+     * Initializes the activity and sets up views, listeners, and data retrieval.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +164,11 @@ public class EditProfileActivity extends AppCompatActivity implements AllowAcces
             profileImageView.setImageBitmap(newBitmap);
         }
     }
+    /**
+     * Handles the selection of an image, updates the UI, and stores the new image in the backend.
+     *
+     * @param imageUri The URI of the selected image.
+     */
     private void handleImageSelection(Uri imageUri) {
         // Clear the existing URL from the currentUser object
         currentUser.setProfilePictureUrl("");

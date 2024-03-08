@@ -7,6 +7,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+/**
+ * EventMilestonesActivity is an activity that
+ * shows an event organizer a list of the milestones
+ * they hit for their event.
+ */
 public class EventMilestonesActivity extends AppCompatActivity {
     ListView milestoneListView;
     AppCompatButton backButton;

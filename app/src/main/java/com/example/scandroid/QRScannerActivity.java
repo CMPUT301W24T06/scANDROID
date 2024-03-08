@@ -1,5 +1,11 @@
 package com.example.scandroid;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -13,12 +19,25 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.journeyapps.barcodescanner.CaptureActivity;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+/**
+ * QRScannerActivity activity provides functionality for scanning QR Codes using the device's camera.
+ * It initializes the camera, handles scanning event details and check-in information,
+ * and subsequent user actions for attending or RSVPing to the event shown.
+ * It extends AppCompatActivity in order to be compatible with
+ * older versions of Android as well as use modern Android features.
+ */
+// credit for QR Scanner
+// code sourced from https://www.youtube.com/watch?v=jtT60yFPelI
+// source for navigation bar logic: https://www.youtube.com/watch?v=lOTIedfP1OA
+// gradle dependency for switch case:https://stackoverflow.com/questions/76430646/constant-expression-required-when-trying-to-create-a-switch-case-block
 public class QRScannerActivity extends AppCompatActivity {
     BottomNavigationView navigationBar;
     Button qr_scanner_button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +50,7 @@ public class QRScannerActivity extends AppCompatActivity {
         navigationBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.home_button:
                         startActivity(new Intent(getApplicationContext(), HomepageActivity.class));
                         return true;
@@ -54,38 +73,27 @@ public class QRScannerActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Opens the camera and scans QR codes
+     * Before opening the QR Scanner, orientation, auditory confirmation, capture activity
+     * and prompt are configured.
+     */
     private void scanCode() {
         ScanOptions options = new ScanOptions();
-        options.setPrompt("Temporary Message");
+        options.setPrompt("Please center barcode in box to scan. Volume up for flash!");
         options.setBeepEnabled(true);
         options.setOrientationLocked(true);
         options.setCaptureActivity(CaptureAct.class);
         barLauncher.launch(options);
     }
 
-    // replace this with our actual content class
-    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->{
-        if(result.getContents() != null){
-            // source: https://stackoverflow.com/a/15392591
-            DialogFragment checkInPrompt = new EventCheckInFragment();
+    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
+        if (result.getContents() != null) {
             String eventID = result.getContents();
-            Bundle bundle = new Bundle();
-            bundle.putString("eventID", eventID);
-            checkInPrompt.setArguments(bundle);
 
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(android.R.id.content, checkInPrompt);
-            transaction.commit();
-
-//            AlertDialog.Builder builder = new AlertDialog.Builder(QRScannerActivity.this);
-//            builder.setTitle("Content");
-//            builder.setMessage(result.getContents());
-//            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    dialog.dismiss();
-//                }
-//            }).show();
+            Intent intent = new Intent(QRScannerActivity.this, CheckInOrPromoActivity.class);
+            intent.putExtra("eventID", eventID);
+            startActivity(intent);
         }
     });
 }
