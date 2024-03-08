@@ -37,7 +37,7 @@ jobs:
 
     - name: Start Firebase Emulators
       run: |
-        firebase emulators:start --only firestore,storage
+        firebase emulators:start --only firestore,storage --export-on-exit --debug --no-localhost
         
     - name: Run Tests
       run: ./gradlew test
