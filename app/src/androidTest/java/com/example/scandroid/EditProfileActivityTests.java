@@ -11,7 +11,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
