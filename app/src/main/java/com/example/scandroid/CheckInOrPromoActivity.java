@@ -46,10 +46,9 @@ public class CheckInOrPromoActivity extends AppCompatActivity {
                             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                             transaction.add(android.R.id.content, checkInPrompt);
                             transaction.commit();
-                            finish();
+//                            finish();
                         }
                     });
-
                     promoButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
