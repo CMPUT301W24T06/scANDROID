@@ -5,13 +5,10 @@
       <entry key="CheckInScreenActivity">
         <State />
       </entry>
-      <entry key="CreateEventActivity">
+      <entry key="CreateEventActivityTests">
         <State />
       </entry>
       <entry key="HomepageActivity">
-        <State />
-      </entry>
-      <entry key="QRScannerActivity">
         <State />
       </entry>
       <entry key="app">

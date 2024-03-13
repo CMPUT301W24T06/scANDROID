@@ -108,7 +108,7 @@ public class EventCheckInFragment extends DialogFragment {
                             event.addEventAttendee(user.getUserID(), new Time((currentTime).getTime()), checkInLocation);
                             database.storeUser(user);
                         });
-                        dismiss();
+//                        dismiss();
 
                     });
 
