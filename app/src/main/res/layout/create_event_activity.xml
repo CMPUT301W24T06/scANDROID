@@ -18,15 +18,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" >
+
     </RelativeLayout>
 
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/add_poster_icon"
-        android:layout_width="149dp"
-        android:layout_height="120dp"
-        android:background="@drawable/add_poster_icon"
+    <ImageView
+        android:id="@+id/create_event_poster"
+        android:layout_width="192dp"
+        android:layout_height="152dp"
         android:contentDescription="@string/app_name"
+        android:src="@drawable/add_poster_icon"
         app:layout_constraintBottom_toBottomOf="@+id/blue_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
@@ -34,19 +35,18 @@
         app:layout_constraintTop_toTopOf="@+id/blue_background"
         app:layout_constraintVertical_bias="0.715" />
 
-    <TextView
-        android:id="@+id/create_event_page_title"
+    <Button
+        android:id="@+id/create_event_change_poster"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/your_event_text"
-        android:textColor="@color/white"
-        android:textSize="50sp"
-        app:layout_constraintBottom_toTopOf="@+id/add_poster_icon"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/app_name"
+        android:textColor="@color/black"
+        android:text="@string/change_event_poster"
+        app:layout_constraintBottom_toBottomOf="@+id/blue_background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/blue_background"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/create_event_poster" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/back_arrow"
@@ -217,5 +217,17 @@
         app:layout_constraintHorizontal_bias="0.107"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_event_time_text" />
+
+    <TextView
+        android:id="@+id/create_event_page_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/your_event_text"
+        android:textColor="@color/white"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toTopOf="@+id/create_event_poster"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/blue_background" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

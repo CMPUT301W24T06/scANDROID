@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class CreateEventActivity extends AppCompatActivity {
     String eventID;
     Event event;
     Calendar calendar = Calendar.getInstance();
+    ImageView eventPoster;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,8 +54,8 @@ public class CreateEventActivity extends AppCompatActivity {
         EditText editEventDescription = findViewById(R.id.event_description_edit_text);
         Button confirmButton = findViewById(R.id.create_event_confirm_button);
         Button backButton = findViewById(R.id.back_arrow);
-        posterButton = findViewById(R.id.add_poster_icon);
-        registerResult();
+        posterButton = findViewById(R.id.create_event_change_poster);
+        eventPoster = findViewById(R.id.create_event_poster);
         DBAccessor database = new DBAccessor();
 
 
@@ -76,8 +79,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap) {
                         if (bitmap != null) {
-                            BitmapDrawable imageDrawable = new BitmapDrawable(getResources(), bitmap);
-                            posterButton.setBackground(imageDrawable);
+                            eventPoster.setImageBitmap(bitmap);
                         } else {
                             Log.d("BitmapInfo", "Retrieved null Bitmap");
                         }
@@ -94,7 +96,16 @@ public class CreateEventActivity extends AppCompatActivity {
             qrNote.setVisibility(View.INVISIBLE);
         }
 
-        posterButton.setOnClickListener(v -> pickImage());
+        posterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AllowAccessCameraRollFragment chooseImageFragment = AllowAccessCameraRollFragment.newInstance(eventID, eventPoster.getId(), "event", null);
+                // Use a FragmentTransaction to add the fragment to the layout
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.add(android.R.id.content, chooseImageFragment);
+                transaction.commit();
+            }
+        });
 
         //Source: https://www.geeksforgeeks.org/datepicker-in-android/
         //User edits the event's date
@@ -133,8 +144,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 Toast.makeText(CreateEventActivity.this, "Invalid event location", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            posterBitmap = drawableToBitmap(posterButton.getBackground());
+            posterBitmap = new BitmapConfigurator().drawableToBitmap(eventPoster.getDrawable());
 
             //If this was a new event, create new Event object, new QR codes and store those
             if (newEvent) {

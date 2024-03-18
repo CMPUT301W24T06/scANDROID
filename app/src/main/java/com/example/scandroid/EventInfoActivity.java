@@ -1,22 +1,17 @@
 package com.example.scandroid;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-
-import org.w3c.dom.Text;
 
 import java.util.Calendar;
 
@@ -50,7 +45,7 @@ public class EventInfoActivity extends AppCompatActivity {
         eventLocation = findViewById(R.id.fetch_event_location);
         eventDate = findViewById(R.id.fetch_event_date);
         eventDescription = findViewById(R.id.fetch_event_description);
-        posterButton = findViewById(R.id.add_poster_icon);
+        posterButton = findViewById(R.id.create_event_change_poster);
         database = new DBAccessor();
 
         backButton.setOnClickListener(v -> finish());

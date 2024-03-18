@@ -14,23 +14,14 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.TimePicker;
 
 import androidx.core.content.ContextCompat;
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.assertion.ViewAssertions;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.intent.matcher.IntentMatchers;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -83,7 +74,7 @@ public class HomepageActivityTest {
         // in CreateEventActivity appear
         onView(withId(R.id.create_event_name_text)).check(matches(isDisplayed()));
         onView(withId(R.id.event_name_edit_text)).check(matches(isDisplayed()));
-        onView(withId(R.id.add_poster_icon)).check(matches(isDisplayed()));
+        onView(withId(R.id.create_event_change_poster)).check(matches(isDisplayed()));
     }
 
     // tests for the navigation bar icons
