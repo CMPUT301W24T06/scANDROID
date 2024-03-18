@@ -126,7 +126,7 @@ public class EditProfileActivity extends AppCompatActivity{
         changePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AllowAccessCameraRollFragment chooseImageFragment = AllowAccessCameraRollFragment.newInstance(userID, profileImageView.getId());
+                AllowAccessCameraRollFragment chooseImageFragment = AllowAccessCameraRollFragment.newInstance(userID, profileImageView.getId(), "user", nameEditText.getText().toString());
                 // Use a FragmentTransaction to add the fragment to the layout
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.add(android.R.id.content, chooseImageFragment);

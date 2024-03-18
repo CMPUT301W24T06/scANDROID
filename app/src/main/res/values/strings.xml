@@ -74,4 +74,5 @@
     <string name="enter_event_date">Enter Event Date</string>
     <string name="scan_code_text">Scan QR Code</string>
     <string name="update_my_event">Update My Event</string>
+    <string name="change_event_poster">Change Poster</string>
 </resources>

@@ -21,7 +21,7 @@
 
 
     <ImageView
-        android:id="@+id/add_poster_icon"
+        android:id="@+id/create_event_change_poster"
         android:layout_width="350dp"
         android:layout_height="175dp"
         app:srcCompat="@drawable/add_poster_icon"
@@ -42,7 +42,7 @@
         android:textColor="@color/white"
         android:textSize="30sp"
         android:gravity="center_horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/add_poster_icon"
+        app:layout_constraintBottom_toTopOf="@+id/create_event_change_poster"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"

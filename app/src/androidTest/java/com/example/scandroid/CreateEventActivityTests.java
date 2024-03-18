@@ -1,7 +1,6 @@
 package com.example.scandroid;
 
 
-import androidx.core.content.ContextCompat;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 
@@ -10,14 +9,12 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasData;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -25,11 +22,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.TimePicker;
 
 import androidx.test.espresso.intent.Intents;
@@ -37,7 +32,6 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -132,7 +126,7 @@ public class CreateEventActivityTests {
         intending(isInternal()).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData));
 
         // open gallery
-        onView(withId(R.id.add_poster_icon)).perform(click());
+        onView(withId(R.id.create_event_change_poster)).perform(click());
 
         // verify that the intent to pick an image is sent
         intended(hasAction(Intent.ACTION_PICK));
