@@ -61,10 +61,10 @@ public class HomepageActivity extends AppCompatActivity {
 
         userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
         DBAccessor database = new DBAccessor();
-       // displayWelcomeFragment();//Only here for now for testing
+        // displayWelcomeFragment();//Only here for now for testing
         database.accessUser(userID, user -> {
             currentUser = user;
-            if (Objects.equals(currentUser.getUserName(), "")) {
+            if (user == null) {
                 //Create a new User object
                 String userName = ""; // Set the user's name
                 String userPhoneNumber = ""; // Set the user's phone number

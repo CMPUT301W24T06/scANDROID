@@ -10,12 +10,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$PROJECT_DIR$/../.android/avd/Pixel_7_Pro_API_34.avd" />
+                  <value value="C:\Users\aaliyahw\.android\avd\Pixel_7_Pro_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-08T16:46:11.837758Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-03-14T04:37:05.380643900Z" />
         </State>
       </entry>
       <entry key="CheckInScreenActivityTest">
