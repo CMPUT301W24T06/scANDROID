@@ -21,6 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScANDROID"
         tools:targetApi="31">
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyA3XVqCmFEOj3gEEmKORWEuPRsWe4gnoQY"/>
         <activity
             android:name=".EventInfoActivity"
             android:exported="false" />
@@ -64,7 +65,7 @@
             android:name=".EventQRCodesActivity"
             android:exported="true" />
         <activity
-            android:name=".CheckInOrPromoActivity"
+            android:name=".EventLocationTrackingActivity"
             android:exported="false" />
         <activity
             android:name=".EditProfileActivity"
