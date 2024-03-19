@@ -107,7 +107,7 @@ public class DBAFirestoreTest {
 
         // store Event in database and give time to take place
         this.dbA.storeEvent(mockEvent);
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(1, TimeUnit.SECONDS);
 
         // set location to save accessedEvent and get accessedEvent
         final Event[] recievedEvent = new Event[1];
@@ -118,7 +118,7 @@ public class DBAFirestoreTest {
         });
 
         // after delay to ensure event access, assert attributes
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(1, TimeUnit.SECONDS);
         assertEquals(mockEvent.getEventID(), recievedEvent[0].getEventID());
         assertEquals(mockEvent.getEventName(), recievedEvent[0].getEventName());
         assertEquals(mockEvent.getEventDescription(), recievedEvent[0].getEventDescription());
@@ -135,7 +135,7 @@ public class DBAFirestoreTest {
 
         // store Event in database and give time to take place
         this.dbA.storeEvent(mockEvent);
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(1, TimeUnit.SECONDS);
 
         // get the current list of eventID's in the database
         final ArrayList<String> receivedEventIDs = new ArrayList<>();
@@ -146,7 +146,7 @@ public class DBAFirestoreTest {
         });
 
         // verify that the recently added Event is listed
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(1, TimeUnit.SECONDS);
         assertTrue(receivedEventIDs.contains(mockEvent.getEventID()));
 
     } // end public void testGetEventIDs
@@ -161,7 +161,7 @@ public class DBAFirestoreTest {
 
         // store User in database and give time to take place
         this.dbA.storeUser(mockUser);
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(1, TimeUnit.SECONDS);
 
         // set location to save accessedUser and get accessedUser
         final User[] recievedUser = new User[1];
@@ -172,7 +172,7 @@ public class DBAFirestoreTest {
         });
 
         // after delay to ensure user access, assert attributes
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(1, TimeUnit.SECONDS);
         assertEquals(mockUser.getUserID(), recievedUser[0].getUserID());
         assertEquals(mockUser.getUserName(), recievedUser[0].getUserName());
         assertEquals(mockUser.getUserPhoneNumber(), recievedUser[0].getUserPhoneNumber());
@@ -191,7 +191,7 @@ public class DBAFirestoreTest {
 
         // store User in database and give time to take place
         this.dbA.storeUser(mockUser);
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(1, TimeUnit.SECONDS);
 
         // get the current list of userID's in the database
         final ArrayList<String> receivedUserIDs = new ArrayList<>();
@@ -202,7 +202,7 @@ public class DBAFirestoreTest {
         });
 
         // verify that the recently added User is listed
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(1, TimeUnit.SECONDS);
         assertTrue(receivedUserIDs.contains(mockUser.getUserID()));
 
     } // end public void testGetEventIDs
