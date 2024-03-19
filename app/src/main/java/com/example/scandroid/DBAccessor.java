@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Looper;
 import android.util.Log;
 
-
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -14,6 +13,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import android.os.Handler;
 
 /**
@@ -86,6 +86,27 @@ public class DBAccessor {
         // Initialize access to UserProfileImage storage
         UserProfileImageRefName = "UserProfileImages";
         UserProfileImageDB = new UserProfileImageDBAccessor(storageRef, UserProfileImageRefName);
+    }
+
+    /* ----------------------- *
+     * METHODS : ADMIN:Getters *
+     * ----------------------- */
+    /**
+     * {@link EventDBAccessor#getAllEventReferences(ListIDCallback)}
+     * @param callback Handle the asynchronous nature of the Firestore get operation.
+     */
+    public void getAllEventReferences(ListIDCallback callback) {
+        this.EventDB.getAllEventReferences(callback);
+    }
+
+
+
+    /**
+     * {@link UserDBAccessor#getAllEventReferences(ListIDCallback)}
+     * @param callback Handle the asynchronous nature of the Firestore get operation.
+     */
+    public void getAllUserReferences(ListIDCallback callback) {
+        this.UserDB.getAllUserReferences(callback);
     }
 
 
@@ -305,7 +326,6 @@ public class DBAccessor {
          * Actions permitted: Access(get), Delete, and Store
          */
         private EventDBAccessor(FirebaseFirestore db, String EventRefName) {
-
             // Access Event collection of Firestore
             this.EventRef = db.collection(EventRefName);
         }
@@ -314,6 +334,7 @@ public class DBAccessor {
         /**
          * Get Event stored in Firestore Database
          * @param EventID Unique identifier for Event to be accessed
+         * @param callback To handle asynchronous operations for accessing firebase
          */
         private void accessEvent(String EventID, EventCallback callback) {
             // Get an Event via EventID
@@ -347,6 +368,28 @@ public class DBAccessor {
             this.EventRef.document(EventID).delete()
                     .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event successfully deleted!"))
                     .addOnFailureListener(e -> Log.w("Firestore", "Error deleting Event", e));
+        }
+
+        /**
+         * Get a list of all eventID's in firestore database
+         * @param callback To handle asynchronous operations for accessing firebase
+         */
+        private void getAllEventReferences(ListIDCallback callback) {
+            this.EventRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    ArrayList<String> eventIDs = new ArrayList<>();
+                    for (DocumentSnapshot document : task.getResult()) {
+                        if (document.exists()) {
+                            eventIDs.add(document.getId());
+                        }
+                    }
+                    Log.d("Event IDs", eventIDs.toString());
+                    callback.onListRetrieved(eventIDs);
+                } else {
+                    Log.d("Firestore", "get failed with ", task.getException());
+                    callback.onListRetrieved(null);
+                }
+            });
         }
 
         /**
@@ -393,6 +436,7 @@ public class DBAccessor {
         /**
          * Get EventPoster stored in Firestore Database
          * @param EventID Unique identifier for EventPoster to be accessed
+         * @param callback To handle asynchronous operations for accessing firebase
          */
         private void accessEventPoster(String EventID, BitmapCallback callback) {
             // Download an EventPoster from Firestore Storage
@@ -495,6 +539,7 @@ public class DBAccessor {
         /**
          * Get ImageAsset stored in Firestore Database
          * @param imageAssetName Unique identifier for ImageAsset to be accessed
+         * @param callback To handle asynchronous operations for accessing firebase
          */
         private void accessImageAsset(String imageAssetName, BitmapCallback callback) {
             // Get an ImageAsset via imageAssetName
@@ -583,6 +628,7 @@ public class DBAccessor {
         /**
          * Get main QR code for an Event stored in Firestore Database
          * @param EventID Unique identifier for QRCode to be accessed
+         * @param callback To handle asynchronous operations for accessing firebase
          */
         private void accessQRMain(String EventID, BitmapCallback callback) {
             // Download a QRCodeMain from Firestore Storage
@@ -615,6 +661,7 @@ public class DBAccessor {
         /**
          * Get promotional QR code for an Event stored in Firestore Database
          * @param EventID Unique identifier for promo QRCode to be accessed
+         * @param callback To handle asynchronous operations for accessing firebase
          */
         private void accessQRPromo(String EventID, BitmapCallback callback) {
             // Download a QRCodePromo from Firestore Storage
@@ -754,6 +801,7 @@ public class DBAccessor {
         /**
          * Get User stored in Firestore Database
          * @param UserID Unique identifier for User
+         * @param callback To handle asynchronous operations for accessing firebase
          */
         private void accessUser(String UserID, UserCallback callback) {
 //            final User[] retrievedUser = new User[1];
@@ -791,6 +839,28 @@ public class DBAccessor {
             this.UserRef.document(UserID).delete()
                     .addOnSuccessListener(aVoid -> Log.d("Firestore", "User successfully deleted!"))
                     .addOnFailureListener(e -> Log.w("Firestore", "Error deleting User", e));
+        }
+
+        /**
+         * Get a list of all userID's in firestore database
+         * @param callback To handle asynchronous operations for accessing firebase
+         */
+        private void getAllUserReferences(ListIDCallback callback) {
+            this.UserRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    ArrayList<String> userIDs = new ArrayList<>();
+                    for (DocumentSnapshot document : task.getResult()) {
+                        if (document.exists()) {
+                            userIDs.add(document.getId());
+                        }
+                    }
+                    Log.d("User IDs", userIDs.toString());
+                    callback.onListRetrieved(userIDs);
+                } else {
+                    Log.d("Firestore", "get failed with ", task.getException());
+                    callback.onListRetrieved(null);
+                }
+            });
         }
 
         /**

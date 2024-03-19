@@ -1,6 +1,7 @@
 package com.example.scandroid;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 import android.content.Context;
 import android.location.Location;
@@ -125,6 +126,32 @@ public class DBAFirestoreTest {
     } // end public void testWriteEventToFirestore
 
     @Test
+    public void testGetEventIDs() throws InterruptedException {
+        // create Event object to test with
+        Event mockEvent = mockEvent(this.dateValues, this.locationValues);
+
+        // initialize wait to ensure database write takes place before testing
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // store Event in database and give time to take place
+        this.dbA.storeEvent(mockEvent);
+        latch.await(5, TimeUnit.SECONDS);
+
+        // get the current list of eventID's in the database
+        final ArrayList<String> receivedEventIDs = new ArrayList<>();
+        this.dbA.getAllEventReferences(eventIDList -> {
+            if (eventIDList != null) {
+                receivedEventIDs.addAll(eventIDList);
+            }
+        });
+
+        // verify that the recently added Event is listed
+        latch.await(5, TimeUnit.SECONDS);
+        assertTrue(receivedEventIDs.contains(mockEvent.getEventID()));
+
+    } // end public void testGetEventIDs
+
+    @Test
     public void testWriteUserToFirestore() throws InterruptedException {
         // create User object to test with
         User mockUser = mockUser();
@@ -153,5 +180,31 @@ public class DBAFirestoreTest {
         assertEquals(mockUser.getUserEmail(), recievedUser[0].getUserEmail());
 
     } // end public void testWriteUserToFirestore
+
+    @Test
+    public void testGetUserIDs() throws InterruptedException {
+        // create User object to test with
+        User mockUser = mockUser();
+
+        // initialize wait to ensure database write takes place before testing
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // store User in database and give time to take place
+        this.dbA.storeUser(mockUser);
+        latch.await(5, TimeUnit.SECONDS);
+
+        // get the current list of userID's in the database
+        final ArrayList<String> receivedUserIDs = new ArrayList<>();
+        this.dbA.getAllUserReferences(userIDList -> {
+            if (userIDList != null) {
+                receivedUserIDs.addAll(userIDList);
+            }
+        });
+
+        // verify that the recently added User is listed
+        latch.await(5, TimeUnit.SECONDS);
+        assertTrue(receivedUserIDs.contains(mockUser.getUserID()));
+
+    } // end public void testGetEventIDs
 
 } // end public class DBAFirestoreTest
