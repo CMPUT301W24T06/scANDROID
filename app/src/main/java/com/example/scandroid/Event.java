@@ -122,6 +122,42 @@ public class Event implements Serializable {
     }
 
     /**
+     * Clear all announcements for this Event.
+     * @param code Access identifier to dissuade accidental usage
+     */
+    public void clearEventAnnouncementList(Integer code) {
+        if (code == 42) { // ensure not all developers have access
+            this.EventAnnouncementList = null;
+        } else {
+            throw new IllegalArgumentException("Bad code");
+        }
+    }
+
+    /**
+     * Clear all attendees for this Event.
+     * @param code Access identifier to dissuade accidental usage
+     */
+    public void clearEventAttendeeList(Integer code) {
+        if (code == 42) { // ensure not all developers have access
+            this.EventAttendeeList = null;
+        } else {
+            throw new IllegalArgumentException("Bad code");
+        }
+    }
+
+    /**
+     * Clear all milestones for this Event.
+     * @param code Access identifier to dissuade accidental usage
+     */
+    public void clearEventMilestoneList(Integer code) {
+        if (code == 42) { // ensure not all developers have access
+            this.EventMilestoneList = null;
+        } else {
+            throw new IllegalArgumentException("Bad code");
+        }
+    }
+
+    /**
      * Extracts necessary data from snapshot to create an instance of Event. <br>
      * Solution provided by ChatGPT via Simon Thang. <br>
      * {@see <a href="https://chat.openai.com/share/e135f2dc-cd2f-47ca-b48e-55115d41e6bf"> ChatGPT Conversation </a>}
@@ -205,6 +241,44 @@ public class Event implements Serializable {
 
     } // end of fromSnapshot
 
+    /**
+     * Replace EventAnnouncementList with another list
+     * @param code Access identifier to dissuade accidental usage
+     * @param eventAnnouncements Replacement list
+     */
+    public void replaceEventAnnouncementList(Integer code, ArrayList<EventAnnouncement> eventAnnouncements) {
+        if (code == 42) { // ensure not all developers have access
+            this.EventAnnouncementList = eventAnnouncements;
+        } else {
+            throw new IllegalArgumentException("Bad code");
+        }
+    }
+
+    /**
+     * Replace EventAttendeeList with another list
+     * @param code Access identifier to dissuade accidental usage
+     * @param eventAttendees Replacement list
+     */
+    public void replaceEventAttendeeList(Integer code, ArrayList<CheckIn> eventAttendees) {
+        if (code == 42) { // ensure not all developers have access
+            this.EventAttendeeList = eventAttendees;
+        } else {
+            throw new IllegalArgumentException("Bad code");
+        }
+    }
+
+    /**
+     * Replace EventMilestoneList with another list
+     * @param code Access identifier to dissuade accidental usage
+     * @param eventMilestones Replacement list
+     */
+    public void replaceEventMilestoneList(Integer code, ArrayList<EventMilestone> eventMilestones) {
+        if (code == 42) { // ensure not all developers have access
+            this.EventMilestoneList = eventMilestones;
+        } else {
+            throw new IllegalArgumentException("Bad code");
+        }
+    }
 
     /* ------- *
      * GETTERS *
