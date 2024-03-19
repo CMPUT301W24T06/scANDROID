@@ -5,16 +5,21 @@ import android.graphics.BitmapFactory;
 import android.os.Looper;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import android.os.Handler;
+
+import androidx.annotation.NonNull;
 
 /**
  * Represents interface between scANDROID and Firestore database. <br>
@@ -99,7 +104,21 @@ public class DBAccessor {
         this.EventDB.getAllEventReferences(callback);
     }
 
+    /**
+     * {@link EventPosterDBAccessor#getAllEventPosterReferences(ListIDCallback)}
+     * @param callback To handle asynchronous operations for accessing firebase
+     */
+    private void getAllEventPosterReferences(ListIDCallback callback) {
+        this.EventPosterDB.getAllEventPosterReferences(callback);
+    }
 
+    /**
+     * {@link UserProfileImageDBAccessor#getAllUserProfileImageReferences(ListIDCallback)}
+     * @param callback To handle asynchronous operations for accessing firebase
+     */
+    private void getAllUserProfileImageReferences(ListIDCallback callback) {
+        this.UserProfileImageDB.getAllUserProfileImageReferences(callback);
+    }
 
     /**
      * {@link UserDBAccessor#getAllEventReferences(ListIDCallback)}
@@ -482,6 +501,31 @@ public class DBAccessor {
             this.EventPosterRef.delete()
                     .addOnFailureListener(e -> Log.w("Firestore", "Error deleting EventPoster", e))
                     .addOnSuccessListener(unused -> Log.d("Firestore", "EventPoster successfully deleted!"));
+        }
+
+        /**
+         * Get a list of all eventPosterID's in firestore database
+         * @param callback To handle asynchronous operations for accessing firebase
+         */
+        private void getAllEventPosterReferences(ListIDCallback callback) {
+            // set storage reference to EventPoster collection
+            this.EventPosterRef = this.storageRef.child(this.EventPosterRefName);
+
+            // get all within EventPoster collection
+            // Source: https://chat.openai.com/share/4defa914-27aa-456d-88ed-68d13b8527a8
+            this.EventPosterRef.listAll()
+                    .addOnSuccessListener(listResult -> {
+                        ArrayList<String> eventPosterIDs = new ArrayList<>();
+                        for (StorageReference item : listResult.getItems()) {
+                            eventPosterIDs.add(item.getName());
+                        }
+                        Log.d("Event Poster IDs", eventPosterIDs.toString());
+                        callback.onListRetrieved(eventPosterIDs);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.d("Firestore", "get failed with ", e);
+                        callback.onListRetrieved(null);
+                    });
         }
 
         /**
@@ -952,6 +996,31 @@ public class DBAccessor {
             this.UserProfileImageRef.delete()
                     .addOnFailureListener(e -> Log.w("Firestore", "Error deleting UserProfileImage", e))
                     .addOnSuccessListener(unused -> Log.d("Firestore", "UserProfileImage successfully deleted!"));
+        }
+
+        /**
+         * Get a list of all userProfilePhotoID's in firestore database
+         * @param callback To handle asynchronous operations for accessing firebase
+         */
+        private void getAllUserProfileImageReferences(ListIDCallback callback) {
+            // set storage reference to UserProfileImage collection
+            this.UserProfileImageRef = this.storageRef.child(this.UserProfileImageRefName);
+
+            // get all within UserProfileImage collection
+            // Source: https://chat.openai.com/share/4defa914-27aa-456d-88ed-68d13b8527a8
+            this.UserProfileImageRef.listAll()
+                    .addOnSuccessListener(listResult -> {
+                        ArrayList<String> UserProfileImageIDs = new ArrayList<>();
+                        for (StorageReference item : listResult.getItems()) {
+                            UserProfileImageIDs.add(item.getName());
+                        }
+                        Log.d("User Profile Photo IDs", UserProfileImageIDs.toString());
+                        callback.onListRetrieved(UserProfileImageIDs);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.d("Firestore", "get failed with ", e);
+                        callback.onListRetrieved(null);
+                    });
         }
 
         /**
