@@ -34,7 +34,6 @@ import java.util.Calendar;
  * The view for when Users wish to create a new event or edit an existing event's parameters
  */
 public class CreateEventActivity extends AppCompatActivity {
-    ActivityResultLauncher<Intent> launcher;
     Button posterButton;
     Bitmap posterBitmap;
     Boolean newEvent = true;
@@ -170,68 +169,6 @@ public class CreateEventActivity extends AppCompatActivity {
         });
 
         backButton.setOnClickListener(v -> finish());
-    }
-
-    /**
-     * Retrieves the image user selected from their gallery
-     */
-    //Source: https://www.youtube.com/watch?v=nOtlFl1aUCw
-    private void registerResult(){
-        launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    try {
-                        assert result.getData() != null;
-                        Uri imageUri = result.getData().getData();
-                        assert imageUri != null;
-                        InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                        Drawable posterDrawable = Drawable.createFromStream(inputStream, imageUri.toString() );
-                        posterBitmap = BitmapFactory.decodeStream(inputStream);
-                        posterButton.setBackground(posterDrawable);
-
-                    } catch (Exception e){
-                        Toast.makeText(CreateEventActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-    }
-
-    /**
-     * Starts an Intent for selecting an image from a user's gallery
-     */
-    //Source: https://www.youtube.com/watch?v=nOtlFl1aUCw
-    private void pickImage() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        launcher.launch(intent);
-    }
-
-    /**
-     * Creates a Bitmap object from a Drawable object
-     * @param drawable Drawable object that is being converted
-     * @return
-     * Returns a Bitmap object created from parameters of the Drawable object
-     */
-    //Source: https://stackoverflow.com/questions/3035692/how-to-convert-a-drawable-to-a-bitmap
-    public static Bitmap drawableToBitmap (Drawable drawable) {
-        Bitmap bitmap;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
-        }
-
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
     }
 }
 
