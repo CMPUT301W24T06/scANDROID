@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -59,7 +60,7 @@
         android:id="@+id/profile_info_email_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="100dp"
         android:text="@string/email_text"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,6 +102,28 @@
         app:layout_constraintTop_toBottomOf="@+id/profile_info_phone_title" />
 
     <TextView
+        android:id="@+id/profile_info_about_me_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="About me"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.117"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_info_phone_text" />
+
+    <TextView
+        android:id="@+id/profile_info_about_me_text"
+        android:layout_width="360dp"
+        android:layout_height="48dp"
+        android:text="@string/empty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.803"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_info_about_me_title" />
+
+    <TextView
         android:id="@+id/profile_info_count_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -110,7 +133,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.139"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_info_phone_text" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_info_about_me_text" />
 
     <TextView
         android:id="@+id/profile_info_count_text"
@@ -126,7 +149,7 @@
         android:id="@+id/profile_info_checkin_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="8dp"
         android:text="@string/check_in_time_text"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -143,4 +166,21 @@
         app:layout_constraintHorizontal_bias="0.803"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_info_checkin_title" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/profile_info_remove_profile_button"
+        android:layout_width="328dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/rectangle_button"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Remove User"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.578"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_info_checkin_text" />
 </androidx.constraintlayout.widget.ConstraintLayout>

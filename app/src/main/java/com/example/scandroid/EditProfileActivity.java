@@ -45,16 +45,6 @@ public class EditProfileActivity extends AppCompatActivity{
     private Uri selectedImageUri;
 
     /**
-     * ActivityResultLauncher for image selection, using the GetContent contract.
-     */
-    private final ActivityResultLauncher<String> pickImageLauncher =
-            registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
-                if (result != null) {
-                    handleImageSelection(result);
-                }
-            });
-
-    /**
      * Initializes the activity and sets up views, listeners, and data retrieval.
      *
      * @param savedInstanceState The saved instance state bundle.
@@ -146,50 +136,6 @@ public class EditProfileActivity extends AppCompatActivity{
     private void showAdminKeyFragment() {
         AdminKeyFragment adminKeyFragment = new AdminKeyFragment();
         adminKeyFragment.show(getSupportFragmentManager(), "AdminKeyFragment");
-    }
-
-
-    /**
-     * Handles the selection of an image, updates the UI, and stores the new image in the backend.
-     *
-     * @param imageUri The URI of the selected image.
-     */
-    private void handleImageSelection(Uri imageUri) {
-        // Clear the existing URL from the currentUser object
-        currentUser.setProfilePictureUrl("");
-
-        // Update the selectedImageUri
-        selectedImageUri = imageUri;
-
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-            if (profileImageView != null) {
-                // Update the ImageView directly
-                profileImageView.setImageBitmap(bitmap);
-                Log.d("EditProfileActivity", "ImageView updated successfully");
-
-                if (bitmap != null) {
-                    // Update the backend with the new image
-                    DBAccessor database = new DBAccessor();
-                    database.storeUserProfileImage(userID, bitmap);
-                } else {
-                    Log.e("EditProfileActivity", "Bitmap is null");
-                }
-            } else {
-                Log.e("EditProfileActivity", "ImageView is null");
-            }
-
-            // Optionally close the InputStream
-            if (inputStream != null) {
-                inputStream.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("EditProfileActivity", "Error converting image to bitmap: " + e.getMessage());
-            Toast.makeText(this, "Error converting image to bitmap", Toast.LENGTH_SHORT).show();
-        }
     }
 }
 

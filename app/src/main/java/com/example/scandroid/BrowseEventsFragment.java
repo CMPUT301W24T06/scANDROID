@@ -1,12 +1,24 @@
 package com.example.scandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,10 +35,63 @@ public class BrowseEventsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String userID;
+    ArrayAdapter<String> allEventsAdapter;
+    private final DBAccessor database = new DBAccessor();
 
     public BrowseEventsFragment() {
         // Required empty public constructor
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //boolean isAdmin = false;
+        boolean isAdmin = true;// Setting to true now for testing
+        if (getArguments() != null) {
+            userID = getArguments().getString(ARG_PARAM1);
+            //Some way to tell if user is admin or not. user.isAdmin()?
+            //isAdmin = true;
+
+        }
+        ListView allEventsList = view.findViewById(R.id.browse_event_list);
+        database.getAllEventReferences(List -> {
+            allEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), List, userID);
+            allEventsList.setAdapter(allEventsAdapter);
+        });
+
+        allEventsList.setOnItemClickListener((parent, view1, position, id) -> {
+            String eventID = allEventsAdapter.getItem(position);
+            Intent viewEventIntent = new Intent(view1.getContext(), EventInfoActivity.class);
+            viewEventIntent.putExtra("eventID", eventID);
+            startActivity(viewEventIntent);
+
+            //Retrieve the new information about the lists
+            database.getAllEventReferences(List -> {
+                allEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), List, userID);
+                allEventsList.setAdapter(allEventsAdapter);
+            });
+                //Update the adapter
+                allEventsAdapter.notifyDataSetChanged();
+            });
+        if (isAdmin){
+            allEventsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    DialogFragment eventInspectPrompt = new AdminInspectEventFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("eventID", allEventsAdapter.getItem(position));
+                    eventInspectPrompt.setArguments(bundle);
+
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    transaction.add(android.R.id.content, eventInspectPrompt);
+                    transaction.commit();
+                    return true;
+                }
+            });
+        }
+        }
+
 
     /**
      * Use this factory method to create a new instance of

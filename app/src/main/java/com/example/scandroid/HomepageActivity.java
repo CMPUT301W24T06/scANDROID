@@ -180,14 +180,14 @@ public class HomepageActivity extends AppCompatActivity {
         DBAccessor database = new DBAccessor();
         homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
         homepagePager.setAdapter(homepageActivityPageAdapter);
-        String userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
+        //String userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
         database.accessUser(userID, user -> {
             profileName.setText(user.getUserName());
             database.accessUserProfileImage(userID, new BitmapCallback() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
                     profilePicture.setImageBitmap(bitmap);
-                    profilePicture.postInvalidate();
+                    //profilePicture.postInvalidate();
                 }
 
                 @Override

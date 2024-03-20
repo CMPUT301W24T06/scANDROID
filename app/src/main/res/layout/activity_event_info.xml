@@ -17,6 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" >
+
     </RelativeLayout>
 
 
@@ -31,36 +32,6 @@
         app:layout_constraintStart_toStartOf="@+id/blue_background"
         app:layout_constraintTop_toTopOf="@+id/blue_background"
         app:layout_constraintVertical_bias="0.715" />
-
-    <TextView
-        android:id="@+id/fetch_event_title_big"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/inter_semibold"
-        android:text="@string/event_name_text"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="30sp"
-        android:gravity="center_horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/create_event_change_poster"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/blue_background"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/back_arrow"
-        android:layout_width="48dp"
-        android:layout_height="52dp"
-        android:background="@drawable/back_arrow_icon"
-        android:backgroundTint="@color/white"
-        android:contentDescription="@string/app_name"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/fetch_event_title_big"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/create_event_name_text"
@@ -87,7 +58,9 @@
         android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_name_text" />
+        app:layout_constraintTop_toBottomOf="@+id/create_event_name_text"
+        app:layout_constraintStart_toEndOf="@id/back_arrow"
+        />
 
     <TextView
         android:id="@+id/create_event_location_text"
@@ -172,5 +145,48 @@
         app:layout_constraintHorizontal_bias="0.093"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fetch_event_date" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/remove_event_button"
+        android:layout_width="333dp"
+        android:layout_height="48dp"
+        android:background="@drawable/rectangle_button"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Remove Event"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fetch_event_description" />
+
+    <TextView
+        android:id="@+id/fetch_event_title_big"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:fontFamily="@font/inter_semibold"
+        android:gravity="center_horizontal"
+        android:text="@string/event_name_text"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toEndOf="@+id/back_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/blue_background" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/back_arrow"
+        android:layout_width="48dp"
+        android:layout_height="52dp"
+        android:background="@drawable/back_arrow_icon"
+        android:backgroundTint="@color/white"
+        android:contentDescription="@string/app_name"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
