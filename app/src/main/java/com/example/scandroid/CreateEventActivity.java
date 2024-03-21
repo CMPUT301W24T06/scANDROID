@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -169,6 +170,24 @@ public class CreateEventActivity extends AppCompatActivity {
         });
 
         backButton.setOnClickListener(v -> finish());
+    }
+    private boolean handleUserInput(String eventName, String eventDescription){
+        boolean isValid = true;
+        // check if an event name is a string and if it is valid
+        if (eventName.isEmpty() || eventName.length() > 30) {
+            showToast("Please enter a valid event name (up to 30 characters)");
+            isValid = false;
+        }
+        // check if the user provided a description for their event
+        if (eventDescription.isEmpty()) {
+            showToast("Please enter a description for your event");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
 
