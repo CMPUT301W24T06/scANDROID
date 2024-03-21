@@ -2,6 +2,7 @@ package com.example.scandroid;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 
@@ -20,15 +24,17 @@ import java.util.ArrayList;
  * a list of users
  */
 public class UsersArrayAdapter extends ArrayAdapter<String> {
-
+    FragmentManager fragmentManager;
+    boolean isAdmin;
     /**
      * Constructs a new UsersArrayAdapter
      *
      * @param context context where the adapter is being used
      * @param userIDs list of user IDs to display
      */
-    public UsersArrayAdapter(Context context, ArrayList<String> userIDs) {
+    public UsersArrayAdapter(Context context, ArrayList<String> userIDs, FragmentManager fragmentManager) {
         super(context,0, userIDs);
+        this.fragmentManager = fragmentManager;
     }
 
     /**
@@ -64,6 +70,23 @@ public class UsersArrayAdapter extends ArrayAdapter<String> {
             @Override
             public void onBitmapLoaded(Bitmap bitmap) {
                 userProfilePicture.setImageBitmap(bitmap);
+                String userID = new DeviceIDRetriever(getContext()).getDeviceId();
+
+                database.accessUser(userID, user -> {
+                    isAdmin = user.getHasAdminPermissions();
+                    if (isAdmin){
+                        userProfilePicture.setOnClickListener(v -> {
+                            DialogFragment imageInspectPrompt = new AdminInspectImageFragment(bitmap);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("userID", userID);
+                            imageInspectPrompt.setArguments(bundle);
+
+                            FragmentTransaction transaction = fragmentManager.beginTransaction();
+                            transaction.add(android.R.id.content, imageInspectPrompt);
+                            transaction.commit();
+                        });
+                    }
+                });
             }
 
             @Override

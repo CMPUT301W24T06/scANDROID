@@ -37,6 +37,7 @@ public class BrowseEventsFragment extends Fragment {
     private String mParam2;
     private String userID;
     ArrayAdapter<String> allEventsAdapter;
+    boolean isAdmin;
     private final DBAccessor database = new DBAccessor();
 
     public BrowseEventsFragment() {
@@ -46,17 +47,9 @@ public class BrowseEventsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //boolean isAdmin = false;
-        boolean isAdmin = true;// Setting to true now for testing
-        if (getArguments() != null) {
-            userID = getArguments().getString(ARG_PARAM1);
-            //Some way to tell if user is admin or not. user.isAdmin()?
-            //isAdmin = true;
-
-        }
         ListView allEventsList = view.findViewById(R.id.browse_event_list);
         database.getAllEventReferences(List -> {
-            allEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), List, userID);
+            allEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), List, getActivity().getSupportFragmentManager());
             allEventsList.setAdapter(allEventsAdapter);
         });
 
@@ -68,29 +61,33 @@ public class BrowseEventsFragment extends Fragment {
 
             //Retrieve the new information about the lists
             database.getAllEventReferences(List -> {
-                allEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), List, userID);
+                allEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), List, getActivity().getSupportFragmentManager());
                 allEventsList.setAdapter(allEventsAdapter);
             });
                 //Update the adapter
                 allEventsAdapter.notifyDataSetChanged();
             });
-        if (isAdmin){
-            allEventsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    DialogFragment eventInspectPrompt = new AdminInspectEventFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("eventID", allEventsAdapter.getItem(position));
-                    eventInspectPrompt.setArguments(bundle);
+        database.accessUser(new DeviceIDRetriever(requireContext()).getDeviceId(), new UserCallback() {
+            @Override
+            public void onUserRetrieved(User user) {
+                isAdmin = user.getHasAdminPermissions();
+                if (isAdmin){
+                    allEventsList.setOnItemLongClickListener((parent, view12, position, id) -> {
+                        DialogFragment eventInspectPrompt = new AdminInspectEventFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("eventID", allEventsAdapter.getItem(position));
+                        eventInspectPrompt.setArguments(bundle);
 
-                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    transaction.add(android.R.id.content, eventInspectPrompt);
-                    transaction.commit();
-                    return true;
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        transaction.add(android.R.id.content, eventInspectPrompt);
+                        transaction.commit();
+                        return true;
+                    });
                 }
-            });
-        }
-        }
+            }
+        });
+
+    }
 
 
     /**
