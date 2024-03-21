@@ -1,6 +1,8 @@
 package com.example.scandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ public class ProfileInfoActivity extends AppCompatActivity {
     User currentUser;
     String userID;
     boolean isAttendee;
+    Bitmap userProfilePicture;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,27 +60,37 @@ public class ProfileInfoActivity extends AppCompatActivity {
                 String eventID = getIntent().getStringExtra("eventID");
                 profileCountText.setText(user.getTimesAttended(eventID));
             }
-            //if user is admin,
-            //removeButton.setVisibility(View.VISIBLE);
-            removeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            if (user.getHasAdminPermissions()){
+                removeButton.setVisibility(View.VISIBLE);
+                removeButton.setOnClickListener(v -> {
                     database.deleteUser(userID);
                     database.deleteUserProfileImage(userID);
+                });
+            }
+
+            database.accessUserProfileImage(userID, new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    userProfilePicture = bitmap;
+                    profilePicture.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    Log.d("BitmapLoad", "Failed to load image bitmap");
                 }
             });
-        });
 
-        database.accessUserProfileImage(userID, new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                profilePicture.setImageBitmap(bitmap);
-            }
+            profilePicture.setOnClickListener(v -> {
+                DialogFragment imageInspectPrompt = new AdminInspectImageFragment(userProfilePicture);
+                Bundle bundle = new Bundle();
+                bundle.putString("userID", userID);
+                imageInspectPrompt.setArguments(bundle);
 
-            @Override
-            public void onBitmapFailed(Exception e) {
-                Log.d("BitmapLoad", "Failed to load image bitmap");
-            }
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.add(android.R.id.content, imageInspectPrompt);
+                transaction.commit();
+            });
         });
 
         backButton.setOnClickListener(v -> finish());

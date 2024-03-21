@@ -162,6 +162,10 @@ public class EditProfileActivity extends AppCompatActivity{
         AdminKeyFragment adminKeyFragment = new AdminKeyFragment();
         adminKeyFragment.show(getSupportFragmentManager(), "AdminKeyFragment");
     }
+    public void onDataReceived(Bundle data) {
+        String enteredAdminKey = data.getString("enteredAdminKey");
+        currentUser.enterAdminKey(enteredAdminKey);
+    }
 }
 
 
