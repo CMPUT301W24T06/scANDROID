@@ -65,8 +65,16 @@ public class WelcomeFragment extends DialogFragment {
             public void onClick(View v) {
                 // Get the entered name
                 String enteredName = nameEditText.getText().toString();
-                // Close the fragment and pass the entered name to the activity
-                ((HomepageActivity) requireActivity()).onEnterClicked(enteredName);
+                // if the user does not enter nothing
+                if (!enteredName.isEmpty()) {
+                    // Close the fragment and pass the entered name to the activity
+                    ((HomepageActivity) requireActivity()).onEnterClicked(enteredName);
+                }
+                // else generate a random user id for them
+                else{
+                    String randomName = "Guest" + new Random().nextInt(10000);
+                    ((HomepageActivity) requireActivity()).onEnterClicked(randomName);
+                }
                 hideKeyboard();
                 dismiss();
             }
