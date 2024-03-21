@@ -34,6 +34,7 @@ public class BrowseUsersFragment extends Fragment {
     private String userID;
     ArrayAdapter<String> allUsersAdapter;
     private final DBAccessor database = new DBAccessor();
+    boolean isAdmin;
 
     public BrowseUsersFragment() {
         // required empty public constructor
@@ -69,17 +70,9 @@ public class BrowseUsersFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //boolean isAdmin = false;
-        boolean isAdmin = true;// Setting to true now for testing
-        if (getArguments() != null) {
-            userID = getArguments().getString(ARG_PARAM1);
-            //Some way to tell if user is admin or not. user.isAdmin()?
-            //isAdmin = true;
-
-        }
         ListView allUsersList = view.findViewById(R.id.browse_users_list);
         database.getAllUserReferences(List -> {
-            allUsersAdapter = new UsersArrayAdapter(requireContext(), List);
+            allUsersAdapter = new UsersArrayAdapter(requireContext(), List, getActivity().getSupportFragmentManager());
             allUsersList.setAdapter(allUsersAdapter);
         });
 
@@ -91,28 +84,32 @@ public class BrowseUsersFragment extends Fragment {
 
             //Retrieve the new information about the lists
             database.getAllUserReferences(List -> {
-                allUsersAdapter = new UsersArrayAdapter(requireContext(), List);
+                allUsersAdapter = new UsersArrayAdapter(requireContext(), List, requireActivity().getSupportFragmentManager());
                 allUsersList.setAdapter(allUsersAdapter);
             });
             //Update the adapter
             allUsersAdapter.notifyDataSetChanged();
         });
-        if (isAdmin){
-            allUsersList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    DialogFragment userInspectPrompt = new AdminInspectUserFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("userID", allUsersAdapter.getItem(position));
-                    userInspectPrompt.setArguments(bundle);
+        database.accessUser(new DeviceIDRetriever(requireContext()).getDeviceId(), new UserCallback() {
+            @Override
+            public void onUserRetrieved(User user) {
+                isAdmin = user.getHasAdminPermissions();
+                if (isAdmin){
+                    allUsersList.setOnItemLongClickListener((parent, view12, position, id) -> {
+                        DialogFragment userInspectPrompt = new AdminInspectUserFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("userID", allUsersAdapter.getItem(position));
+                        userInspectPrompt.setArguments(bundle);
 
-                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    transaction.add(android.R.id.content, userInspectPrompt);
-                    transaction.commit();
-                    return true;
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        transaction.add(android.R.id.content, userInspectPrompt);
+                        transaction.commit();
+                        return true;
+                    });
                 }
-            });
-        }
+            }
+        });
+
     }
 
     @Override

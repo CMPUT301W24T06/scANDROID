@@ -2,6 +2,7 @@ package com.example.scandroid;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 
 import java.util.ArrayList;
@@ -22,16 +26,18 @@ import java.util.ArrayList;
  * used in the app for displaying created events in a list view.
  */
 public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
-
+    FragmentManager fragmentManager;
+    boolean isAdmin;
     /**
      * Constructs a new CreatedEventsArrayAdapter
      *
      * @param context context where the adapter is being used
      * @param myEvents list of event IDs to display
-     * @param userID ID of the organizer (user who created the events)
+     *
      */
-    public CreatedEventsArrayAdapter(Context context, ArrayList<String> myEvents, String userID) {
+    public CreatedEventsArrayAdapter(Context context, ArrayList<String> myEvents, FragmentManager fragmentManager) {
         super(context,0, myEvents);
+        this.fragmentManager = fragmentManager;
     }
 
     /**
@@ -67,6 +73,25 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
             @Override
             public void onBitmapLoaded(Bitmap bitmap) {
                 eventPoster.setImageBitmap(bitmap);
+                String userID = new DeviceIDRetriever(getContext()).getDeviceId();
+
+                database.accessUser(userID, user -> {
+                    isAdmin = user.getHasAdminPermissions();
+                    if (isAdmin){
+                        eventPoster.setOnClickListener(v -> {
+                            DialogFragment imageInspectPrompt = new AdminInspectImageFragment(bitmap);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("eventID", eventID);
+                            imageInspectPrompt.setArguments(bundle);
+
+                            FragmentTransaction transaction = fragmentManager.beginTransaction();
+                            transaction.add(android.R.id.content, imageInspectPrompt);
+                            transaction.commit();
+                        });
+                    }
+                });
+
+
             }
 
             @Override
@@ -74,6 +99,7 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
                 Toast.makeText(view.getContext(), "Failed to retrieve event poster", Toast.LENGTH_SHORT).show();
             }
         });
+
         return view;
     }
 }
