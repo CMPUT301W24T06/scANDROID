@@ -17,6 +17,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.charset.StandardCharsets;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -124,6 +126,86 @@ public class DBAFirestoreTest {
         assertEquals(mockEvent.getEventDescription(), recievedEvent[0].getEventDescription());
 
     } // end public void testWriteEventToFirestore
+    
+    @Test
+    public void testRestoreEventFields() throws InterruptedException {
+        // create Event object to test with
+        Event mockEvent = mockEvent(this.dateValues, this.locationValues);
+
+        // add a checkIn and an announcement to the Event
+        User mockUser = mockUser();
+        mockEvent.addEventAnnouncement("A_Title", "A_About", new Time(45240000));
+        mockEvent.addEventAttendee(mockUser.getUserID(), new Time(45240000), locationValues);
+
+        // initialize wait to ensure database write takes place before testing
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // store Event in database and give time to take place
+        this.dbA.storeEvent(mockEvent);
+        latch.await(1, TimeUnit.SECONDS);
+
+        // set location to save accessedEvent and get accessedEvent
+        final Event[] recievedEvent = new Event[1];
+        this.dbA.accessEvent(mockEvent.getEventID(), event -> {
+            if (event != null) {
+                recievedEvent[0] = event;
+            }
+        });
+
+        // after delay to ensure event access, assert attributes
+        latch.await(1, TimeUnit.SECONDS);
+
+        // remaining simple untested fields
+        assertEquals(mockEvent.getEventLocation(), recievedEvent[0].getEventLocation());
+        assertEquals(mockEvent.getEventOrganizerID(), recievedEvent[0].getEventOrganizerID());
+
+        // milestone fields
+        assertEquals(mockEvent.getEventMilestoneSeries(), recievedEvent[0].getEventMilestoneSeries());
+        assertEquals(
+                mockEvent.getEventMilestones().get(0),
+                recievedEvent[0].getEventMilestones().get(0));
+
+        // date fields
+        Calendar originalDate = mockEvent.getEventDate();
+        Calendar restoredDate = recievedEvent[0].getEventDate();
+        assertEquals(originalDate.get(Calendar.YEAR), restoredDate.get(Calendar.YEAR));
+        assertEquals(originalDate.get(Calendar.MONTH), restoredDate.get(Calendar.MONTH));
+        assertEquals(originalDate.get(Calendar.DAY_OF_MONTH), restoredDate.get(Calendar.DAY_OF_MONTH));
+        assertEquals(originalDate.get(Calendar.HOUR_OF_DAY), restoredDate.get(Calendar.HOUR_OF_DAY));
+        assertEquals(originalDate.get(Calendar.MINUTE), restoredDate.get(Calendar.MINUTE));
+
+        // announcement fields
+        ArrayList<Event.EventAnnouncement> originalAnnouncements = mockEvent.getEventAnnouncements();
+        ArrayList<Event.EventAnnouncement> restoredAnnouncements = recievedEvent[0].getEventAnnouncements();
+        assertEquals(originalAnnouncements.size(), restoredAnnouncements.size());
+        assertEquals(
+                originalAnnouncements.get(0).getAnnouncementTitle(),
+                restoredAnnouncements.get(0).getAnnouncementTitle());
+        assertEquals(
+                originalAnnouncements.get(0).getAnnouncementAbout(),
+                restoredAnnouncements.get(0).getAnnouncementAbout());
+        assertEquals(
+                originalAnnouncements.get(0).getAnnouncementTime(),
+                restoredAnnouncements.get(0).getAnnouncementTime());
+        assertEquals(
+                originalAnnouncements.get(0).getAnnouncementOrganizerID(),
+                restoredAnnouncements.get(0).getAnnouncementOrganizerID());
+
+        // attendee fields
+        ArrayList<Event.CheckIn> originalCheckIns = mockEvent.getEventAttendeeList();
+        ArrayList<Event.CheckIn> restoredCheckIns = recievedEvent[0].getEventAttendeeList();
+        assertEquals(originalCheckIns.size(), restoredCheckIns.size());
+        assertEquals(
+                originalCheckIns.get(0).getUserID(),
+                restoredCheckIns.get(0).getUserID());
+        assertEquals(
+                originalCheckIns.get(0).getCheckInTime(),
+                restoredCheckIns.get(0).getCheckInTime());
+        assertEquals(
+                originalCheckIns.get(0).getCheckInLocation(),
+                restoredCheckIns.get(0).getCheckInLocation());
+
+    } // end public void testRestoreEventFields
 
     @Test
     public void testGetEventIDs() throws InterruptedException {
