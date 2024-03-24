@@ -4,12 +4,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,17 +29,22 @@ public class Event implements Serializable {
     /* ------------------- *
      * ATTRIBUTES / FIELDS *
      * ------------------- */
-    private ArrayList<CheckIn> EventAttendeeList;
-    private ArrayList<EventAnnouncement> EventAnnouncementList;
     private String EventID;
-    private Calendar EventDate;
+    private String EventName;
+    private String EventOrganizerID;
     private String EventDescription;
     private ArrayList<Double> EventLocation;
     private ArrayList<EventMilestone> EventMilestoneList;
     private ArrayList<Integer> MilestoneSeries;
-    private String EventName;
-    private String EventOrganizerID;
+    private ArrayList<String> AnnouncementTitles;
+    private ArrayList<String> AnnouncementAbouts;
+    private ArrayList<Long> AnnouncementTimes;
+    private HashMap<String, Integer> EventDateDetails;
+    private ArrayList<String> CheckInIDs;
+    private ArrayList<Long> CheckInTimes;
+    private ArrayList<List<Double>> CheckInLocations;
 
+    
 
     /* ----------- *
      * CONSTRUCTOR *
@@ -58,9 +63,6 @@ public class Event implements Serializable {
                  @NonNull Calendar eventDate, ArrayList<Double> eventLocation) {
 
         EventID = UUID.randomUUID().toString(); // unique identifier for database key
-        this.EventAttendeeList = new ArrayList<>();
-        this.EventAnnouncementList = new ArrayList<>();
-        this.EventDate = eventDate;
         this.EventDescription = eventDescription;
         this.EventLocation = eventLocation;
         this.EventMilestoneList = new ArrayList<>();
@@ -68,6 +70,24 @@ public class Event implements Serializable {
         this.EventName = eventName;
         this.EventOrganizerID = eventOrganizerID;
         this.addEventMilestone();   // adds first milestone of threshold of one attendee check-in
+
+        // Initialize Announcement data structure
+        this.AnnouncementAbouts = new ArrayList<>();
+        this.AnnouncementTimes = new ArrayList<>();
+        this.AnnouncementTitles = new ArrayList<>();
+
+        // Initialize Attendees data structure
+        this.CheckInIDs = new ArrayList<>();
+        this.CheckInLocations = new ArrayList<>();
+        this.CheckInTimes = new ArrayList<>();
+
+        // Initialize Date data structure
+        this.EventDateDetails = new HashMap<>();
+        this.EventDateDetails.put("YEAR", eventDate.get(Calendar.YEAR));
+        this.EventDateDetails.put("MONTH", eventDate.get(Calendar.MONTH));
+        this.EventDateDetails.put("DAY_OF_MONTH", eventDate.get(Calendar.DAY_OF_MONTH));
+        this.EventDateDetails.put("HOUR_OF_DAY", eventDate.get(Calendar.HOUR_OF_DAY));
+        this.EventDateDetails.put("MINUTE", eventDate.get(Calendar.MINUTE));
     }
 
     /**
@@ -76,11 +96,24 @@ public class Event implements Serializable {
      * {@see <a href="https://chat.openai.com/share/e135f2dc-cd2f-47ca-b48e-55115d41e6bf"> ChatGPT Conversation </a>}
      */
     public Event() {
-        this.EventLocation = new ArrayList<>(2); // Ensure initial capacity
-        this.EventLocation.add(0.0); // Initial latitude
-        this.EventLocation.add(0.0); // Initial longitude
+        this.EventLocation = new ArrayList<>(); // Ensure initial capacity
+//        this.EventLocation.add(0.0); // Initial latitude
+//        this.EventLocation.add(0.0); // Initial longitude
         this.EventMilestoneList = new ArrayList<>();
-        this.MilestoneSeries = new ArrayList<>(Arrays.asList(1, 1));
+        this.MilestoneSeries = new ArrayList<>();
+
+        // Initialize Announcement data structure
+        this.AnnouncementAbouts = new ArrayList<>();
+        this.AnnouncementTimes = new ArrayList<>();
+        this.AnnouncementTitles = new ArrayList<>();
+
+        // Initialize Attendees data structure
+        this.CheckInIDs = new ArrayList<>();
+        this.CheckInLocations = new ArrayList<>();
+        this.CheckInTimes = new ArrayList<>();
+
+        // Initialize Date data structure
+        this.EventDateDetails = new HashMap<>();
     }
 
     /* ------- *
@@ -93,7 +126,9 @@ public class Event implements Serializable {
      * @param announcementTime  The time that the announcement is visible to an attendee
      */
     public void addEventAnnouncement(String announcementTitle, String announcementAbout, Time announcementTime) {
-        this.EventAnnouncementList.add(new EventAnnouncement(announcementTitle, announcementAbout, announcementTime));
+        this.AnnouncementTitles.add(announcementTitle);
+        this.AnnouncementAbouts.add(announcementAbout);
+        this.AnnouncementTimes.add(announcementTime.getTime());
     }
 
     /**
@@ -103,8 +138,13 @@ public class Event implements Serializable {
      * @param checkInLocation   Geographical coordinates of Event {latitude, longitude}
      */
     public void addEventAttendee(String userID, Time checkInTime, ArrayList<Double> checkInLocation) {
-        this.EventAttendeeList.add(new CheckIn(userID, checkInTime, checkInLocation));
-        if (this.EventAttendeeList.size() == this.MilestoneSeries.get(0)) {
+        // add attendee information to appropriate arrays
+        this.CheckInIDs.add(userID);
+        this.CheckInLocations.add(checkInLocation);
+        this.CheckInTimes.add(checkInTime.getTime());
+
+        // increment milestone if necessary
+        if (this.CheckInIDs.size() == this.MilestoneSeries.get(0)) {
             this.addEventMilestone();       // add next fibonacci milestone when current max is reached
         }
     }
@@ -130,80 +170,134 @@ public class Event implements Serializable {
      */
     public static Event fromSnapshot(DocumentSnapshot snapshot) {
         // initialize return Event
-        Event event = new Event();
+        Event unpackagedEvent = new Event();
 
         // Extract data from the DocumentSnapshot
-        event.EventID = snapshot.getString("eventID");
-        event.EventOrganizerID = snapshot.getString("eventOrganizerID");
-        event.EventName = snapshot.getString("eventName");
-        event.EventDescription = snapshot.getString("eventDescription");
+        unpackagedEvent.EventID = (String) snapshot.get("eventID");
+        unpackagedEvent.EventDateDetails = (HashMap<String, Integer>) snapshot.get("date");
+        unpackagedEvent.EventDescription = snapshot.getString("description");
+        unpackagedEvent.EventLocation = (ArrayList<Double>) snapshot.get("location");
+        unpackagedEvent.EventMilestoneList = (ArrayList<EventMilestone>) snapshot.get("milestoneList");
+
+
+//        unpackagedEvent.EventName = snapshot.get("name");
+
+
+        /*
+        packagedEvent.put("ID", this.EventID);
+        packagedEvent.put("date", this.EventDateDetails);
+        packagedEvent.put("description", this.EventDescription);
+        packagedEvent.put("location", this.EventLocation);
+        packagedEvent.put("milestoneList", this.EventMilestoneList);
+        packagedEvent.put("milestoneSeries", this.MilestoneSeries);
+        packagedEvent.put("name", this.EventName);
+        packagedEvent.put("organizerID", this.EventOrganizerID);
+        packagedEvent.put("announcementTitles", this.AnnouncementTitles);
+        packagedEvent.put("announcementAbouts", this.AnnouncementAbouts);
+        packagedEvent.put("announcementTimes", this.AnnouncementTimes);
+        packagedEvent.put("attendeeIDs", this.CheckInIDs);
+        packagedEvent.put("attendeeTimes", this.CheckInTimes);
+        packagedEvent.put("attendeeLocations", this.CheckInLocations);
+         */
+
+
+
         //TODO Properly deserialize these attributes when retrieving them from firebase
-        event.EventMilestoneList = new ArrayList<>();
-        event.MilestoneSeries = new ArrayList<>(Arrays.asList(1, 1));
-        event.EventAttendeeList = new ArrayList<>();
+//        event.EventMilestoneList = new ArrayList<>();
+//        event.MilestoneSeries = new ArrayList<>(Arrays.asList(1, 1));
+//        event.EventAttendeeList = new ArrayList<>();
 
         // ... extract other fields accordingly
         // Convert Firestore Timestamp to Date
-        Log.d("Firestore", "Type of eventDate: " + snapshot.get("eventDate").getClass().getName());
-        HashMap<String, Object> dateMap = (HashMap<String, Object>) snapshot.get("eventDate");
+//        Log.d("Firestore", "Type of eventDate: " + snapshot.get("eventDate").getClass().getName());
+//        HashMap<String, Object> dateMap = (HashMap<String, Object>) snapshot.get("eventDate");
+//
+//        if (dateMap != null) {
+//            Timestamp timeInMillis = (Timestamp) dateMap.get("time");
+//            if (timeInMillis != null) {
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTimeInMillis(timeInMillis.toDate().getTime());
+//                event.setEventDate(calendar);
+//            }
+//        }
+//        Log.d("Firestore", "Type of eventLocation: " + snapshot.get("eventLocation").getClass().getName());
+//        Object eventLocationObject = snapshot.get("eventLocation");
 
-        if (dateMap != null) {
-            Timestamp timeInMillis = (Timestamp) dateMap.get("time");
-            if (timeInMillis != null) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(timeInMillis.toDate().getTime());
-                event.setEventDate(calendar);
-            }
-        }
-        Log.d("Firestore", "Type of eventLocation: " + snapshot.get("eventLocation").getClass().getName());
-        Object eventLocationObject = snapshot.get("eventLocation");
-
-        if (eventLocationObject instanceof GeoPoint) {
-            // Case 1: eventLocation is a GeoPoint
-            GeoPoint geoPoint = (GeoPoint) eventLocationObject;
-            event.EventLocation = new ArrayList<>(2);
-            event.EventLocation.add(geoPoint.getLatitude());
-            event.EventLocation.add(geoPoint.getLongitude());
-        } else if (eventLocationObject instanceof ArrayList) {
-            // Case 2: eventLocation is an ArrayList
-            event.EventLocation = (ArrayList<Double>) eventLocationObject;
-        } else if (eventLocationObject instanceof HashMap) {
-            // Case 3: eventLocation is a map
-            HashMap<String, Double> eventLocationMap = (HashMap<String, Double>) eventLocationObject;
-            event.EventLocation = new ArrayList<>(2);
-            event.EventLocation.add(eventLocationMap.get("latitude"));
-            event.EventLocation.add(eventLocationMap.get("longitude"));
-        }
-        //TODO these Event attributes may also have to be deserialized
-// Extract EventAttendeeList
-        List<Map<String, Object>> attendeeListMap = (List<Map<String, Object>>) snapshot.get("eventAttendeeList");
-        if (attendeeListMap != null) {
-            for (Map<String, Object> checkInMap : attendeeListMap) {
-                String userID = (String) checkInMap.get("userID");
-                // Extract other details as needed
-                // ...
-                // You may need to convert Time and ArrayList<Double> from the checkInMap
-                // using similar logic as you did in the original code
-                //event.addEventAttendee(userID, checkInTime, checkInLocation);
-            }
-        }
-
-        // Extract EventAnnouncements
-        List<Map<String, Object>> announcementListMap = (List<Map<String, Object>>) snapshot.get("eventAnnouncements");
-        if (announcementListMap != null) {
-            for (Map<String, Object> announcementMap : announcementListMap) {
-                // Extract details from announcementMap and create EventAnnouncement objects
-                // ...
-                // You may need to convert timestamp and other fields
-                String announcementTitle = (String) announcementMap.get("announcementTitle");
-                String announcementAbout = (String) announcementMap.get("announcementAbout");
-                //Time announcementTime = ...; // Convert timestamp or other relevant field
-                //event.addEventAnnouncement(announcementTitle, announcementAbout, announcementTime);
-            }
-        }
-        return event;
+//        if (eventLocationObject instanceof GeoPoint) {
+//            // Case 1: eventLocation is a GeoPoint
+//            GeoPoint geoPoint = (GeoPoint) eventLocationObject;
+//            event.EventLocation = new ArrayList<>(2);
+//            event.EventLocation.add(geoPoint.getLatitude());
+//            event.EventLocation.add(geoPoint.getLongitude());
+//        } else if (eventLocationObject instanceof ArrayList) {
+//            // Case 2: eventLocation is an ArrayList
+//            event.EventLocation = (ArrayList<Double>) eventLocationObject;
+//        } else if (eventLocationObject instanceof HashMap) {
+//            // Case 3: eventLocation is a map
+//            HashMap<String, Double> eventLocationMap = (HashMap<String, Double>) eventLocationObject;
+//            event.EventLocation = new ArrayList<>(2);
+//            event.EventLocation.add(eventLocationMap.get("latitude"));
+//            event.EventLocation.add(eventLocationMap.get("longitude"));
+//        }
+//        //TODO these Event attributes may also have to be deserialized
+//        // Extract EventAttendeeList
+//        List<Map<String, Object>> attendeeListMap = (List<Map<String, Object>>) snapshot.get("eventAttendeeList");
+//        if (attendeeListMap != null) {
+//            for (Map<String, Object> checkInMap : attendeeListMap) {
+//                String userID = (String) checkInMap.get("userID");
+//                // Extract other details as needed
+//                // ...
+//                // You may need to convert Time and ArrayList<Double> from the checkInMap
+//                // using similar logic as you did in the original code
+//                //event.addEventAttendee(userID, checkInTime, checkInLocation);
+//            }
+//        }
+//
+//        // Extract EventAnnouncements
+//        List<Map<String, Object>> announcementListMap = (List<Map<String, Object>>) snapshot.get("eventAnnouncements");
+//        if (announcementListMap != null) {
+//            for (Map<String, Object> announcementMap : announcementListMap) {
+//                // Extract details from announcementMap and create EventAnnouncement objects
+//                // ...
+//                // You may need to convert timestamp and other fields
+//                String announcementTitle = (String) announcementMap.get("announcementTitle");
+//                String announcementAbout = (String) announcementMap.get("announcementAbout");
+//                //Time announcementTime = ...; // Convert timestamp or other relevant field
+//                //event.addEventAnnouncement(announcementTitle, announcementAbout, announcementTime);
+//            }
+//        }
+        return unpackagedEvent;
 
     } // end of fromSnapshot
+
+
+    /**
+     * Simplify Event object to hashmap to be stored in Firestore database.
+     * @return packaged Event object
+     */
+    public Map<String, Object> packageEvent() {
+        // initialize map for event fields to be stored
+        Map<String, Object> packagedEvent = new HashMap<>();
+
+        // assign event details to map
+        packagedEvent.put("ID", this.EventID);
+        packagedEvent.put("date", this.EventDateDetails);
+        packagedEvent.put("description", this.EventDescription);
+        packagedEvent.put("location", this.EventLocation);
+        packagedEvent.put("milestoneList", this.EventMilestoneList);
+        packagedEvent.put("milestoneSeries", this.MilestoneSeries);
+        packagedEvent.put("name", this.EventName);
+        packagedEvent.put("organizerID", this.EventOrganizerID);
+        packagedEvent.put("announcementTitles", this.AnnouncementTitles);
+        packagedEvent.put("announcementAbouts", this.AnnouncementAbouts);
+        packagedEvent.put("announcementTimes", this.AnnouncementTimes);
+        packagedEvent.put("attendeeIDs", this.CheckInIDs);
+        packagedEvent.put("attendeeTimes", this.CheckInTimes);
+        packagedEvent.put("attendeeLocations", this.CheckInLocations);
+
+        // return fully detailed event map
+        return packagedEvent;
+    }
 
     /* ------- *
      * GETTERS *
@@ -212,27 +306,68 @@ public class Event implements Serializable {
      * @return List of all existing announcements of the Event.
      */
     public ArrayList<EventAnnouncement> getEventAnnouncements() {
-        return this.EventAnnouncementList;
+
+        // Initialize return array
+        ArrayList<EventAnnouncement> EventAnnouncementList = new ArrayList<>();
+
+        // Construct Announcement.class objects from Event data
+        for (int i = 0; i < this.AnnouncementTitles.size(); i++) {
+            EventAnnouncementList.add(
+                    new EventAnnouncement(
+                        this.AnnouncementTitles.get(i),
+                        this.AnnouncementAbouts.get(i),
+                        new Time(this.AnnouncementTimes.get(i))));
+        }
+        return EventAnnouncementList;
     }
 
     /**
      * @return List of all checked-in Users attending the Event.
      */
     public ArrayList<CheckIn> getEventAttendeeList() {
-        return this.EventAttendeeList;
+
+        // Initialize return array
+        ArrayList<CheckIn> EventAttendeeList = new ArrayList<>();
+
+        // Construct CheckIn.class objects from Event data
+        for (int i = 0; i < CheckInIDs.size(); i++) {
+            EventAttendeeList.add(
+                    new CheckIn(
+                            this.CheckInIDs.get(i),
+                            new Time(this.CheckInTimes.get(i)),
+                            (ArrayList<Double>) this.CheckInLocations.get(i)));
+        }
+        return EventAttendeeList;
     }
 
     /**
      * @return Count of Users currently checked-in to the Event.
      */
     public Integer getEventAttendeesTotal() {
-        return this.EventAttendeeList.size();
+        return this.CheckInIDs.size();
     }
 
     /**
      * @return Day that Event will take place, includes time of Event.
      */
-    public Calendar getEventDate() { return this.EventDate; }
+    public Calendar getEventDate() {
+        // Get date details for this Event, ensuring no null returns
+        Integer eventYear = this.EventDateDetails.get("YEAR");
+        if (eventYear == null) {eventYear = 1970; }
+        Integer eventMonth = this.EventDateDetails.get("MONTH");
+        if (eventMonth == null) {eventMonth = 1; }
+        Integer eventDate = this.EventDateDetails.get("DAY_OF_MONTH");
+        if (eventDate == null) {eventDate = 1; }
+        Integer eventHour = this.EventDateDetails.get("HOUR_OF_DAY");
+        if (eventHour == null) {eventHour = 1; }
+        Integer eventMinute = this.EventDateDetails.get("MINUTE");
+        if (eventMinute == null) {eventMinute = 1; }
+
+        // build object of required type and return
+        Calendar returnCalendar = Calendar.getInstance();
+        returnCalendar.set(eventYear, eventMonth, eventDate, eventHour, eventMinute);
+        return returnCalendar;
+    }
 
     /**
      * @return Contextual information for Event.
@@ -256,6 +391,11 @@ public class Event implements Serializable {
         return this.EventMilestoneList;
     }
 
+//    /**
+//     * @return Current state of milestone series
+//     */
+//    public ArrayList<Integer> getEventMilestoneSeries() { return this.MilestoneSeries; }
+
     /**
      * @return Name that the organizer has given the Event.
      */
@@ -273,7 +413,14 @@ public class Event implements Serializable {
     /**
      * @param dateOfEvent Day that Event will take place, includes time of Event.
      */
-    public void setEventDate(Calendar dateOfEvent) { this.EventDate = dateOfEvent; }
+    public void setEventDate(Calendar dateOfEvent) {
+        // Update Event details with values from argument
+        this.EventDateDetails.put("YEAR", dateOfEvent.get(Calendar.YEAR));
+        this.EventDateDetails.put("MONTH", dateOfEvent.get(Calendar.MONTH));
+        this.EventDateDetails.put("DAY_OF_MONTH", dateOfEvent.get(Calendar.DAY_OF_MONTH));
+        this.EventDateDetails.put("HOUR_OF_DAY", dateOfEvent.get(Calendar.HOUR_OF_DAY));
+        this.EventDateDetails.put("MINUTE", dateOfEvent.get(Calendar.MINUTE));
+    }
 
     /**
      * @param eventDescription Contextual information for Event.
