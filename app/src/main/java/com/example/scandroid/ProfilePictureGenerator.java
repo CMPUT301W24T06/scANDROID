@@ -21,20 +21,21 @@ public class ProfilePictureGenerator {
         // Create a new Bitmap with the specified width and height
         int width = 200;
         int height = 200;
-        name = name.toLowerCase();
+        name = name.toUpperCase();
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
         // Create a Canvas to draw on the Bitmap
         Canvas canvas = new Canvas(bitmap);
 
-       char firstLetter = name.charAt(0);
-        int backgroundColor = generateColor(firstLetter, "background");
+        char firstLetter = name.charAt(0);
+        int backgroundColor = generateColor(firstLetter);
+
         canvas.drawColor(backgroundColor);
 
         // Create a Paint object for drawing text
         Paint paint = new Paint();
-        paint.setColor(generateColor(name.charAt(name.length() - 1), "letter"));
-        paint.setTextSize(250);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(180);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
         paint.setAntiAlias(true);
 
@@ -45,7 +46,7 @@ public class ProfilePictureGenerator {
         float y = (height - paint.ascent() - paint.descent()) / 2;
 
         // Draw the random letter on the canvas
-        canvas.drawText(String.valueOf(firstLetter), x, y-30, paint);
+        canvas.drawText(String.valueOf(name.toUpperCase().charAt(0)), x, y, paint);
 
         return bitmap;
     }
@@ -53,37 +54,22 @@ public class ProfilePictureGenerator {
     /**
      * Deterministically generate a color for the letter and background of profile picture
      * @param firstLetter First letter of user's name used to determine colors
-     * @param type Determine if generating a color for the background or for the letter itself
      * @return
      * A Color
      */
-    private static int generateColor(char firstLetter, String type) {
-        if (type == "background"){
-        if ('a' <=firstLetter && firstLetter <= 'i'){
-            return Color.rgb(255,0,0);
+    private static int generateColor(char firstLetter) {
+        if ('A' <=firstLetter && firstLetter <= 'I'){
+            return Color.rgb(145,108,219);
         }
-        else if ('i' <firstLetter && firstLetter <= 'q'){
-            return Color.rgb(0,255,0);
+        else if ('I' <firstLetter && firstLetter <= 'Q'){
+            return Color.rgb(108,219,182);
         }
-        else if ('q' < firstLetter){
-            return Color.rgb(0,0,255);
+        else if ('Q' < firstLetter){
+            return Color.rgb(219,182,108);
         }
         else {
-            return Color.rgb(250,0,0);
-        }
-    } else {
-            if ('a' <=firstLetter && firstLetter <= 'i'){
-                return Color.rgb(10,0,200);
-            }
-            else if ('i' <firstLetter && firstLetter <= 'q'){
-                return Color.rgb(20,50,100);
-            }
-            else if ('q' < firstLetter){
-                return Color.rgb(175,75,25);
-            }
-            else {
-                return Color.rgb(40,120,175);
-            }
+            return Color.rgb(145,108,219);
         }
     }
 }
+

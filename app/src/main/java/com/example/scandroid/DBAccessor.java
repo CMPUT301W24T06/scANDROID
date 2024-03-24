@@ -5,21 +5,18 @@ import android.graphics.BitmapFactory;
 import android.os.Looper;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import android.os.Handler;
+import java.util.Map;
 
-import androidx.annotation.NonNull;
+import android.os.Handler;
 
 /**
  * Represents interface between scANDROID and Firestore database. <br>
@@ -364,7 +361,7 @@ public class DBAccessor {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-                                Event retrievedEvent = Event.fromSnapshot(document);
+                                Event retrievedEvent = Event.unpackageEvent(document);
                                 callback.onEventReceived(retrievedEvent);
                             } else {
                                 Log.d("Firestore", "No such document");
@@ -416,9 +413,13 @@ public class DBAccessor {
          * @param event Event object to be added or updated.
          */
         private void storeEvent(Event event) {
+            // package Event attributes into a hashmap for storage
+            Map<String, Object> packedEvent = event.packageEvent();
+
             // Store an Event with EventID as key
             // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
-            this.EventRef.document(event.getEventID()).set(event)
+
+            this.EventRef.document(event.getEventID()).set(packedEvent)
                     .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event successfully written!"))
                     .addOnFailureListener(e -> Log.w("Firestore", "Error writing Event document", e));
         }

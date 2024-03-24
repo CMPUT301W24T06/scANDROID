@@ -28,7 +28,7 @@ public class AdminInspectEventFragment extends DialogFragment {
         TextView eventLocation = view.findViewById(R.id.fetch_inspect_event_location);
         TextView eventDate = view.findViewById(R.id.fetch_inspect_event_date);
         Button cancelButton = view.findViewById(R.id.cancel_inspect_event_button);
-        Button removeButton = view.findViewById(R.id.remove_event_button);
+        Button removeButton = view.findViewById(R.id.inspect_remove_event_button);
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {

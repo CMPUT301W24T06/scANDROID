@@ -1,15 +1,12 @@
 package com.example.scandroid;
 
 import android.location.Location;
-import android.media.Image;
-import android.provider.Settings;
 
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.Random;
 
 /**
@@ -33,6 +30,7 @@ public class User {
     private ArrayList<String> eventsOrganized;
     public ArrayList<String> notifiedBy;
     private String profilePictureUrl;
+    private boolean hasAdminPermissions;
 
     private HashMap<String, Integer> timesAttended = new HashMap<>() ;
     //TODO - make the user's location optional
@@ -86,13 +84,15 @@ public class User {
     /* ------- *
      * METHODS *
      * ------- */
+
     /**
-     * Determines whether a user is an Admin based on a key they have entered.
-     * @param userAdminKey The admin key the user entered.
-     * @return boolean value indicating if a user is an admin(true) or if they are not(false)
+     * A user enters an admin key in order to get admin permissions
+     * @param userAdminKey Key that user has entered
      */
-    public boolean isAdmin(String userAdminKey){
-        return Objects.equals(userAdminKey, adminKey);
+    public void enterAdminKey(String userAdminKey){
+        if (Objects.equals(userAdminKey, adminKey)){
+            this.hasAdminPermissions = true;
+        }
     }
 
     /**
@@ -204,6 +204,14 @@ public class User {
         return timesAttended.get(event);
     }
 
+    /**
+     * Determines whether a user is an Admin based on a key they have entered.
+     * @return boolean value indicating if a user is an admin(true) or if they are not(false)
+     */
+    public boolean getHasAdminPermissions(){
+        return this.hasAdminPermissions;
+    }
+
     /* ------- *
      * SETTERS *
      * ------- */
@@ -248,4 +256,12 @@ public class User {
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
     }
+
+    /**
+     * @param adminPermissions boolean for whether user has admin permissions
+     */
+    public void setHasAdminPermissions(boolean adminPermissions){
+        this.hasAdminPermissions = adminPermissions;
+    }
+
 }

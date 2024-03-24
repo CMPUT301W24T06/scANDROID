@@ -19,7 +19,6 @@ public class AdminKeyFragment extends DialogFragment {
     public AdminKeyFragment() {
     }
 
-
     /**
      * Called to create the view for this fragment, using the given layout inflater
      * and container. Initializes views and handles UI interactions such as cancel
@@ -42,31 +41,30 @@ public class AdminKeyFragment extends DialogFragment {
 
         // Initialize views and handle UI interactions here
         Button btnCancel = view.findViewById(R.id.cancel_button_admin);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Dismiss the fragment when Cancel button is clicked
-                dismiss();
-            }
+        btnCancel.setOnClickListener(v -> {
+            // Dismiss the fragment when Cancel button is clicked
+            dismiss();
         });
+        DBAccessor database = new DBAccessor();
 
         Button btnConfirm = view.findViewById(R.id.confirm_button_admin);
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle confirmation logic here
-                // and perform actions accordingly
-                //String enteredAdminKey = ((EditText) view.findViewById(R.id.editTextAdminKey)).getText().toString();
-                //if (isValidAdminKey(enteredAdminKey)) {
-                    // Admin key is valid, perform actions
-                    // For now, just dismiss the fragment
-                    dismiss();
-                //} else {
-                    // Display an error message or take appropriate action
-                    // This is just an example, adjust it based on your needs
-                    // For now, just dismiss the fragment
-                    //dismiss();
-                //}
+        btnConfirm.setOnClickListener(v -> {
+            // Handle confirmation logic here and perform actions accordingly
+            EditText enterAdminKeyEdit = view.findViewById(R.id.key_admin_text);
+            String enteredAdminKey = enterAdminKeyEdit.getText().toString();
+            User user = new User();
+            user.enterAdminKey(enteredAdminKey);
+            if (user.getHasAdminPermissions()){
+                //OpenAI, 2024, ChatGPT, How to pass info from fragment back to activity
+                EditProfileActivity activity = (EditProfileActivity) getActivity();
+                Bundle adminKeyResult = new Bundle();
+                adminKeyResult.putString("enteredAdminKey", enteredAdminKey);
+                if (activity != null) {
+                    activity.onDataReceived(adminKeyResult);
+                }
+                dismiss();
+            } else {
+                enterAdminKeyEdit.setError("Please enter a valid admin key");
             }
         });
         return view;
