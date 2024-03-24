@@ -126,7 +126,7 @@ public class DBAFirestoreTest {
         assertEquals(mockEvent.getEventDescription(), recievedEvent[0].getEventDescription());
 
     } // end public void testWriteEventToFirestore
-    
+
     @Test
     public void testRestoreEventFields() throws InterruptedException {
         // create Event object to test with
@@ -233,6 +233,49 @@ public class DBAFirestoreTest {
 
     } // end public void testGetEventIDs
 
+
+    @Test
+    public void testDeleteEvent() throws InterruptedException {
+        // create Event object to test with
+        Event mockEvent = mockEvent(this.dateValues, this.locationValues);
+
+        // initialize wait to ensure database write takes place before testing
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // store Event in database and give time to take place
+        this.dbA.storeEvent(mockEvent);
+        latch.await(1, TimeUnit.SECONDS);
+
+        // get the current list of eventID's in the database
+        final ArrayList<String> receivedAddEventIDs = new ArrayList<>();
+        this.dbA.getAllEventReferences(eventIDList -> {
+            if (eventIDList != null) {
+                receivedAddEventIDs.addAll(eventIDList);
+            }
+        });
+
+        // verify that the recently added Event is listed
+        latch.await(1, TimeUnit.SECONDS);
+        assertTrue(receivedAddEventIDs.contains(mockEvent.getEventID()));
+
+        // remove Event from list and verify deletion
+        this.dbA.deleteEvent(mockEvent.getEventID());
+        latch.await(1, TimeUnit.SECONDS);
+
+        // get the current list of eventID's in the database
+        final ArrayList<String> receivedDelEventIDs = new ArrayList<>();
+        this.dbA.getAllEventReferences(eventIDList -> {
+            if (eventIDList != null) {
+                receivedDelEventIDs.addAll(eventIDList);
+            }
+        });
+
+        // verify that the recently deleted Event is not listed
+        latch.await(1, TimeUnit.SECONDS);
+        assertEquals(receivedAddEventIDs.size() - 1, receivedDelEventIDs.size());
+
+    } // end public void testDeleteEvent
+
     @Test
     public void testWriteUserToFirestore() throws InterruptedException {
         // create User object to test with
@@ -288,5 +331,47 @@ public class DBAFirestoreTest {
         assertTrue(receivedUserIDs.contains(mockUser.getUserID()));
 
     } // end public void testGetEventIDs
+
+    @Test
+    public void testDeleteUser() throws InterruptedException {
+        // create User object to test with
+        User mockUser = mockUser();
+
+        // initialize wait to ensure database write takes place before testing
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // store User in database and give time to take place
+        this.dbA.storeUser(mockUser);
+        latch.await(1, TimeUnit.SECONDS);
+
+        // get the current list of userID's in the database
+        final ArrayList<String> receivedAddUserIDs = new ArrayList<>();
+        this.dbA.getAllUserReferences(userIDList -> {
+            if (userIDList != null) {
+                receivedAddUserIDs.addAll(userIDList);
+            }
+        });
+
+        // verify that the recently added Event is listed
+        latch.await(1, TimeUnit.SECONDS);
+        assertTrue(receivedAddUserIDs.contains(mockUser.getUserID()));
+
+        // remove Event from list and verify deletion
+        this.dbA.deleteUser(mockUser.getUserID());
+        latch.await(1, TimeUnit.SECONDS);
+
+        // get the current list of eventID's in the database
+        final ArrayList<String> receivedDelUserIDs = new ArrayList<>();
+        this.dbA.getAllUserReferences(userIDList -> {
+            if (userIDList != null) {
+                receivedDelUserIDs.addAll(userIDList);
+            }
+        });
+
+        // verify that the recently deleted Event is not listed
+        latch.await(1, TimeUnit.SECONDS);
+        assertEquals(0, receivedDelUserIDs.size());
+
+    } // end public void testDeleteUser
 
 } // end public class DBAFirestoreTest
