@@ -135,12 +135,12 @@ public class EventTest {
         assertEquals(73440000, mockAnnouncement.getAnnouncementTime().getTime());
     }
 
-    @Test
-    public void testMilestoneGetThreshold() {
-        Event mockEvent = mockEvent(dateValues, locationValues);
-        Event.EventMilestone mockMilestone = mockEvent.getEventMilestones().get(0);
-        assertEquals(Integer.valueOf(1), mockMilestone.getThreshold());
-    }
+//    @Test
+//    public void testMilestoneGetThreshold() {
+//        Event mockEvent = mockEvent(dateValues, locationValues);
+//        Event.EventMilestone mockMilestone = mockEvent.getEventMilestones().get(0);
+//        assertEquals(Integer.valueOf(1), mockMilestone.getThreshold());
+//    }
 
     @Test // adding attendees automatically generates new milestones
     public void testMileStoneThresholdSeries() {
@@ -150,19 +150,19 @@ public class EventTest {
         checkInLocation.setLongitude(locationValues.get(1));
         mockEvent.addEventAttendee("Threshold1", new Time(0), locationValues);
         assertEquals(
-                Integer.valueOf(2),     // next milestone threshold is 2
+                Long.valueOf(2),     // next milestone threshold is 2
                 mockEvent.getEventMilestones().get( // get last element from array of milestones
-                        mockEvent.getEventMilestones().size() - 1).getThreshold());
+                        mockEvent.getEventMilestones().size() - 1));
         mockEvent.addEventAttendee("Threshold2", new Time(0), locationValues);
         assertEquals(
-                Integer.valueOf(3),     // next milestone threshold is 3
+                Long.valueOf(3),     // next milestone threshold is 3
                 mockEvent.getEventMilestones().get( // get last element from array of milestones
-                        mockEvent.getEventMilestones().size() - 1).getThreshold());
+                        mockEvent.getEventMilestones().size() - 1));
         mockEvent.addEventAttendee("Threshold3", new Time(0), locationValues);
         assertEquals(
-                Integer.valueOf(5),     // next milestone threshold is 5
+                Long.valueOf(5),     // next milestone threshold is 5
                 mockEvent.getEventMilestones().get( // get last element from array of milestones
-                        mockEvent.getEventMilestones().size() - 1).getThreshold());
+                        mockEvent.getEventMilestones().size() - 1));
     }
 
     /* -------------- *
@@ -249,7 +249,7 @@ public class EventTest {
     @Test
     public void testGetEventMilestones() {
         Event mockEvent = mockEvent(dateValues, locationValues);
-        assertEquals(Integer.valueOf(1), mockEvent.getEventMilestones().get(0).getThreshold());
+        assertEquals(Long.valueOf(1), mockEvent.getEventMilestones().get(0));
     }
 
     @Test
