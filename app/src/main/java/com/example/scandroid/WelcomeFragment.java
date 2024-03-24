@@ -48,36 +48,38 @@ public class WelcomeFragment extends DialogFragment {
         Button maybeLaterButton = view.findViewById(R.id.maybe_later_button);
         Button enterButton = view.findViewById(R.id.enter_button);
 
-        maybeLaterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Generate a random name (Guest + random number)
-                String randomName = "Guest" + new Random().nextInt(10000);
-                // Close the fragment and pass the random name to the activity
-                ((HomepageActivity) requireActivity()).onMaybeLaterClicked(randomName);
-                hideKeyboard();
-                dismiss();
+        maybeLaterButton.setOnClickListener(v -> {
+            // Generate a random name (Guest + random number)
+            String randomName = "Guest" + new Random().nextInt(10000);
+            // Close the fragment and pass the random name to the activity
+            //((HomepageActivity) requireActivity()).onMaybeLaterClicked(randomName);
+            HomepageActivity activity = (HomepageActivity) getActivity();
+            Bundle userNameGeneration = new Bundle();
+            userNameGeneration.putString("userName", randomName);
+            if (activity != null) {
+                activity.onNameReceived(userNameGeneration);
             }
+            hideKeyboard();
+            dismiss();
         });
 
-        enterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get the entered name
-                String enteredName = nameEditText.getText().toString();
-                // if the user does not enter nothing
-                if (!enteredName.isEmpty()) {
-                    // Close the fragment and pass the entered name to the activity
-                    ((HomepageActivity) requireActivity()).onEnterClicked(enteredName);
-                }
-                // else generate a random user id for them
-                else{
-                    String randomName = "Guest" + new Random().nextInt(10000);
-                    ((HomepageActivity) requireActivity()).onEnterClicked(randomName);
-                }
-                hideKeyboard();
-                dismiss();
+        enterButton.setOnClickListener(v -> {
+            // Get the entered name
+            String enteredName = nameEditText.getText().toString();
+            // Close the fragment and pass the entered name to the activity
+            //((HomepageActivity) requireActivity()).onEnterClicked(enteredName);
+            if (!enteredName.isEmpty()) {
+                enteredName = "Guest" + new Random().nextInt(10000);
             }
+            HomepageActivity activity = (HomepageActivity) getActivity();
+            Bundle userNameGeneration = new Bundle();
+            userNameGeneration.putString("userName", enteredName);
+            if (activity != null) {
+                activity.onNameReceived(userNameGeneration);
+
+            }
+            hideKeyboard();
+            dismiss();
         });
 
         return view;
