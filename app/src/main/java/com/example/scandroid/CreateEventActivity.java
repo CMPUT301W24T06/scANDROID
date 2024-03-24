@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +35,6 @@ import java.util.Calendar;
  * The view for when Users wish to create a new event or edit an existing event's parameters
  */
 public class CreateEventActivity extends AppCompatActivity {
-    ActivityResultLauncher<Intent> launcher;
     Button posterButton;
     Bitmap posterBitmap;
     Boolean newEvent = true;
@@ -117,8 +117,22 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        CreateEventActivity.this, R.style.DatePickerTheme, (view, year, monthOfYear, dayOfMonth)
-                        -> editEventDate.setText(dayOfMonth + "-" + (monthOfYear) + "-" + year), year, month, day);
+                        CreateEventActivity.this, R.style.DatePickerTheme, (view, year, monthOfYear, dayOfMonth) -> {
+
+                    // check to see if the date of the event is in the future
+                    Calendar selectedDate = Calendar.getInstance();
+                    selectedDate.set(year, monthOfYear, dayOfMonth);
+                    Calendar currentDate = Calendar.getInstance();
+
+                    if (selectedDate.before(currentDate)) {
+                        showToast("Please select a date in the future");
+                    }
+                    else {
+                        // Proceed with setting the selected date
+                        editEventDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                    }
+                }, year, month, day);
+
                 datePickerDialog.show();
             }
         });
@@ -139,99 +153,88 @@ public class CreateEventActivity extends AppCompatActivity {
             String eventName = editEventName.getText().toString();
             String eventDescription = editEventDescription.getText().toString();
             String eventLocation = editEventLocation.getText().toString();
-            ArrayList<Double> coords = new LocationGeocoder(CreateEventActivity.this).addressToCoordinates(eventLocation);
-            if (coords.size() == 0){
-                Toast.makeText(CreateEventActivity.this, "Invalid event location", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            String eventDate = editEventDate.getText().toString();
+            String eventTime = editEventTime.getText().toString();
+
+//            ArrayList<Double> coords = new LocationGeocoder(CreateEventActivity.this).addressToCoordinates(eventLocation);
+//            if (coords.size() == 0){
+//                Toast.makeText(CreateEventActivity.this, "Invalid event location", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+
             posterBitmap = new BitmapConfigurator().drawableToBitmap(eventPoster.getDrawable());
 
-            //If this was a new event, create new Event object, new QR codes and store those
-            if (newEvent) {
-                event = new Event(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(),
-                        eventName, eventDescription, calendar, coords);
-                eventID = event.getEventID();
-                new EventQRCodesActivity().generateCheckInQR(eventID, database);
-                new EventQRCodesActivity().generatePromoQR(eventID, database);
+            // validate input before performing database operations
+            boolean isValidInput = handleUserInput(eventName, eventLocation, eventDate, eventTime, eventDescription);
 
-                database.accessUser(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(), user -> {
-                    user.addEventToEventsOrganized(eventID);
-                    database.storeUser(user);
-                });
-            } else { // Updating an old event
-                event.setEventDate(calendar);
-                event.setEventName(eventName);
-                event.setEventDescription(eventDescription);
-                event.setEventLocation(coords);
+            if (isValidInput) {
+                //If this was a new event, create new Event object, new QR codes and store those
+                ArrayList<Double> coords = null;
+                if (newEvent) {
+                    coords = new LocationGeocoder(CreateEventActivity.this).addressToCoordinates(eventLocation);
+                    event = new Event(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(),
+                            eventName, eventDescription, calendar, coords);
+                    if (coords.size() == 0) {
+                        Toast.makeText(CreateEventActivity.this, "Invalid event location", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    eventID = event.getEventID();
+                    new EventQRCodesActivity().generateCheckInQR(eventID, database);
+                    new EventQRCodesActivity().generatePromoQR(eventID, database);
+
+                    database.accessUser(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(), user -> {
+                        user.addEventToEventsOrganized(eventID);
+                        database.storeUser(user);
+                    });
+                } else { // Updating an old event
+                    event.setEventDate(calendar);
+                    event.setEventName(eventName);
+                    event.setEventDescription(eventDescription);
+                    event.setEventLocation(coords);
+                }
+                database.storeEvent(event);
+                database.storeEventPoster(eventID, posterBitmap);
+                finish();
             }
-            database.storeEvent(event);
-            database.storeEventPoster(eventID, posterBitmap);
-            finish();
         });
-
         backButton.setOnClickListener(v -> finish());
     }
+    private boolean handleUserInput(String eventName, String location, String date, String time, String eventDescription){
+        boolean isValid = true;
 
-    /**
-     * Retrieves the image user selected from their gallery
-     */
-    //Source: https://www.youtube.com/watch?v=nOtlFl1aUCw
-    private void registerResult(){
-        launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    try {
-                        assert result.getData() != null;
-                        Uri imageUri = result.getData().getData();
-                        assert imageUri != null;
-                        InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                        Drawable posterDrawable = Drawable.createFromStream(inputStream, imageUri.toString() );
-                        posterBitmap = BitmapFactory.decodeStream(inputStream);
-                        posterButton.setBackground(posterDrawable);
-
-                    } catch (Exception e){
-                        Toast.makeText(CreateEventActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-    }
-
-    /**
-     * Starts an Intent for selecting an image from a user's gallery
-     */
-    //Source: https://www.youtube.com/watch?v=nOtlFl1aUCw
-    private void pickImage() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        launcher.launch(intent);
-    }
-
-    /**
-     * Creates a Bitmap object from a Drawable object
-     * @param drawable Drawable object that is being converted
-     * @return
-     * Returns a Bitmap object created from parameters of the Drawable object
-     */
-    //Source: https://stackoverflow.com/questions/3035692/how-to-convert-a-drawable-to-a-bitmap
-    public static Bitmap drawableToBitmap (Drawable drawable) {
-        Bitmap bitmap;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
+        // check if an event name is a string and if it is valid
+        if (eventName.isEmpty() || eventName.length() > 30) {
+            showToast("Please enter a valid event name (up to 30 characters)");
+            isValid = false;
+            Log.d("Validation", "Event name validation failed");
+        }
+        if (location.isEmpty()) {
+            showToast("Please enter a location for your event");
+            isValid = false;
+            Log.d("Validation", "Location validation failed");
+        }
+        // check if the user provided a description for their event
+        if (eventDescription.isEmpty()) {
+            showToast("Please enter a description for your event");
+            isValid = false;
+            Log.d("Validation", "Event description validation failed");
+        }
+        if (date.isEmpty()) {
+            showToast("Please set a date for your event");
+            isValid = false;
+            Log.d("Validation", "Date validation failed");
+        }
+        if (time.isEmpty()) {
+            showToast("Please set a time for your event");
+            isValid = false;
+            Log.d("Validation", "Time validation failed");
         }
 
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
+        return isValid;
+    }
 
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
 

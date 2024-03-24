@@ -1,19 +1,26 @@
 package com.example.scandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Displays a User's profile when an organizer selects an attendee from the list of users attending their event
+ * Displays a User's profile when either an organizer selects an attendee from the list of users attending their event
+ * or they are selected from the list when browsing all users.
  */
 public class ProfileInfoActivity extends AppCompatActivity {
     User currentUser;
+    String userID;
+    boolean isAttendee;
+    Bitmap userProfilePicture;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,34 +30,67 @@ public class ProfileInfoActivity extends AppCompatActivity {
         TextView profilePhoneText = findViewById(R.id.profile_info_phone_text);
         TextView profileCountText = findViewById(R.id.profile_info_count_text);
         TextView profileCheckInText = findViewById(R.id.profile_info_checkin_text);
+        TextView profileAboutMeText = findViewById(R.id.profile_info_about_me_text);
         ImageView profilePicture = findViewById(R.id.profile_info_image);
         Button backButton = findViewById(R.id.profile_info_back_arrow);
+        Button removeButton = findViewById(R.id.profile_info_remove_profile_button);
 
         //Fills in the profile with the User's details
-        Event.CheckIn attendeeCheckIn = (Event.CheckIn) getIntent().getSerializableExtra("attendee");
-        String eventID = getIntent().getStringExtra("eventID");
+        if (getIntent().getSerializableExtra("attendee") != null){
+            isAttendee = true;
+            Event.CheckIn attendeeCheckIn = (Event.CheckIn) getIntent().getSerializableExtra("attendee");
+            profileCheckInText.setText((CharSequence) attendeeCheckIn.getCheckInTime());
+            userID = attendeeCheckIn.getUserID();
+        } else {
+            profileCountText.setVisibility(View.INVISIBLE);
+            profileCheckInText.setVisibility(View.INVISIBLE);
+            TextView profileCountTitle = findViewById(R.id.profile_info_count_title);
+            profileCountTitle.setVisibility(View.INVISIBLE);
+            TextView profileCheckInTitle = findViewById(R.id.profile_info_checkin_title);
+            profileCheckInTitle.setVisibility(View.INVISIBLE);
+            userID = getIntent().getStringExtra("userID");
+        }
         DBAccessor database = new DBAccessor();
-        database.accessUser(attendeeCheckIn.getUserID(), new UserCallback() {
-            @Override
-            public void onUserRetrieved(User user) {
-                currentUser = user;
+        database.accessUser(userID, user -> {
+            profileNameText.setText(user.getUserName());
+            profileEmailText.setText(user.getUserEmail());
+            profilePhoneText.setText(user.getUserPhoneNumber());
+            profileAboutMeText.setText(user.getUserAboutMe());
+            if (isAttendee){
+                String eventID = getIntent().getStringExtra("eventID");
+                profileCountText.setText(user.getTimesAttended(eventID));
             }
-        });
-        profileNameText.setText(currentUser.getUserName());
-        profileEmailText.setText(currentUser.getUserEmail());
-        profilePhoneText.setText(currentUser.getUserPhoneNumber());
-        profileCountText.setText(currentUser.getTimesAttended(eventID));
-        profileCheckInText.setText((CharSequence) attendeeCheckIn.getCheckInTime());
-        database.accessUserProfileImage(currentUser.getUserID(), new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                profilePicture.setImageBitmap(bitmap);
+            if (user.getHasAdminPermissions()){
+                removeButton.setVisibility(View.VISIBLE);
+                removeButton.setOnClickListener(v -> {
+                    database.deleteUser(userID);
+                    database.deleteUserProfileImage(userID);
+                });
             }
 
-            @Override
-            public void onBitmapFailed(Exception e) {
-                Log.d("BitmapLoad", "Failed to load image bitmap");
-            }
+            database.accessUserProfileImage(userID, new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    userProfilePicture = bitmap;
+                    profilePicture.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    Log.d("BitmapLoad", "Failed to load image bitmap");
+                }
+            });
+
+            profilePicture.setOnClickListener(v -> {
+                DialogFragment imageInspectPrompt = new AdminInspectImageFragment(userProfilePicture);
+                Bundle bundle = new Bundle();
+                bundle.putString("userID", userID);
+                imageInspectPrompt.setArguments(bundle);
+
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.add(android.R.id.content, imageInspectPrompt);
+                transaction.commit();
+            });
         });
 
         backButton.setOnClickListener(v -> finish());

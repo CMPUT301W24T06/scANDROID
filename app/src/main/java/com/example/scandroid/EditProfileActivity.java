@@ -1,12 +1,9 @@
 package com.example.scandroid;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,19 +11,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The EditProfileActivity class allows users to edit their profile information,
@@ -43,16 +30,6 @@ public class EditProfileActivity extends AppCompatActivity{
     private String userID;
     private User currentUser;
     private Uri selectedImageUri;
-
-    /**
-     * ActivityResultLauncher for image selection, using the GetContent contract.
-     */
-    private final ActivityResultLauncher<String> pickImageLauncher =
-            registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
-                if (result != null) {
-                    handleImageSelection(result);
-                }
-            });
 
     /**
      * Initializes the activity and sets up views, listeners, and data retrieval.
@@ -108,15 +85,21 @@ public class EditProfileActivity extends AppCompatActivity{
             String aboutMe = aboutMeEditText.getText().toString();
             boolean receiveNotifications = pushNotificationCheckBox.isChecked();
             Bitmap profilePicBitmap = new BitmapConfigurator().drawableToBitmap(profileImageView.getDrawable());
-            DBAccessor database1 = new DBAccessor();
-            currentUser.setProfilePictureUrl(""); // Clear the existing URL if any
-            currentUser.setUserName(name);
-            currentUser.setUserEmail(email);
-            currentUser.setUserPhoneNumber(phone);
-            currentUser.setUserAboutMe(aboutMe);
-            database1.storeUser(currentUser);
-            database1.storeUserProfileImage(userID, profilePicBitmap);
-            finish();
+
+            // validate input
+            boolean isValidInput = handleUserInput(name, email, phone);
+
+            if (isValidInput) {
+                DBAccessor database1 = new DBAccessor();
+                currentUser.setProfilePictureUrl(""); // Clear the existing URL if any
+                currentUser.setUserName(name);
+                currentUser.setUserEmail(email);
+                currentUser.setUserPhoneNumber(phone);
+                currentUser.setUserAboutMe(aboutMe);
+                database1.storeUser(currentUser);
+                database1.storeUserProfileImage(userID, profilePicBitmap);
+                finish();
+            }
         });
 
         Button backButton = findViewById(R.id.back_arrow);
@@ -143,53 +126,45 @@ public class EditProfileActivity extends AppCompatActivity{
             }
         });
     }
+
+    // sources:
+    // https://www.geeksforgeeks.org/implement-email-validator-in-android/
+    // https://www.geeksforgeeks.org/implement-phone-number-validator-in-android/
+    private boolean handleUserInput(String name, String email, String phone){
+        boolean isValid = true;
+        // check if name is a string
+        if (name.isEmpty() || name.length() > 30 || !name.matches("[a-zA-Z]+")) {
+            showToast("Please enter a valid name (up to 30 characters)");
+            isValid = false;
+        }
+        // if user chooses to provide an email
+        // check if email is valid
+        if (!email.isEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            showToast("Please enter a valid email address");
+            isValid = false;
+        }
+        // if user chooses to provide phone number
+        // check if phone number is entered in any valid phone format
+        if (!phone.isEmpty() && !android.util.Patterns.PHONE.matcher(phone).matches()) {
+            showToast("Please enter a valid phone number");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    // show toast message
+
     private void showAdminKeyFragment() {
         AdminKeyFragment adminKeyFragment = new AdminKeyFragment();
         adminKeyFragment.show(getSupportFragmentManager(), "AdminKeyFragment");
     }
-
-
-    /**
-     * Handles the selection of an image, updates the UI, and stores the new image in the backend.
-     *
-     * @param imageUri The URI of the selected image.
-     */
-    private void handleImageSelection(Uri imageUri) {
-        // Clear the existing URL from the currentUser object
-        currentUser.setProfilePictureUrl("");
-
-        // Update the selectedImageUri
-        selectedImageUri = imageUri;
-
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-            if (profileImageView != null) {
-                // Update the ImageView directly
-                profileImageView.setImageBitmap(bitmap);
-                Log.d("EditProfileActivity", "ImageView updated successfully");
-
-                if (bitmap != null) {
-                    // Update the backend with the new image
-                    DBAccessor database = new DBAccessor();
-                    database.storeUserProfileImage(userID, bitmap);
-                } else {
-                    Log.e("EditProfileActivity", "Bitmap is null");
-                }
-            } else {
-                Log.e("EditProfileActivity", "ImageView is null");
-            }
-
-            // Optionally close the InputStream
-            if (inputStream != null) {
-                inputStream.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("EditProfileActivity", "Error converting image to bitmap: " + e.getMessage());
-            Toast.makeText(this, "Error converting image to bitmap", Toast.LENGTH_SHORT).show();
-        }
+    public void onDataReceived(Bundle data) {
+        String enteredAdminKey = data.getString("enteredAdminKey");
+        currentUser.enterAdminKey(enteredAdminKey);
     }
 }
 

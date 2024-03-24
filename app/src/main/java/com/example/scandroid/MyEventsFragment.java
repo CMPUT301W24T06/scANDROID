@@ -49,11 +49,11 @@ public class MyEventsFragment extends Fragment {
         new DBAccessor().accessUser(userID, user -> {
             if (Objects.equals(userType, "organizer")) {
                 ArrayList<String> myEvents = user.getEventsOrganized();
-                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
+                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
                 myEventsList.setAdapter(myEventsAdapter);
             } else if (Objects.equals(userType, "attendee")){
                 ArrayList<String> myEvents = user.getEventsAttending();
-                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
+                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
                 myEventsList.setAdapter(myEventsAdapter);
             }
         });
@@ -76,12 +76,12 @@ public class MyEventsFragment extends Fragment {
             new DBAccessor().accessUser(userID, user -> {
                 if (Objects.equals(userType, "organizer")) {
                     ArrayList<String> myEvents = user.getEventsOrganized();
-                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
+                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
                     myEventsList.setAdapter(myEventsAdapter);
                 }
                 else if (Objects.equals(userType, "attendee")){
                     ArrayList<String> myEvents = user.getEventsAttending();
-                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, userID);
+                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
                     myEventsList.setAdapter(myEventsAdapter);
                 }
                 //Update the adapter

@@ -3,7 +3,6 @@ package com.example.scandroid;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,30 +17,28 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-
 import java.util.ArrayList;
 
 /**
- * CreatedEventsArrayAdapter is an ArrayAdapter implementation
- * used in the app for displaying created events in a list view.
+ * UsersArrayAdapter is an ArrayAdapter implementation used in the app for displaying
+ * a list of users
  */
-public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
+public class UsersArrayAdapter extends ArrayAdapter<String> {
     FragmentManager fragmentManager;
     boolean isAdmin;
     /**
-     * Constructs a new CreatedEventsArrayAdapter
+     * Constructs a new UsersArrayAdapter
      *
      * @param context context where the adapter is being used
-     * @param myEvents list of event IDs to display
-     *
+     * @param userIDs list of user IDs to display
      */
-    public CreatedEventsArrayAdapter(Context context, ArrayList<String> myEvents, FragmentManager fragmentManager) {
-        super(context,0, myEvents);
+    public UsersArrayAdapter(Context context, ArrayList<String> userIDs, FragmentManager fragmentManager) {
+        super(context,0, userIDs);
         this.fragmentManager = fragmentManager;
     }
 
     /**
-     * Gets a View that displays the data of a specific event in the data set
+     * Gets a View that displays the data of a specific user in the data set
      *
      * @param position position of the item within the adapter's data set
      * @param convertView old view to reuse (if possible)
@@ -53,35 +50,35 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view;
         if (convertView == null){
-            view = LayoutInflater.from(getContext()).inflate(R.layout.my_events_list_content, parent, false);
+            view = LayoutInflater.from(getContext()).inflate(R.layout.user_list_content, parent, false);
         }
         else {
             view = convertView;
         }
 
-        TextView eventNameText = view.findViewById(R.id.my_events_content_name);
-        ImageView eventPoster = view.findViewById(R.id.my_events_content_poster);
-        String eventID = getItem(position);
-        assert eventID != null;
+        TextView userNameText = view.findViewById(R.id.user_list_content_name);
+        ImageView userProfilePicture = view.findViewById(R.id.user_content_profile_picture);
+        String userID = getItem(position);
+        assert userID != null;
         DBAccessor database = new DBAccessor();
-        database.accessEvent(eventID, event -> {
-            String eventName = event.getEventName();
-            eventNameText.setText(eventName);
+        database.accessUser(userID, user -> {
+            String userName = user.getUserName();
+            userNameText.setText(userName);
         });
 
-        database.accessEventPoster(eventID, new BitmapCallback() {
+        database.accessUserProfileImage(userID, new BitmapCallback() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap) {
-                eventPoster.setImageBitmap(bitmap);
+                userProfilePicture.setImageBitmap(bitmap);
                 String userID = new DeviceIDRetriever(getContext()).getDeviceId();
 
                 database.accessUser(userID, user -> {
                     isAdmin = user.getHasAdminPermissions();
                     if (isAdmin){
-                        eventPoster.setOnClickListener(v -> {
+                        userProfilePicture.setOnClickListener(v -> {
                             DialogFragment imageInspectPrompt = new AdminInspectImageFragment(bitmap);
                             Bundle bundle = new Bundle();
-                            bundle.putString("eventID", eventID);
+                            bundle.putString("userID", userID);
                             imageInspectPrompt.setArguments(bundle);
 
                             FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -90,16 +87,13 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
                         });
                     }
                 });
-
-
             }
 
             @Override
             public void onBitmapFailed(Exception e) {
-                Toast.makeText(view.getContext(), "Failed to retrieve event poster", Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
             }
         });
-
         return view;
     }
 }

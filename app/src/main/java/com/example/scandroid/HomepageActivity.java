@@ -50,15 +50,13 @@ public class HomepageActivity extends AppCompatActivity {
     AppCompatButton createEventButton;
     ImageView profilePicture;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String userId;
     String userID;
-    User currentUser;
+    DBAccessor database = new DBAccessor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage_activity);
-
         userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
         DBAccessor database = new DBAccessor();
         // displayWelcomeFragment();//Only here for now for testing
@@ -75,6 +73,7 @@ public class HomepageActivity extends AppCompatActivity {
                 displayWelcomeFragment(); //Only show welcome asking for name if first time user
             }
         });
+        //userID = "testID";
 
         // deals with the bottom bar
         navigationBar = findViewById(R.id.navigation_bar);
@@ -83,29 +82,12 @@ public class HomepageActivity extends AppCompatActivity {
         // logic for tabs that toggle between events going to and events organized
         homepageTabs = findViewById(R.id.homepage_tabs);
         homepagePager = findViewById(R.id.homepage_pager);
-        homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
-        homepagePager.setAdapter(homepageActivityPageAdapter);
+        //homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
+        //homepagePager.setAdapter(homepageActivityPageAdapter);
 
         // initialize buttons for navigation between activities
         editProfileButton = findViewById(R.id.edit_profile_button);
         createEventButton = findViewById(R.id.create_event_button);
-
-        TextView profileName = findViewById(R.id.homepage_name_text);
-        profilePicture = findViewById(R.id.profile_image);
-        database.accessUser(userID, user -> {
-            database.accessUserProfileImage(userID, new BitmapCallback() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap) {
-                    profilePicture.setImageBitmap(bitmap);
-                }
-
-                @Override
-                public void onBitmapFailed(Exception e) {
-                    Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
-                }
-            });
-            profileName.setText(user.getUserName());
-        });
 
         // handle navigation between tabs
         homepageTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -170,31 +152,38 @@ public class HomepageActivity extends AppCompatActivity {
     /**
      * Called when the activity is resumed from a paused state.
      * It updates the user profile information in the database.
-     * It retrieves the user ID associated with the device, accesses the user's information from the database.
-     * The corresponding UI elements are also updated accordingly.
+     * It accesses the user's information from the database.
+     * The corresponding UI elements are also set and updated accordingly.
      */
     @Override
     protected void onResume() {
         super.onResume();
-        TextView profileName = findViewById(R.id.homepage_name_text);
         DBAccessor database = new DBAccessor();
-        homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
-        homepagePager.setAdapter(homepageActivityPageAdapter);
-        String userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
         database.accessUser(userID, user -> {
-            profileName.setText(user.getUserName());
-            database.accessUserProfileImage(userID, new BitmapCallback() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap) {
-                    profilePicture.setImageBitmap(bitmap);
-                    profilePicture.postInvalidate();
-                }
+           if (user == null) {
+                //Create a new User object
+                user = new User();
+                user.setUserID(userID);
+                displayWelcomeFragment();
+                database.storeUser(user);
+            }
+                homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
+                homepagePager.setAdapter(homepageActivityPageAdapter);
 
-                @Override
-                public void onBitmapFailed(Exception e) {
-                    Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
-                }
-            });
+                TextView profileName = findViewById(R.id.homepage_name_text);
+                profileName.setText(user.getUserName());
+                profilePicture = findViewById(R.id.profile_image);
+                database.accessUserProfileImage(userID, new BitmapCallback() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap) {
+                        profilePicture.setImageBitmap(bitmap);
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Exception e) {
+                        Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
+                    }
+                });
         });
 
     }
@@ -269,5 +258,16 @@ public class HomepageActivity extends AppCompatActivity {
         // Update the user's name in Firebase
         db.collection("Users").document(userID)
                 .update("userName", newName);
+    }
+
+    public void onNameReceived(Bundle data) {
+        String userName = data.getString("userName");
+        TextView profileName = findViewById(R.id.homepage_name_text);
+        profileName.setText(userName);
+        Bitmap newProfilePicture = new ProfilePictureGenerator().generatePictureBitmap(userName);
+        profilePicture.setImageBitmap(newProfilePicture);
+        database.storeUserProfileImage(userID, newProfilePicture);
+        db.collection("Users").document(userID)
+                .update("userName", userName);
     }
 }

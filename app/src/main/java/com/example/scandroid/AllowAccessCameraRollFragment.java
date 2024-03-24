@@ -27,8 +27,8 @@ import java.io.InputStream;
 import java.util.Objects;
 
 /**
- * A dialog asking users if they wish to remove their profile picture or select an
- * from their gallery as their new profile picture
+ * A dialog asking users if they wish to remove their profile picture/event poster or select an image
+ * from their gallery as their new profile picture/event poster
  */
 public class AllowAccessCameraRollFragment extends DialogFragment {
     String ID;
@@ -67,7 +67,7 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
                 database.accessUser(ID, user -> {
                     String name = getArguments().getString("username");
                     pictureBitmap = new ProfilePictureGenerator().generatePictureBitmap(name);
-                    database.storeUserProfileImage(ID, pictureBitmap);
+                    //database.storeUserProfileImage(ID, pictureBitmap);
                     posterOrProfileImageView.setImageBitmap(pictureBitmap);
                 });
             }
@@ -95,9 +95,12 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
     }
 
     /**
-     * Creates an AllowAccessCameraRollFragment and allows the transfer of user IDs between edit profile page
-     *
-     * @param ID String of the user's ID
+     * Creates an AllowAccessCameraRollFragment and allows the transfer of user/event IDs between edit profile page and create
+     * event page
+     * @param ID String of the event or the user ID
+     * @param viewID ID of the image view of the event poster or the user profile picture
+     * @param type String that informs whether this fragment is for an event poster or a user profile picture
+     * @param username String of the user's name. Used for the random profile picture generator
      * @return Returns the AllowAccessCameraRollFragment
      */
     public static AllowAccessCameraRollFragment newInstance(String ID, int viewID, String type, String username) {

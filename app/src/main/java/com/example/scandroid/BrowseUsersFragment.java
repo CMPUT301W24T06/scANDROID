@@ -1,12 +1,20 @@
 package com.example.scandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +31,10 @@ public class BrowseUsersFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String userID;
+    ArrayAdapter<String> allUsersAdapter;
+    private final DBAccessor database = new DBAccessor();
+    boolean isAdmin;
 
     public BrowseUsersFragment() {
         // required empty public constructor
@@ -53,6 +65,51 @@ public class BrowseUsersFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ListView allUsersList = view.findViewById(R.id.browse_users_list);
+        database.getAllUserReferences(List -> {
+            allUsersAdapter = new UsersArrayAdapter(requireContext(), List, getActivity().getSupportFragmentManager());
+            allUsersList.setAdapter(allUsersAdapter);
+        });
+
+        allUsersList.setOnItemClickListener((parent, view1, position, id) -> {
+            String userID = allUsersAdapter.getItem(position);
+            Intent viewUserIntent = new Intent(view1.getContext(), ProfileInfoActivity.class);
+            viewUserIntent.putExtra("userID", userID);
+            startActivity(viewUserIntent);
+
+            //Retrieve the new information about the lists
+            database.getAllUserReferences(List -> {
+                allUsersAdapter = new UsersArrayAdapter(requireContext(), List, requireActivity().getSupportFragmentManager());
+                allUsersList.setAdapter(allUsersAdapter);
+            });
+            //Update the adapter
+            allUsersAdapter.notifyDataSetChanged();
+        });
+        database.accessUser(new DeviceIDRetriever(requireContext()).getDeviceId(), new UserCallback() {
+            @Override
+            public void onUserRetrieved(User user) {
+                isAdmin = user.getHasAdminPermissions();
+                if (isAdmin){
+                    allUsersList.setOnItemLongClickListener((parent, view12, position, id) -> {
+                        DialogFragment userInspectPrompt = new AdminInspectUserFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("userID", allUsersAdapter.getItem(position));
+                        userInspectPrompt.setArguments(bundle);
+
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        transaction.add(android.R.id.content, userInspectPrompt);
+                        transaction.commit();
+                        return true;
+                    });
+                }
+            }
+        });
+
     }
 
     @Override
