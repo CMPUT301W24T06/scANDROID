@@ -3,25 +3,12 @@
   <component name="deploymentTargetDropDown">
     <value>
       <entry key="CheckInScreenActivity">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_6_API_34.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-18T01:22:59.808470Z" />
-        </State>
-      </entry>
-      <entry key="HomepageActivity">
         <State />
       </entry>
-      <entry key="QRScannerActivity">
+      <entry key="CreateEventActivityTests">
+        <State />
+      </entry>
+      <entry key="HomepageActivity">
         <State />
       </entry>
       <entry key="app">
