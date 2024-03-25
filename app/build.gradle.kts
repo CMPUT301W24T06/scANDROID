@@ -64,3 +64,4 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation ("com.google.android.gms:play-services-location:21.2.0")
 }
+apply(plugin = "com.google.gms.google-services")

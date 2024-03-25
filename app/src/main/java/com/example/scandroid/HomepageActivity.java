@@ -58,21 +58,6 @@ public class HomepageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage_activity);
         userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
-        DBAccessor database = new DBAccessor();
-        // displayWelcomeFragment();//Only here for now for testing
-        database.accessUser(userID, user -> {
-            currentUser = user;
-            if (user == null) {
-                //Create a new User object
-                String userName = ""; // Set the user's name
-                String userPhoneNumber = ""; // Set the user's phone number
-                String userAboutMe = ""; // Set the user's about me information
-                String userEmail = ""; // Set the user's email
-                User newUser = new User(userID, userName, userPhoneNumber, userAboutMe, userEmail);
-                database.storeUser(newUser); // Add the user to Firestore
-                displayWelcomeFragment(); //Only show welcome asking for name if first time user
-            }
-        });
         //userID = "testID";
 
         // deals with the bottom bar
@@ -160,30 +145,30 @@ public class HomepageActivity extends AppCompatActivity {
         super.onResume();
         DBAccessor database = new DBAccessor();
         database.accessUser(userID, user -> {
-           if (user == null) {
+            if (user == null) {
                 //Create a new User object
                 user = new User();
                 user.setUserID(userID);
                 displayWelcomeFragment();
                 database.storeUser(user);
             }
-                homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
-                homepagePager.setAdapter(homepageActivityPageAdapter);
+            homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
+            homepagePager.setAdapter(homepageActivityPageAdapter);
 
-                TextView profileName = findViewById(R.id.homepage_name_text);
-                profileName.setText(user.getUserName());
-                profilePicture = findViewById(R.id.profile_image);
-                database.accessUserProfileImage(userID, new BitmapCallback() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap) {
-                        profilePicture.setImageBitmap(bitmap);
-                    }
+            TextView profileName = findViewById(R.id.homepage_name_text);
+            profileName.setText(user.getUserName());
+            profilePicture = findViewById(R.id.profile_image);
+            database.accessUserProfileImage(userID, new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    profilePicture.setImageBitmap(bitmap);
+                }
 
-                    @Override
-                    public void onBitmapFailed(Exception e) {
-                        Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
     }

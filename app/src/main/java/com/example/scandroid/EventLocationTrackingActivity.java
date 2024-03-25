@@ -1,11 +1,16 @@
 package com.example.scandroid;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -19,26 +24,66 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * pointers to where event attendees checked into their event
  * from.
  */
+
+// sources: https://developers.google.com/maps/documentation/android-sdk/map#view_the_code
+//          https://github.com/googlemaps-samples/android-samples/blob/main/ApiDemos/java/app/src/gms/java/com/example/mapdemo/RawMapViewDemoActivity.java
+//          https://stackoverflow.com/a/18481305
+
 public class EventLocationTrackingActivity extends AppCompatActivity implements OnMapReadyCallback {
-    // MapView eventLocationMap;
     Event event;
+    AppCompatButton backButton;
+    private MapView mapView;
+
+    private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
+    private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_location_tracking_activity);
+        backButton = findViewById(R.id.back_button);
         event = (Event)getIntent().getSerializableExtra("event");
-        SupportMapFragment mapFragment = SupportMapFragment.newInstance();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.map, mapFragment)
-                .commit();
+
+        backButton.setOnClickListener(v -> finish());
+
+        Bundle mapViewBundle = null;
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+        }
+        mapView = (MapView) findViewById(R.id.mapView);
+        mapView.onCreate(mapViewBundle);
+
+        mapView.getMapAsync(this);
     }
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+        // TODO: add markers for each event check in that agreed to have their location shared
         if(event != null) {
+            String eventTitle = event.getEventName();
+            String eventAddress = new LocationGeocoder(EventLocationTrackingActivity.this).coordinatesToAddress(event.getEventLocation());
+            LatLng eventLatLng = new LatLng(event.getEventLocation().get(0), event.getEventLocation().get(1));
             googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(event.getEventLocation().get(0), event.getEventLocation().get(1)))
-                    .title("Event Location"));
+                    .position(eventLatLng)
+                            .snippet(eventAddress)
+                    .title(eventTitle));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 14));
         }
+    }
+    @Override
+    protected void onPause() {
+        mapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 }
