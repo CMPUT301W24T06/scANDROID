@@ -19,7 +19,7 @@ import java.util.UUID;
  * Events are stored via an EventDB object.
  * @author Jordan Beaubien & Moyo Dawodu
  */
-public class Event implements Serializable {
+public class Event {
 
     /* ------------------- *
      * ATTRIBUTES / FIELDS *
@@ -28,8 +28,9 @@ public class Event implements Serializable {
     private String EventName;
     private String EventOrganizerID;
     private String EventDescription;
+    private Long EventCapacity;
+    private Boolean hasCapacity;
     private ArrayList<Double> EventLocation;
-//    private ArrayList<EventMilestone> EventMilestoneList;
     private ArrayList<Long> EventMilestoneList;
     private ArrayList<Long> MilestoneSeries;
     private ArrayList<String> AnnouncementTitles;
@@ -38,10 +39,9 @@ public class Event implements Serializable {
     private HashMap<String, Long> EventDateDetails;
     private ArrayList<String> CheckInIDs;
     private ArrayList<Long> CheckInTimes;
-//    private ArrayList<List<Double>> CheckInLocations;
     private ArrayList<String> CheckInLocations;
+    private ArrayList<String> SignUpIDs;
 
-    
 
     /* ----------- *
      * CONSTRUCTOR *
@@ -66,6 +66,8 @@ public class Event implements Serializable {
         this.MilestoneSeries = new ArrayList<>(Arrays.asList((long) 1, (long) 1));
         this.EventName = eventName;
         this.EventOrganizerID = eventOrganizerID;
+        this.EventCapacity = 0L;
+        this.hasCapacity = Boolean.FALSE;
         this.addEventMilestone();   // adds first milestone of threshold of one attendee check-in
 
         // Initialize Announcement data structure
@@ -77,6 +79,7 @@ public class Event implements Serializable {
         this.CheckInIDs = new ArrayList<>();
         this.CheckInLocations = new ArrayList<>();
         this.CheckInTimes = new ArrayList<>();
+        this.SignUpIDs = new ArrayList<>();
 
         // Initialize Date data structure
         this.EventDateDetails = new HashMap<>();
@@ -106,6 +109,7 @@ public class Event implements Serializable {
         this.CheckInIDs = new ArrayList<>();
         this.CheckInLocations = new ArrayList<>();
         this.CheckInTimes = new ArrayList<>();
+        this.SignUpIDs = new ArrayList<>();
 
         // Initialize Date data structure
         this.EventDateDetails = new HashMap<>();
@@ -127,23 +131,37 @@ public class Event implements Serializable {
     }
 
     /**
-     * Add a User to an Event as an attendee.
+     * Add a User to an Event as an attendee if Event is not at a capacity.
      * @param userID            UserID of attendee that is checking-in to the Event
      * @param checkInTime       The HrMin time that the attendee is checking-in
      * @param checkInLocation   Geographical coordinates of Event {latitude, longitude}
      */
     public void addEventAttendee(String userID, Time checkInTime, ArrayList<Double> checkInLocation) {
-        // add attendee information to appropriate arrays
-        this.CheckInIDs.add(userID);
-//        this.CheckInLocations.add(checkInLocation);
+        // without overbooking the event...
+        if (!this.hasCapacity | (this.CheckInIDs.size() < this.EventCapacity)) {
+            // add attendee information to appropriate arrays
+            this.CheckInIDs.add(userID);
+            // convert location to string for proper firebase storing
+            this.CheckInLocations.add(checkInLocation.get(0).toString() + "@" + checkInLocation.get(1).toString());
+            this.CheckInTimes.add(checkInTime.getTime());
+            // ensure attendee is not in both userID lists
+            this.SignUpIDs.remove(userID);
 
-        this.CheckInLocations.add(checkInLocation.get(0).toString() + "@" + checkInLocation.get(1).toString());
-        this.CheckInTimes.add(checkInTime.getTime());
-
-        // increment milestone if necessary
-        if (this.CheckInIDs.size() == this.MilestoneSeries.get(0)) {
-            this.addEventMilestone();       // add next fibonacci milestone when current max is reached
+            // increment milestone if necessary
+            if (this.CheckInIDs.size() == this.MilestoneSeries.get(0)) {
+                this.addEventMilestone();       // add next fibonacci milestone when current max is reached
+            }
         }
+    }
+
+
+    /**
+     * Add an attendee to the "promise to attend" list.
+     * @param userID    UserID of possible attendee who promises to attend Event
+     */
+    public void addEventSignUp(String userID) {
+        // add a possible attendees "promise" to attend to list
+        this.SignUpIDs.add(userID);
     }
 
     /**
@@ -152,7 +170,6 @@ public class Event implements Serializable {
      */
     private void addEventMilestone() {
         int pastGreatest = this.MilestoneSeries.get(1).intValue();                                 // current greatest milestone threshold
-//        this.EventMilestoneList.add(new EventMilestone(pastGreatest));
         this.EventMilestoneList.add((long) pastGreatest);
         int nextGreatest = this.MilestoneSeries.get(0).intValue() + this.MilestoneSeries.get(1).intValue();   // next milestone threshold
         this.MilestoneSeries.set(0, (long) pastGreatest);
@@ -185,6 +202,9 @@ public class Event implements Serializable {
         unpackagedEvent.CheckInIDs = (ArrayList<String>) snapshot.get("attendeeIDs");
         unpackagedEvent.CheckInTimes = (ArrayList<Long>) snapshot.get("attendeeTimes");
         unpackagedEvent.CheckInLocations = (ArrayList<String>) snapshot.get("attendeeLocations");
+        unpackagedEvent.SignUpIDs = (ArrayList<String>) snapshot.get("signUps");
+        unpackagedEvent.EventCapacity = (Long) snapshot.get("capacity");
+        unpackagedEvent.hasCapacity = (Boolean) snapshot.get("hasCapacity");
 
         return unpackagedEvent;
 
@@ -213,6 +233,9 @@ public class Event implements Serializable {
         packagedEvent.put("attendeeIDs", this.CheckInIDs);
         packagedEvent.put("attendeeTimes", this.CheckInTimes);
         packagedEvent.put("attendeeLocations", this.CheckInLocations);
+        packagedEvent.put("signUps", this.SignUpIDs);
+        packagedEvent.put("capacity", this.EventCapacity);
+        packagedEvent.put("hasCapacity", this.hasCapacity);
 
         // return fully detailed event map
         return packagedEvent;
@@ -329,6 +352,21 @@ public class Event implements Serializable {
      */
     public String getEventOrganizerID() { return this.EventOrganizerID; }
 
+    /**
+     * @return List of userID's who "promised" to attend the Event.
+     */
+    public ArrayList<String> getEventSignUps() { return this.SignUpIDs; }
+
+    /**
+     * @return The maximum attendance capacity for the Event.
+     */
+    public Integer getEventCapacity() { return Math.toIntExact(this.EventCapacity); }
+
+    /**
+     * @return Flag of whether Event considers a capacity limit or not.
+     */
+    public Boolean getEventHasCapacity() { return this.hasCapacity; }
+
 
     /* ------- *
      * SETTERS *
@@ -362,6 +400,22 @@ public class Event implements Serializable {
      */
     public void setEventName(String nameOfEvent) { this.EventName = nameOfEvent; }
 
+    /**
+     * Set an attendee limit capacity for the Event. <br>
+     * > 0 : to enable capacity <br>
+     * = 0 : to disable capacity
+     * @param eventCapacity Maximum amount of attendees of the Event
+     */
+    public void setEventCapacity(int eventCapacity) {
+        // set boolean flag for having capacity and update capacity value
+        if (eventCapacity > 0) {
+            this.hasCapacity = Boolean.TRUE;
+        } else {
+            this.hasCapacity = Boolean.FALSE;
+        }
+        this.EventCapacity = (long) Math.abs(eventCapacity);
+    }
+
 
     /* -------------- *
      * NESTED CLASSES *
@@ -370,7 +424,7 @@ public class Event implements Serializable {
      * Represents an Attendee of the Event. <br>
      * Organizers use a list of CheckIn's when viewing Users attending their Event.
      */
-    public static class CheckIn implements Serializable {
+    public static class CheckIn {
         private String UserID;
         private Time CheckInTime;
         private ArrayList<Double> CheckInLocation;
@@ -416,7 +470,7 @@ public class Event implements Serializable {
      * Announcements are created by the creator of the Event. <br>
      * Attendees see Announcements for Events they attend if desired.
      */
-    public class EventAnnouncement implements Serializable {
+    public class EventAnnouncement {
         private String AnnouncementAbout;
         private String AnnouncementOrganizerID;
         private Time AnnouncementTime;
