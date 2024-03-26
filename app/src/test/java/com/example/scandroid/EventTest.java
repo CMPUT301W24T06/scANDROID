@@ -2,6 +2,7 @@ package com.example.scandroid;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
 
 import android.location.Location;
 
@@ -135,13 +136,6 @@ public class EventTest {
         assertEquals(73440000, mockAnnouncement.getAnnouncementTime().getTime());
     }
 
-//    @Test
-//    public void testMilestoneGetThreshold() {
-//        Event mockEvent = mockEvent(dateValues, locationValues);
-//        Event.EventMilestone mockMilestone = mockEvent.getEventMilestones().get(0);
-//        assertEquals(Integer.valueOf(1), mockMilestone.getThreshold());
-//    }
-
     @Test // adding attendees automatically generates new milestones
     public void testMileStoneThresholdSeries() {
         Event mockEvent = mockEvent(dateValues, locationValues);
@@ -186,6 +180,23 @@ public class EventTest {
         assertEquals(emptyListSize + 1, mockEvent.getEventAttendeeList().size());
     }
 
+    @Test
+    public void testAddEventSignUp() {
+        Event mockEvent = mockEvent(dateValues, locationValues);
+        User mockUser = mockUser();
+        mockEvent.addEventSignUp(mockUser.getUserID());
+        assertTrue(mockEvent.getEventSignUps().contains(mockUser.getUserID()));
+    }
+
+    @Test
+    public void testSignUpToAttendee() {
+        Event mockEvent = mockEvent(dateValues, locationValues);
+        User mockUser = mockUser();
+        mockEvent.addEventSignUp(mockUser.getUserID());
+        mockEvent.addEventAttendee(mockUser.getUserID(), new Time(45240000), locationValues);
+        assertEquals(0, mockEvent.getEventSignUps().size());
+    }
+
     /* -------------- *
      * TEST : GETTERS *
      * -------------- */
@@ -219,6 +230,14 @@ public class EventTest {
         int emptyListSize = mockEvent.getEventAttendeeList().size();
         mockEvent.addEventAttendee(mockUser.getUserID(), new Time(45240000), locationValues);
         assertEquals(Integer.valueOf(emptyListSize + 1), mockEvent.getEventAttendeesTotal());
+    }
+
+    @Test
+    public void testGetEventCapacity() {
+        Event mockEvent = mockEvent(dateValues, locationValues);
+        mockEvent.setEventCapacity(40);
+        assertEquals(Boolean.TRUE, mockEvent.getEventHasCapacity());
+        assertEquals(Integer.valueOf(40), mockEvent.getEventCapacity());
     }
 
     @Test
@@ -302,6 +321,17 @@ public class EventTest {
         String newEventName = "BetterName";
         mockEvent.setEventName(newEventName);
         assertEquals(newEventName, mockEvent.getEventName());
+    }
+
+    @Test
+    public void testEventCapacity() {
+        Event mockEvent = mockEvent(dateValues, locationValues);
+        mockEvent.setEventCapacity(1);
+        User mockUser1 = mockUser();
+        User mockUser2 = mockUser();
+        mockEvent.addEventAttendee(mockUser1.getUserID(), new Time(45240000), locationValues);
+        mockEvent.addEventAttendee(mockUser2.getUserID(), new Time(45240000), locationValues);
+        assertEquals(Integer.valueOf(1), mockEvent.getEventAttendeesTotal());
     }
 
 } // end public class EventTest
