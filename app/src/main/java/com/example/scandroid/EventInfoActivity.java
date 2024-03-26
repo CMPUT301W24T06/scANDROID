@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,11 +39,13 @@ public class EventInfoActivity extends AppCompatActivity {
     private Calendar calendar = Calendar.getInstance();
     private AppCompatButton backButton;
     Bitmap eventPoster;
+    CheckBox promiseCheckbox;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_info);
+        promiseCheckbox = findViewById(R.id.promise_checkbox);
         backButton = findViewById(R.id.back_arrow);
         bigEventName = findViewById(R.id.fetch_event_title_big);
         eventName = findViewById(R.id.fetch_event_title);
@@ -104,6 +107,16 @@ public class EventInfoActivity extends AppCompatActivity {
                         database.deleteEventPoster(eventID);
                         finish();
                     });
+                }
+            });
+            promiseCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    // If checkbox is checked, perform action (implement Firebase)
+                    Log.d("Checkbox", "Checkbox is checked");
+                    // Implement your Firebase logic here
+                } else {
+                    // If checkbox is unchecked, nothing
+                    Log.d("Checkbox", "Checkbox is unchecked");
                 }
             });
         });
