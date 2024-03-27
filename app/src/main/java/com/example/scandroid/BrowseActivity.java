@@ -83,4 +83,11 @@ public class BrowseActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        browseActivityPageAdapter = new BrowseActivityPageAdapter(this);
+        browsePager.setAdapter(browseActivityPageAdapter);
+    }
 }

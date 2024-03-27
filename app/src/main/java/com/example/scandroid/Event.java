@@ -19,7 +19,7 @@ import java.util.UUID;
  * Events are stored via an EventDB object.
  * @author Jordan Beaubien & Moyo Dawodu
  */
-public class Event {
+public class Event implements Serializable{
 
     /* ------------------- *
      * ATTRIBUTES / FIELDS *

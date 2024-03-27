@@ -43,9 +43,6 @@ public class AdminInspectEventFragment extends DialogFragment {
                     cancelButton.setOnClickListener(v -> dismiss());
                     removeButton.setOnClickListener(v -> {
                         database.deleteEvent(eventID);
-                        database.deleteEventPoster(eventID);
-                        database.deleteQRMain(eventID);
-                        database.deleteQRPromo(eventID);
                     });
                 } else {
                     dismiss();

@@ -1,9 +1,11 @@
 package com.example.scandroid;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,11 +18,13 @@ import android.widget.TextView;
  * Displays a User's profile when either an organizer selects an attendee from the list of users attending their event
  * or they are selected from the list when browsing all users.
  */
-public class ProfileInfoActivity extends AppCompatActivity {
+public class ProfileInfoActivity extends AppCompatActivity implements onClickListener{
     User currentUser;
     String userID;
     boolean isAttendee;
     Bitmap userProfilePicture;
+
+    ImageView profilePicture;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,8 +35,8 @@ public class ProfileInfoActivity extends AppCompatActivity {
         TextView profileCountText = findViewById(R.id.profile_info_count_text);
         TextView profileCheckInText = findViewById(R.id.profile_info_checkin_text);
         TextView profileAboutMeText = findViewById(R.id.profile_info_about_me_text);
-        ImageView profilePicture = findViewById(R.id.profile_info_image);
         Button backButton = findViewById(R.id.profile_info_back_arrow);
+        profilePicture = findViewById(R.id.profile_info_image);
         Button removeButton = findViewById(R.id.profile_info_remove_profile_button);
 
         //Fills in the profile with the User's details
@@ -60,13 +64,6 @@ public class ProfileInfoActivity extends AppCompatActivity {
                 String eventID = getIntent().getStringExtra("eventID");
                 profileCountText.setText(user.getTimesAttended(eventID));
             }
-            if (user.getHasAdminPermissions()){
-                removeButton.setVisibility(View.VISIBLE);
-                removeButton.setOnClickListener(v -> {
-                    database.deleteUser(userID);
-                    database.deleteUserProfileImage(userID);
-                });
-            }
 
             database.accessUserProfileImage(userID, new BitmapCallback() {
                 @Override
@@ -82,7 +79,7 @@ public class ProfileInfoActivity extends AppCompatActivity {
             });
 
             profilePicture.setOnClickListener(v -> {
-                DialogFragment imageInspectPrompt = new AdminInspectImageFragment(userProfilePicture);
+                DialogFragment imageInspectPrompt = new AdminInspectImageFragment(userProfilePicture, ProfileInfoActivity.this);
                 Bundle bundle = new Bundle();
                 bundle.putString("userID", userID);
                 imageInspectPrompt.setArguments(bundle);
@@ -93,6 +90,19 @@ public class ProfileInfoActivity extends AppCompatActivity {
             });
         });
 
+        if (getIntent().getBooleanExtra("ifAdmin", false)){
+            removeButton.setVisibility(View.VISIBLE);
+            removeButton.setOnClickListener(v -> {
+                database.deleteUser(userID);
+                database.deleteUserProfileImage(userID);
+                finish();
+            });
+        }
         backButton.setOnClickListener(v -> finish());
+    }
+
+    @Override
+    public void onClick() {
+        profilePicture.setImageBitmap(null);
     }
 }

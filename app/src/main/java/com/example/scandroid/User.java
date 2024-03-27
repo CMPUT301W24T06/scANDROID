@@ -119,6 +119,14 @@ public class User {
     }
 
     /**
+     * Remove an event from the user's list of events they have organized.
+     * @param event An event's ID.
+     */
+    public void removeEventToEventsOrganized(String event){
+        eventsOrganized.remove(event);
+    }
+
+    /**
      * Adds an event to a user's list of events they wish to receive notifications from.
      * @param event an event's ID.
      */

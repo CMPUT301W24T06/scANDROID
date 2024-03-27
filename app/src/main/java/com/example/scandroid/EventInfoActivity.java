@@ -25,12 +25,13 @@ import java.util.Calendar;
  * This activity displays the event's details
  * (title, location, date, time, and poster).
  */
-public class EventInfoActivity extends AppCompatActivity {
+public class EventInfoActivity extends AppCompatActivity implements onClickListener{
     private ImageView posterButton;
     private TextView bigEventName;
     private TextView eventName;
     private TextView eventLocation;
-    private Button eventDate;
+    private TextView eventDate;
+    private TextView eventTime;
     private Button removeButton;
     private TextView eventDescription;
     private DBAccessor database;
@@ -51,6 +52,7 @@ public class EventInfoActivity extends AppCompatActivity {
         eventName = findViewById(R.id.fetch_event_title);
         eventLocation = findViewById(R.id.fetch_event_location);
         eventDate = findViewById(R.id.fetch_event_date);
+        eventTime = findViewById(R.id.fetch_event_time);
         eventDescription = findViewById(R.id.fetch_event_description);
         posterButton = findViewById(R.id.create_event_change_poster);
         removeButton = findViewById(R.id.remove_event_button);
@@ -66,6 +68,8 @@ public class EventInfoActivity extends AppCompatActivity {
             calendar = event.getEventDate();
             String eventDateText = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
             eventDate.setText(eventDateText);
+            String eventTimeText = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+            eventTime.setText(eventTimeText);
             eventLocation.setText(new LocationGeocoder(EventInfoActivity.this).coordinatesToAddress(event.getEventLocation()));
             eventDescription.setText(event.getEventDescription());
             database.accessEventPoster(eventID, new BitmapCallback() {
@@ -89,7 +93,7 @@ public class EventInfoActivity extends AppCompatActivity {
             });
 
             posterButton.setOnClickListener(v -> {
-                DialogFragment imageInspectPrompt = new AdminInspectImageFragment(eventPoster);
+                DialogFragment imageInspectPrompt = new AdminInspectImageFragment(eventPoster, EventInfoActivity.this);
                 Bundle bundle = new Bundle();
                 bundle.putString("eventID", eventID);
                 imageInspectPrompt.setArguments(bundle);
@@ -103,8 +107,11 @@ public class EventInfoActivity extends AppCompatActivity {
                 if (user.getHasAdminPermissions()){
                     removeButton.setVisibility(View.VISIBLE);
                     removeButton.setOnClickListener(v -> {
+                        database.accessUser(event.getEventOrganizerID(), organizerUser -> {
+                            organizerUser.removeEventToEventsOrganized(eventID);
+                            database.storeUser(organizerUser);
+                        });
                         database.deleteEvent(eventID);
-                        database.deleteEventPoster(eventID);
                         finish();
                     });
                 }
@@ -120,5 +127,10 @@ public class EventInfoActivity extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    @Override
+    public void onClick() {
+        posterButton.setImageBitmap(null);
     }
 }

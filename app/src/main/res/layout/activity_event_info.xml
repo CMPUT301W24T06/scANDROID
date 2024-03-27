@@ -35,20 +35,20 @@
         android:id="@+id/create_event_change_poster"
         android:layout_width="350dp"
         android:layout_height="175dp"
-        app:srcCompat="@drawable/add_poster_icon"
         app:layout_constraintBottom_toBottomOf="@+id/blue_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="@+id/blue_background"
         app:layout_constraintTop_toTopOf="@+id/blue_background"
-        app:layout_constraintVertical_bias="0.715" />
+        app:layout_constraintVertical_bias="0.715"
+        app:srcCompat="@drawable/add_poster_icon" />
 
     <TextView
         android:id="@+id/create_event_name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Event Title"
+        android:text="@string/fragment_event_title"
         android:textAllCaps="false"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -63,7 +63,7 @@
         android:autofillHints="AUTOFILL_TYPE_TEXT"
         android:background="@drawable/button_outline_grey"
         android:padding="10dp"
-        android:text="Event Title"
+        android:text="@string/fragment_event_title"
         android:textAllCaps="false"
         android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,7 +92,7 @@
         android:autofillHints="AUTOFILL_TYPE_TEXT"
         android:background="@drawable/button_outline_grey"
         android:padding="10dp"
-        android:text="Event Location"
+        android:text="@string/event_location_text"
         android:textAllCaps="false"
         android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="parent"
@@ -100,7 +100,7 @@
         app:layout_constraintTop_toBottomOf="@+id/create_event_location_text" />
 
     <TextView
-        android:id="@+id/create_event_date_text"
+        android:id="@+id/event_info_date_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -112,20 +112,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fetch_event_location" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <TextView
         android:id="@+id/fetch_event_date"
         android:layout_width="170dp"
         android:layout_height="48dp"
         android:background="@drawable/button_outline_grey"
-        android:inputType="date"
         android:padding="10dp"
-        android:text="Event Date"
-        android:textAllCaps="false"
-        android:textColorHint="#757575"
+        android:text="@string/event_date_text"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.108"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_date_text" />
+        app:layout_constraintTop_toBottomOf="@+id/event_info_date_text" />
+
+    <TextView
+        android:id="@+id/event_info_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/event_time"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fetch_event_date" />
+
+    <TextView
+        android:id="@+id/fetch_event_time"
+        android:layout_width="170dp"
+        android:layout_height="48dp"
+        android:background="@drawable/button_outline_grey"
+        android:textAlignment="center"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.107"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_info_time_text" />
 
     <TextView
         android:id="@+id/fetch_event_description"
@@ -133,17 +155,12 @@
         android:layout_height="77dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/button_outline_grey"
-        android:importantForAutofill="no"
         android:padding="10dp"
-        android:text="Event Description"
-        android:textAllCaps="false"
-        android:textColorHint="#757575"
+        android:text="@string/event_description_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.538"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_event_description_text" />
-
-
 
     <TextView
         android:id="@+id/create_event_description_text"
@@ -156,7 +173,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.093"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fetch_event_date" />
+        app:layout_constraintTop_toBottomOf="@+id/fetch_event_time" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/remove_event_button"
@@ -179,12 +196,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
+        android:layout_marginBottom="11dp"
         android:fontFamily="@font/inter_semibold"
         android:gravity="center_horizontal"
         android:text="@string/event_name_text"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/create_event_change_poster"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toEndOf="@+id/back_arrow"
