@@ -18,6 +18,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 /**
  * EventLocationTrackingActivity is an activity
  * that shows an event organizer a map with
@@ -28,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 // sources: https://developers.google.com/maps/documentation/android-sdk/map#view_the_code
 //          https://github.com/googlemaps-samples/android-samples/blob/main/ApiDemos/java/app/src/gms/java/com/example/mapdemo/RawMapViewDemoActivity.java
 //          https://stackoverflow.com/a/18481305
+//          https://developers.google.com/maps/documentation/android-sdk/marker
 
 public class EventLocationTrackingActivity extends AppCompatActivity implements OnMapReadyCallback {
     Event event;
@@ -66,7 +69,20 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
                     .position(eventLatLng)
                             .snippet(eventAddress)
                     .title(eventTitle));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 14));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 0));
+            ArrayList<Event.CheckIn> attendees = event.getEventAttendeeList();
+            for (Event.CheckIn i : attendees) {
+                ArrayList<Double> checkInLoc = i.getCheckInLocation();
+                if(checkInLoc != null) {
+                    LatLng checkInLatLng = new LatLng(checkInLoc.get(0), checkInLoc.get(1));
+                    String checkInAddress = new LocationGeocoder(EventLocationTrackingActivity.this).coordinatesToAddress(checkInLoc);
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(checkInLatLng)
+                            .snippet(checkInAddress)
+                            .title("Check In")
+                            .alpha(0.8f));
+                }
+            }
         }
     }
     @Override
