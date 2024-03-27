@@ -63,7 +63,8 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
             Intent viewEventIntent = new Intent(view1.getContext(), EventInfoActivity.class);
             viewEventIntent.putExtra("eventID", eventID);
             startActivity(viewEventIntent);
-            });
+        });
+
         prevButton = view.findViewById(R.id.browse_event_previous_button);
         nextButton = view.findViewById(R.id.browse_event_next_button);
         prevButton.setOnClickListener(v -> {
@@ -83,7 +84,7 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
             isAdmin = user.getHasAdminPermissions();
             if (isAdmin){
                 allEventsList.setOnItemLongClickListener((parent, view12, position, id) -> {
-                    DialogFragment eventInspectPrompt = new AdminInspectEventFragment();
+                    DialogFragment eventInspectPrompt = new AdminInspectEventFragment(BrowseEventsFragment.this);
                     Bundle bundle = new Bundle();
                     bundle.putString("eventID", allEventsAdapter.getItem(position).first.getEventID());
                     eventInspectPrompt.setArguments(bundle);
@@ -186,7 +187,7 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
 
     @Override
     public void onClick() {
-
+        createInitialPage(this::switchPage);
     }
 
     @Override

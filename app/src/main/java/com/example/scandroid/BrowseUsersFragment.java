@@ -110,7 +110,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
             isAdmin = user.getHasAdminPermissions();
             if (isAdmin){
                 allUsersList.setOnItemLongClickListener((parent, view12, position, id) -> {
-                    DialogFragment userInspectPrompt = new AdminInspectUserFragment();
+                    DialogFragment userInspectPrompt = new AdminInspectUserFragment(BrowseUsersFragment.this);
                     Bundle bundle = new Bundle();
                     bundle.putString("userID", allUserAdapter.getItem(position).first.getUserID());
                     userInspectPrompt.setArguments(bundle);

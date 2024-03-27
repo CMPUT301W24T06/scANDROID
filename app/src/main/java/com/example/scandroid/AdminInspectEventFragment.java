@@ -20,6 +20,10 @@ import java.util.Calendar;
 public class AdminInspectEventFragment extends DialogFragment {
     private final DBAccessor database = new DBAccessor();
     String eventID;
+    onClickListener listener;
+    AdminInspectEventFragment(onClickListener listener){
+        this.listener = listener;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,6 +47,8 @@ public class AdminInspectEventFragment extends DialogFragment {
                     cancelButton.setOnClickListener(v -> dismiss());
                     removeButton.setOnClickListener(v -> {
                         database.deleteEvent(eventID);
+                        listener.onClick();
+                        dismiss();
                     });
                 } else {
                     dismiss();

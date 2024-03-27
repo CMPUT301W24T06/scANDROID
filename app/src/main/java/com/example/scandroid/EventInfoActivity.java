@@ -107,10 +107,10 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                 if (user.getHasAdminPermissions()){
                     removeButton.setVisibility(View.VISIBLE);
                     removeButton.setOnClickListener(v -> {
-                        database.accessUser(event.getEventOrganizerID(), organizerUser -> {
-                            organizerUser.removeEventToEventsOrganized(eventID);
-                            database.storeUser(organizerUser);
-                        });
+                        //database.accessUser(event.getEventOrganizerID(), organizerUser -> {
+                            //organizerUser.removeEventToEventsOrganized(eventID);
+                            //database.storeUser(organizerUser);
+                        //});
                         database.deleteEvent(eventID);
                         finish();
                     });
