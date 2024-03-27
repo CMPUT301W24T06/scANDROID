@@ -36,11 +36,13 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
     private TextView eventDescription;
     private DBAccessor database;
     private String eventID;
+    private String userID;
     private Event event;
     private Calendar calendar = Calendar.getInstance();
     private AppCompatButton backButton;
     Bitmap eventPoster;
     CheckBox promiseCheckbox;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,9 +60,12 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
         removeButton = findViewById(R.id.remove_event_button);
         database = new DBAccessor();
 
+
         backButton.setOnClickListener(v -> finish());
 
         eventID = (String) getIntent().getSerializableExtra("eventID");
+        userID = (String) getIntent().getSerializableExtra("userID");
+
 
         database.accessEvent(eventID, event -> {
             bigEventName.setText(event.getEventName());
@@ -119,6 +124,7 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
             promiseCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
                     // If checkbox is checked, perform action (implement Firebase)
+                    event.addEventSignUp(userID);
                     Log.d("Checkbox", "Checkbox is checked");
                     // Implement your Firebase logic here
                 } else {
@@ -128,6 +134,8 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
             });
         });
     }
+
+
 
     @Override
     public void onClick() {
