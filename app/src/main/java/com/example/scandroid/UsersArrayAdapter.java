@@ -23,18 +23,21 @@ import java.util.ArrayList;
  * UsersArrayAdapter is an ArrayAdapter implementation used in the app for displaying
  * a list of users
  */
-public class UsersArrayAdapter extends ArrayAdapter<String> {
+public class UsersArrayAdapter extends ArrayAdapter<Tuple<User, Bitmap>> {
     FragmentManager fragmentManager;
     boolean isAdmin;
+    private OnProfileImageClickListener onProfileImageClickListener;
     /**
      * Constructs a new UsersArrayAdapter
      *
      * @param context context where the adapter is being used
      * @param userIDs list of user IDs to display
      */
-    public UsersArrayAdapter(Context context, ArrayList<String> userIDs, FragmentManager fragmentManager) {
+    public UsersArrayAdapter(Context context, ArrayList<Tuple<User, Bitmap>> userIDs,
+                             FragmentManager fragmentManager, OnProfileImageClickListener onProfileImageClickListener) {
         super(context,0, userIDs);
         this.fragmentManager = fragmentManager;
+        this.onProfileImageClickListener = onProfileImageClickListener;
     }
 
     /**
@@ -58,42 +61,19 @@ public class UsersArrayAdapter extends ArrayAdapter<String> {
 
         TextView userNameText = view.findViewById(R.id.user_list_content_name);
         ImageView userProfilePicture = view.findViewById(R.id.user_content_profile_picture);
-        String userID = getItem(position);
-        assert userID != null;
-        DBAccessor database = new DBAccessor();
-        database.accessUser(userID, user -> {
-            String userName = user.getUserName();
-            userNameText.setText(userName);
-        });
 
-        database.accessUserProfileImage(userID, new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                userProfilePicture.setImageBitmap(bitmap);
-                String userID = new DeviceIDRetriever(getContext()).getDeviceId();
+        Tuple<User, Bitmap> tuple = getItem(position);
+        assert tuple != null;
+        String userName = tuple.first.getUserName();
+        userNameText.setText(userName);
+        userProfilePicture.setImageBitmap(tuple.second);
 
-                database.accessUser(userID, user -> {
-                    isAdmin = user.getHasAdminPermissions();
-                    if (isAdmin){
-                        userProfilePicture.setOnClickListener(v -> {
-                            DialogFragment imageInspectPrompt = new AdminInspectImageFragment(bitmap);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("userID", userID);
-                            imageInspectPrompt.setArguments(bundle);
+        userProfilePicture.setOnClickListener(v ->
+                onProfileImageClickListener.onProfileImageClicked(tuple.first, tuple.second));
 
-                            FragmentTransaction transaction = fragmentManager.beginTransaction();
-                            transaction.add(android.R.id.content, imageInspectPrompt);
-                            transaction.commit();
-                        });
-                    }
-                });
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e) {
-                Toast.makeText(view.getContext(), "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
-            }
-        });
         return view;
+    }
+    public interface OnProfileImageClickListener {
+        void onProfileImageClicked(User user, Bitmap bitmap);
     }
 }

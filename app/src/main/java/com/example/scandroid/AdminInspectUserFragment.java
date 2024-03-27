@@ -16,6 +16,10 @@ import java.util.Calendar;
 public class AdminInspectUserFragment extends DialogFragment {
     private final DBAccessor database = new DBAccessor();
     String userID;
+    onClickListener listener;
+    AdminInspectUserFragment(onClickListener listener){
+        this.listener = listener;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,7 +43,8 @@ public class AdminInspectUserFragment extends DialogFragment {
                     cancelButton.setOnClickListener(v -> dismiss());
                     removeButton.setOnClickListener(v -> {
                         database.deleteUser(userID);
-                        database.deleteUserProfileImage(userID);
+                        listener.onClick();
+                        dismiss();
                     });
                 } else {
                     dismiss();
