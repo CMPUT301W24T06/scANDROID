@@ -75,22 +75,9 @@ public class EventCheckInFragment extends DialogFragment {
 
                     if (trackLocationBox.isChecked()) {
                         database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
-                            // would set check in location here
                             Location userLocation = new LocationRetriever(requireContext()).getLastKnownLocation();
                             checkInLocation.add(userLocation.getLatitude());
                             checkInLocation.add(userLocation.getLongitude());
-//                            FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
-//                            if (ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                                // TODO: Consider calling
-//                                //    ActivityCompat#requestPermissions
-//                                // here to request the missing permissions, and then overriding
-//                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                                //                                          int[] grantResults)
-//                                // to handle the case where the user grants the permission. See the documentation
-//                                // for ActivityCompat#requestPermissions for more details.
-//                                return;
-//                            }
-//                            fusedLocationClient.getLastLocation();
                         });
                     }
 
@@ -103,6 +90,7 @@ public class EventCheckInFragment extends DialogFragment {
                             user.addEventToEventsAttending(eventID);
                             // source: https://stackoverflow.com/a/5369753
                             Date currentTime = Calendar.getInstance().getTime();
+                            assert checkInLocation != null;
                             event.addEventAttendee(user.getUserID(), new Time((currentTime).getTime()), checkInLocation);
                             database.storeUser(user);
                         });
