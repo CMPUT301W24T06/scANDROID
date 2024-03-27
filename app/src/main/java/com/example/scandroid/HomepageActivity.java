@@ -4,20 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -26,6 +20,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -152,8 +147,10 @@ public class HomepageActivity extends AppCompatActivity {
                 displayWelcomeFragment();
                 database.storeUser(user);
             }
-            homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
-            homepagePager.setAdapter(homepageActivityPageAdapter);
+
+
+                homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
+                homepagePager.setAdapter(homepageActivityPageAdapter);
 
             TextView profileName = findViewById(R.id.homepage_name_text);
             profileName.setText(user.getUserName());

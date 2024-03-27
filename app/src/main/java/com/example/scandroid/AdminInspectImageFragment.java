@@ -1,5 +1,6 @@
 package com.example.scandroid;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,9 +19,12 @@ public class AdminInspectImageFragment extends DialogFragment {
     String userID;
     String eventID;
     Bitmap picture;
+    boolean change;
+    onClickListener listener;
 
-    public AdminInspectImageFragment(Bitmap picture){
+    public AdminInspectImageFragment(Bitmap picture, onClickListener listener){
         this.picture = picture;
+        this.listener = listener;
     }
 
     @Nullable
@@ -43,14 +47,23 @@ public class AdminInspectImageFragment extends DialogFragment {
             imageView.setImageBitmap(picture);
             if (bundle.getString("userID") != null){
                 userID = bundle.getString("userID");
-                removeButton.setOnClickListener(v -> database.deleteUserProfileImage(userID));
+                removeButton.setOnClickListener(v -> {
+                        database.deleteUserProfileImage(userID);
+                        listener.onClick();
+                        dismiss();
+            });
 
             } else if (bundle.getString("eventID") != null){
                 eventID = bundle.getString("eventID");
-                removeButton.setOnClickListener(v -> database.deleteEventPoster(eventID));
+                removeButton.setOnClickListener(v -> {
+                        database.deleteEventPoster(eventID);
+                        listener.onClick();
+                        dismiss();
+                });
             }
 
         }
+
         return view;
     }
 }

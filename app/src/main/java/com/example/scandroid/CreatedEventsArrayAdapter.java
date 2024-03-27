@@ -25,9 +25,10 @@ import java.util.ArrayList;
  * CreatedEventsArrayAdapter is an ArrayAdapter implementation
  * used in the app for displaying created events in a list view.
  */
-public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
+public class CreatedEventsArrayAdapter extends ArrayAdapter<Tuple<Event, Bitmap>> {
     FragmentManager fragmentManager;
     boolean isAdmin;
+    private OnProfileImageClickListener onProfileImageClickListener;
     /**
      * Constructs a new CreatedEventsArrayAdapter
      *
@@ -35,7 +36,13 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
      * @param myEvents list of event IDs to display
      *
      */
-    public CreatedEventsArrayAdapter(Context context, ArrayList<String> myEvents, FragmentManager fragmentManager) {
+    public CreatedEventsArrayAdapter(Context context, ArrayList<Tuple<Event, Bitmap>> myEvents, FragmentManager fragmentManager, OnProfileImageClickListener onProfileImageClickListener) {
+        super(context,0, myEvents);
+        this.fragmentManager = fragmentManager;
+        this.onProfileImageClickListener = onProfileImageClickListener;
+    }
+
+    public CreatedEventsArrayAdapter(Context context, ArrayList<Tuple<Event, Bitmap>> myEvents, FragmentManager fragmentManager) {
         super(context,0, myEvents);
         this.fragmentManager = fragmentManager;
     }
@@ -61,45 +68,28 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
 
         TextView eventNameText = view.findViewById(R.id.my_events_content_name);
         ImageView eventPoster = view.findViewById(R.id.my_events_content_poster);
-        String eventID = getItem(position);
-        assert eventID != null;
-        DBAccessor database = new DBAccessor();
-        database.accessEvent(eventID, event -> {
-            String eventName = event.getEventName();
-            eventNameText.setText(eventName);
-        });
+        Tuple<Event, Bitmap> tuple = getItem(position);
+        assert tuple != null;
+        String eventName = tuple.first.getEventName();
+        eventNameText.setText(eventName);
+        eventPoster.setImageBitmap(tuple.second);
+        if (onProfileImageClickListener!=null) {
+            eventPoster.setOnClickListener(v -> {
+                //DialogFragment imageInspectPrompt = new AdminInspectImageFragment(bitmap);
+                //Bundle bundle = new Bundle();
+                //bundle.putString("eventID", eventID);
+                //imageInspectPrompt.setArguments(bundle);
 
-        database.accessEventPoster(eventID, new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                eventPoster.setImageBitmap(bitmap);
-                String userID = new DeviceIDRetriever(getContext()).getDeviceId();
-
-                database.accessUser(userID, user -> {
-                    isAdmin = user.getHasAdminPermissions();
-                    if (isAdmin){
-                        eventPoster.setOnClickListener(v -> {
-                            DialogFragment imageInspectPrompt = new AdminInspectImageFragment(bitmap);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("eventID", eventID);
-                            imageInspectPrompt.setArguments(bundle);
-
-                            FragmentTransaction transaction = fragmentManager.beginTransaction();
-                            transaction.add(android.R.id.content, imageInspectPrompt);
-                            transaction.commit();
-                        });
-                    }
-                });
-
-
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e) {
-                Toast.makeText(view.getContext(), "Failed to retrieve event poster", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+                //FragmentTransaction transaction = fragmentManager.beginTransaction();
+                //transaction.add(android.R.id.content, imageInspectPrompt);
+                //transaction.commit();
+                onProfileImageClickListener.onProfileImageClicked(tuple.first, tuple.second);
+            });
+        }
         return view;
+    }
+
+    public interface OnProfileImageClickListener {
+        void onProfileImageClicked(Event event, Bitmap bitmap);
     }
 }

@@ -43,10 +43,38 @@
     <ListView
         android:id="@+id/browse_event_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="570dp"
         android:layout_below="@+id/users_search"
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
-        android:longClickable="true"/>
+        android:longClickable="true" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/browse_event_next_button"
+        android:layout_width="68dp"
+        android:layout_height="48dp"
+        android:background="@drawable/rectangle_button"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Next"
+        android:visibility="invisible"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
+        android:layout_below="@id/browse_event_list"
+        android:layout_alignEnd="@id/users_search"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/browse_event_previous_button"
+        android:layout_width="68dp"
+        android:layout_height="48dp"
+        android:layout_below="@id/browse_event_list"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="11dp"
+        android:layout_toStartOf="@+id/browse_event_next_button"
+        android:background="@drawable/rectangle_button"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Previous"
+        android:visibility="invisible"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white" />
 </RelativeLayout>
