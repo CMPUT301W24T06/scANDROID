@@ -2,6 +2,7 @@ package com.example.scandroid;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,11 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -33,55 +36,106 @@ public class MyEventsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String userID;
     private String userType;
-    ArrayAdapter<String> myEventsAdapter;
+    ArrayAdapter<Tuple<Event, Bitmap>> myEventsAdapter;
     private DBAccessor database;
+    private ArrayList<String>  myEventIDs;
+    private ArrayList<String> myRealEventIDs;
+    private ArrayList<Tuple<Event, Bitmap>> allMyEvents;
+    private ListView myEventsList;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        super.onCreate(savedInstanceState);
         database = new DBAccessor();
         if (getArguments() != null) {
             userID = getArguments().getString(ARG_PARAM1);
             userType = getArguments().getString(ARG_PARAM2);
         }
-        ListView myEventsList = view.findViewById(R.id.my_events_list);
+        myEventsList = view.findViewById(R.id.my_events_list);
+
+        List<String> eventsToRemove = new ArrayList<>();
+        myRealEventIDs = new ArrayList<>();
+        allMyEvents = new ArrayList<>();
         new DBAccessor().accessUser(userID, user -> {
             if (Objects.equals(userType, "organizer")) {
-                ArrayList<String> myEvents = user.getEventsOrganized();
-                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
-                myEventsList.setAdapter(myEventsAdapter);
-            } else if (Objects.equals(userType, "attendee")){
+                myEventIDs = user.getEventsOrganized();
+                for (String anEvent : myEventIDs) {
+                    database.accessEvent(anEvent, event -> {
+                        if (event == null) {
+                            RemovalNoticeFragment removalNoticeFragment = new RemovalNoticeFragment();
+                            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                            transaction.add(android.R.id.content, removalNoticeFragment);
+                            transaction.commit();
+                            eventsToRemove.add(anEvent);
+                        } else {
+                            myRealEventIDs.add(anEvent);
+                        }
+
+
+                        if (myRealEventIDs.size() + eventsToRemove.size() == myEventIDs.size()) {
+                            // Remove the events that need to be removed
+                            myEventIDs.removeAll(eventsToRemove);
+                            database.storeUser(user);
+                            //loop through events here and get their posters to add to tuple
+                            for (String eventID : myEventIDs){
+                                database.accessEvent(eventID, event1 -> database.accessEventPoster(eventID, new BitmapCallback() {
+                                    @Override
+                                    public void onBitmapLoaded(Bitmap bitmap) {
+                                        allMyEvents.add(new Tuple<>(event1, bitmap));
+                                        if (allMyEvents.size() == myEventIDs.size()){
+                                            myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), allMyEvents, getActivity().getSupportFragmentManager());
+                                            myEventsList.setAdapter(myEventsAdapter);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onBitmapFailed(Exception e) {
+                                        allMyEvents.add(new Tuple<>(event, null));
+                                        if (allMyEvents.size() == myEventIDs.size()) {
+                                            myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), allMyEvents, getActivity().getSupportFragmentManager());
+                                            myEventsList.setAdapter(myEventsAdapter);
+                                        }
+                                    }
+                                }));
+                            }
+
+                           // myEventsAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+            } else if (Objects.equals(userType, "attendee")) {
                 ArrayList<String> myEvents = user.getEventsAttending();
-                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
+               // myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
                 myEventsList.setAdapter(myEventsAdapter);
             }
         });
 
         myEventsList.setOnItemClickListener((parent, view1, position, id) -> {
-            String eventID = myEventsAdapter.getItem(position);
+            //String eventID = myEventsAdapter.getItem(position);
+            Event event = myEventsAdapter.getItem(position).first;
             if (Objects.equals(userType, "organizer")){
-                database.accessEvent(eventID, event -> {
+
                     // Source: https://stackoverflow.com/a/24610673/20869063 Stack Overflow. Answered by Ahmad, Nisar. Downloaded 2024-03-07
                     Intent i = new Intent(getActivity(), EditEventActivity.class);
                     i.putExtra("event", (Serializable) event);
                     startActivity(i);
-                });
+
             } else {
                 Intent viewEventIntent = new Intent(view1.getContext(), EventInfoActivity.class);
-                viewEventIntent.putExtra("eventID", eventID);
+                viewEventIntent.putExtra("eventID", event.getEventID());
                 startActivity(viewEventIntent);
             }
             //Retrieve the new information about the lists
             new DBAccessor().accessUser(userID, user -> {
                 if (Objects.equals(userType, "organizer")) {
                     ArrayList<String> myEvents = user.getEventsOrganized();
-                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
+                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), allMyEvents, getActivity().getSupportFragmentManager());
                     myEventsList.setAdapter(myEventsAdapter);
                 }
                 else if (Objects.equals(userType, "attendee")){
                     ArrayList<String> myEvents = user.getEventsAttending();
-                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
+                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), allMyEvents, getActivity().getSupportFragmentManager());
                     myEventsList.setAdapter(myEventsAdapter);
                 }
                 //Update the adapter
@@ -90,7 +144,48 @@ public class MyEventsFragment extends Fragment {
         });
     }
 
+public void createEventList(ArrayList<String> eventIDList, String userType){
+    List<String> eventsToRemove = new ArrayList<>();
+    new DBAccessor().accessUser(userID, user -> {
+            for (String anEvent : eventIDList) {
+                database.accessEvent(anEvent, event -> {
+                    if (event == null) {
+                        RemovalNoticeFragment removalNoticeFragment = new RemovalNoticeFragment();
+                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                        transaction.add(android.R.id.content, removalNoticeFragment);
+                        transaction.commit();
+                        eventsToRemove.add(anEvent);
+                    }
 
+                    if (anEvent.equals(myEventIDs.get(myEventIDs.size() - 1))) {
+                        // Remove the events that need to be removed
+                        myEventIDs.removeAll(eventsToRemove);
+                        database.storeUser(user);
+                        //loop through events and get their posters to add to tuple
+                        for (String eventID : myEventIDs){
+                            database.accessEvent(eventID, event1 -> database.accessEventPoster(eventID, new BitmapCallback() {
+                                @Override
+                                public void onBitmapLoaded(Bitmap bitmap) {
+                                    allMyEvents.add(new Tuple<>(event1, bitmap));
+                                    if (allMyEvents.size() == myEventIDs.size()){
+                                        myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), allMyEvents, getActivity().getSupportFragmentManager());
+                                        myEventsList.setAdapter(myEventsAdapter);
+                                    }
+                                }
+
+                                @Override
+                                public void onBitmapFailed(Exception e) {
+
+                                }
+                            }));
+                        }
+                    }
+                });
+            }
+
+
+    });
+}
 
     public MyEventsFragment() {
         // Required empty public constructor
@@ -130,5 +225,4 @@ public class MyEventsFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.my_events_fragment, container, false);
     }
-
 }
