@@ -64,7 +64,6 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
         backButton.setOnClickListener(v -> finish());
 
         eventID = (String) getIntent().getSerializableExtra("eventID");
-        userID = (String) getIntent().getSerializableExtra("userID");
 
 
         database.accessEvent(eventID, event -> {
@@ -121,15 +120,28 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                     });
                 }
             });
-            promiseCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    // If checkbox is checked, perform action (implement Firebase)
-                    event.addEventSignUp(userID);
-                    Log.d("Checkbox", "Checkbox is checked");
-                    // Implement your Firebase logic here
+
+            String deviceID = new DeviceIDRetriever(EventInfoActivity.this).getDeviceId();
+            database.accessUser(deviceID, user -> {
+                if (user != null) {
+                    userID = user.getUserID();
+                    // get the userID
+                    promiseCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        if (isChecked) {
+                            // If checkbox is checked, add to SignUPs
+                            event.addEventSignUp(userID);
+                            database.storeEvent(event);
+                            Log.d("Checkbox", "Checkbox is checked");
+                        } else {
+                            // If checkbox is unchecked, remove the user from SignUPs
+                            event.deleteEventSignUp(userID);
+                            database.storeEvent(event);
+                            Log.d("Checkbox", "Checkbox is unchecked");
+                        }
+                    });
                 } else {
-                    // If checkbox is unchecked, nothing
-                    Log.d("Checkbox", "Checkbox is unchecked");
+                    // user information couldn't be retrieved
+                    Log.e("User", "User information not found");
                 }
             });
         });
