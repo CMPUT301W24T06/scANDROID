@@ -164,6 +164,10 @@ public class Event implements Serializable{
         this.SignUpIDs.add(userID);
     }
 
+    public void deleteEventSignUp(String userID){
+        this.SignUpIDs.remove(userID);
+    }
+
     /**
      * Generate the next fibonacci valued attendee count milestone for the Event.
      * Method is automatically run when enough attendees are checked-in to meet a current threshold.
