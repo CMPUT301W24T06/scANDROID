@@ -102,7 +102,9 @@ public class HomepageActivity extends AppCompatActivity {
                     case R.id.home_button:
                         return true;
                     case R.id.qr_button:
-                        startActivity(new Intent(getApplicationContext(), QRScannerActivity.class));
+                        Intent intent = new Intent(getApplicationContext(), QRScannerActivity.class);
+                        intent.putExtra("userID", userID);
+                        startActivity(intent);
                         return true;
                     case R.id.browse_button:
                         startActivity(new Intent(getApplicationContext(), BrowseActivity.class));

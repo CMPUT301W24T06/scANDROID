@@ -142,8 +142,15 @@ public class Event implements Serializable{
             // add attendee information to appropriate arrays
             this.CheckInIDs.add(userID);
             // convert location to string for proper firebase storing
-            this.CheckInLocations.add(checkInLocation.get(0).toString() + "@" + checkInLocation.get(1).toString());
+
+            // for handling optional check in location
+            if(!checkInLocation.isEmpty()) {
+                this.CheckInLocations.add(checkInLocation.get(0).toString() + "@" + checkInLocation.get(1).toString());
+            }
+
             this.CheckInTimes.add(checkInTime.getTime());
+
+
             // ensure attendee is not in both userID lists
             this.SignUpIDs.remove(userID);
 
@@ -276,17 +283,30 @@ public class Event implements Serializable{
 
             // locations are stored as "@" delimited string for firestore
             // must separate longitude and latitude from concatenated string
-            String locationAsString = this.CheckInLocations.get(i);
-            String[] locationAsArray = locationAsString.split("@");
-            ArrayList<Double> locationAsDoubles = new ArrayList<>();
-            locationAsDoubles.add(Double.parseDouble(locationAsArray[0]));
-            locationAsDoubles.add(Double.parseDouble(locationAsArray[1]));
 
-            EventAttendeeList.add(
-                    new CheckIn(
-                            this.CheckInIDs.get(i),
-                            new Time(this.CheckInTimes.get(i)),
-                            locationAsDoubles));
+            // for handling optional check in location
+            if(!this.CheckInLocations.get(i).isEmpty()) {
+                String locationAsString = this.CheckInLocations.get(i);
+                String[] locationAsArray = locationAsString.split("@");
+                ArrayList<Double> locationAsDoubles = new ArrayList<>();
+                locationAsDoubles.add(Double.parseDouble(locationAsArray[0]));
+                locationAsDoubles.add(Double.parseDouble(locationAsArray[1]));
+
+
+                EventAttendeeList.add(
+                        new CheckIn(
+                                this.CheckInIDs.get(i),
+                                new Time(this.CheckInTimes.get(i)),
+                                locationAsDoubles));
+            }
+            else { // no check in location
+                EventAttendeeList.add(
+                        new CheckIn(
+                                this.CheckInIDs.get(i),
+                                new Time(this.CheckInTimes.get(i)),
+                                null));
+            }
+
         }
         return EventAttendeeList;
     }
@@ -460,7 +480,15 @@ public class Event implements Serializable{
          * @return Geographical coordinates of User checkIn {latitude, longitude}
          */
         public ArrayList<Double> getCheckInLocation() {
-            return this.CheckInLocation;
+
+            // for handling optional check in location
+            if(!this.CheckInLocation.isEmpty()) {
+                return this.CheckInLocation;
+            }
+            else { // no check in location
+                return null;
+            }
+
         }
 
     } // end public class CheckIn

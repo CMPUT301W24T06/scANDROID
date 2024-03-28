@@ -90,9 +90,11 @@ public class QRScannerActivity extends AppCompatActivity {
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if (result.getContents() != null) {
             String eventID = result.getContents();
+            String userID = getIntent().getStringExtra("userID");
 
             Intent intent = new Intent(QRScannerActivity.this, CheckInOrPromoActivity.class);
             intent.putExtra("eventID", eventID);
+            intent.putExtra("userID", userID);
             startActivity(intent);
 
 

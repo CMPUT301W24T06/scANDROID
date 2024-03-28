@@ -2,6 +2,7 @@ package com.example.scandroid;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 public class EventLocationTrackingActivity extends AppCompatActivity implements OnMapReadyCallback {
     Event event;
     AppCompatButton backButton;
+    AppCompatButton zoomInButton;
+    AppCompatButton zoomOutButton;
     private MapView mapView;
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
@@ -44,6 +47,8 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_location_tracking_activity);
         backButton = findViewById(R.id.back_button);
+        zoomInButton = findViewById(R.id.zoom_in_button);
+        zoomOutButton = findViewById(R.id.zoom_out_button);
         event = (Event)getIntent().getSerializableExtra("event");
 
         backButton.setOnClickListener(v -> finish());
@@ -56,11 +61,12 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
         mapView.onCreate(mapViewBundle);
 
         mapView.getMapAsync(this);
+
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        // TODO: add markers for each event check in that agreed to have their location shared
+        int zoom = 5;
         if(event != null) {
             String eventTitle = event.getEventName();
             String eventAddress = new LocationGeocoder(EventLocationTrackingActivity.this).coordinatesToAddress(event.getEventLocation());
@@ -69,22 +75,27 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
                     .position(eventLatLng)
                             .snippet(eventAddress)
                     .title(eventTitle));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, 0));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, zoom));
+
             ArrayList<Event.CheckIn> attendees = event.getEventAttendeeList();
             for (Event.CheckIn i : attendees) {
                 ArrayList<Double> checkInLoc = i.getCheckInLocation();
-                if(checkInLoc != null) {
+                if(checkInLoc.size() == 2) {
                     LatLng checkInLatLng = new LatLng(checkInLoc.get(0), checkInLoc.get(1));
                     String checkInAddress = new LocationGeocoder(EventLocationTrackingActivity.this).coordinatesToAddress(checkInLoc);
                     googleMap.addMarker(new MarkerOptions()
                             .position(checkInLatLng)
                             .snippet(checkInAddress)
                             .title("Check In")
-                            .alpha(0.8f));
+                            .alpha(0.3f));
                 }
             }
         }
+        zoomInButton.setOnClickListener(v -> googleMap.animateCamera(CameraUpdateFactory.zoomBy(1)));
+
+        zoomOutButton.setOnClickListener(v -> googleMap.animateCamera(CameraUpdateFactory.zoomBy(- 1)));
     }
+
     @Override
     protected void onPause() {
         mapView.onPause();
