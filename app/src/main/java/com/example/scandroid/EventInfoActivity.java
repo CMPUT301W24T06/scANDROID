@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -128,11 +129,18 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                     // get the userID
                     promiseCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                         if (isChecked) {
-                            // If checkbox is checked, add to SignUPs
-                            event.addEventSignUp(userID);
-                            database.storeEvent(event);
-                            Log.d("Checkbox", "Checkbox is checked");
-                        } else {
+                            if (!userID.equals(event.getCreatorID())) {
+                                // If checkbox is checked and the user is not the creator, add the user ID to the sign-ups list
+                                event.addEventSignUp(userID);
+                                database.storeEvent(event);
+                                Log.d("Checkbox", "Checkbox is checked");
+                            } else {
+                                // If the user is the creator, prevent sign-up and show a message
+                                Toast.makeText(EventInfoActivity.this, "You cannot sign up for your own event.", Toast.LENGTH_SHORT).show();
+                                promiseCheckbox.setChecked(false); // Uncheck the checkbox
+                            }
+                        }
+                            else {
                             // If checkbox is unchecked, remove the user from SignUPs
                             event.deleteEventSignUp(userID);
                             database.storeEvent(event);
