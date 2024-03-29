@@ -287,19 +287,28 @@ public class Event implements Serializable{
         // Construct CheckIn.class objects from Event data
         for (int i = 0; i < CheckInIDs.size(); i++) {
 
-            // locations are stored as "@" delimited string for firestore
-            // must separate longitude and latitude from concatenated string
-            String locationAsString = this.CheckInLocations.get(i);
-            String[] locationAsArray = locationAsString.split("@");
-            ArrayList<Double> locationAsDoubles = new ArrayList<>();
-            locationAsDoubles.add(Double.parseDouble(locationAsArray[0]));
-            locationAsDoubles.add(Double.parseDouble(locationAsArray[1]));
+            // for handling optional check in location
+            if(!this.CheckInLocations.get(i).isEmpty()) {
+                String locationAsString = this.CheckInLocations.get(i);
+                String[] locationAsArray = locationAsString.split("@");
+                ArrayList<Double> locationAsDoubles = new ArrayList<>();
+                locationAsDoubles.add(Double.parseDouble(locationAsArray[0]));
+                locationAsDoubles.add(Double.parseDouble(locationAsArray[1]));
 
-            EventAttendeeList.add(
-                    new CheckIn(
-                            this.CheckInIDs.get(i),
-                            new Time(this.CheckInTimes.get(i)),
-                            locationAsDoubles));
+
+                EventAttendeeList.add(
+                        new CheckIn(
+                                this.CheckInIDs.get(i),
+                                new Time(this.CheckInTimes.get(i)),
+                                locationAsDoubles));
+            }
+            else { // no check in location
+                EventAttendeeList.add(
+                        new CheckIn(
+                                this.CheckInIDs.get(i),
+                                new Time(this.CheckInTimes.get(i)),
+                                null));
+            }
         }
         return EventAttendeeList;
     }
