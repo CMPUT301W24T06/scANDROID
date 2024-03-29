@@ -16,8 +16,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +43,7 @@ public class MyEventsFragment extends Fragment {
     private String userType;
     ArrayAdapter<Tuple<Event, Bitmap>> myEventsAdapter;
     private DBAccessor database;
-    private ArrayList<String>  myEventIDs;
+    private ArrayList<String>  myEventIDs = new ArrayList<>();
     private ArrayList<String> myRealEventIDs;
     private ArrayList<Tuple<Event, Bitmap>> allMyEvents;
     private ListView myEventsList;
@@ -69,7 +73,15 @@ public class MyEventsFragment extends Fragment {
             if (Objects.equals(userType, "organizer")) {
                 myEventIDs = user.getEventsOrganized();
             } else if (Objects.equals(userType, "attendee")){
-                myEventIDs = user.getEventsAttending();
+                ArrayList<String> attendingEvents = new ArrayList<>();
+                attendingEvents = user.getEventsAttending();
+                myEventIDs.addAll(attendingEvents);
+                ArrayList<String> signedUpEvents = user.getEventsSignedUp();
+                for (String eventID : signedUpEvents){
+                    if (!myEventIDs.contains(eventID)){
+                        myEventIDs.add(eventID);
+                    }
+                }
             }
             if (!myEventIDs.isEmpty()){
                 makeEventList(user);
@@ -119,8 +131,34 @@ public class MyEventsFragment extends Fragment {
 
                 if (myRealEventIDs.size() + eventsToRemove.size() == myEventIDs.size()) {
                     // Remove the events that need to be removed
-                    myEventIDs.removeAll(eventsToRemove);
+                    if (Objects.equals(userType, "organizer")){
+                        myEventIDs.removeAll(eventsToRemove);
+                    } else {
+                        ArrayList<String> attendingEvents = user.getEventsAttending();
+                        ArrayList<String> signedUpEvents = user.getEventsSignedUp();
+                        for (String eventID : eventsToRemove){
+                            if (attendingEvents.contains(eventID)){
+                                attendingEvents.remove(eventID);
+                            } else {
+                                signedUpEvents.remove(eventID);
+                            }
+                        }
+                    }
                     database.storeUser(user);
+                    //OpenAI, 2024, ChatGPT, How to sort list of objects by Calendar
+                    Comparator<Tuple<Event, Bitmap>> dateComparator = (tuple1, tuple2) -> {
+                        Calendar date1 = tuple1.first.getEventDate();
+                        Calendar date2 = tuple2.first.getEventDate();
+
+                        // Compare dates
+                        if (date1.before(date2)) {
+                            return -1;
+                        } else if (date1.after(date2)) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    };
                     //loop through events here and get their posters to add to tuple
                     for (String eventID : myEventIDs){
                         database.accessEvent(eventID, event1 -> database.accessEventPoster(eventID, new BitmapCallback() {
@@ -128,6 +166,7 @@ public class MyEventsFragment extends Fragment {
                             public void onBitmapLoaded(Bitmap bitmap) {
                                 allMyEvents.add(new Tuple<>(event1, bitmap));
                                 if (allMyEvents.size() == myEventIDs.size()){
+                                    allMyEvents.sort(dateComparator);
                                     myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), allMyEvents);
                                     myEventsList.setAdapter(myEventsAdapter);
                                     loadingTextView.setVisibility(View.INVISIBLE);
@@ -138,6 +177,7 @@ public class MyEventsFragment extends Fragment {
                             public void onBitmapFailed(Exception e) {
                                 allMyEvents.add(new Tuple<>(event, null));
                                 if (allMyEvents.size() == myEventIDs.size()) {
+                                    allMyEvents.sort(dateComparator);
                                     myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), allMyEvents);
                                     myEventsList.setAdapter(myEventsAdapter);
                                     loadingTextView.setVisibility(View.INVISIBLE);
