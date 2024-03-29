@@ -45,7 +45,6 @@ public class AdminKeyFragment extends DialogFragment {
             // Dismiss the fragment when Cancel button is clicked
             dismiss();
         });
-        DBAccessor database = new DBAccessor();
 
         Button btnConfirm = view.findViewById(R.id.confirm_button_admin);
         btnConfirm.setOnClickListener(v -> {

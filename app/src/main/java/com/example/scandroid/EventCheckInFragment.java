@@ -73,7 +73,7 @@ public class EventCheckInFragment extends DialogFragment {
 
                     if (trackLocationBox.isChecked()) {
                         // track location something in database?
-                        database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
+                        //database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
                             // would set check in location here
                             Location userLocation = new LocationRetriever(requireContext()).getLastKnownLocation();
                             checkInLocation.add(userLocation.getLatitude());
@@ -90,7 +90,7 @@ public class EventCheckInFragment extends DialogFragment {
 //                                return;
 //                            }
 //                            fusedLocationClient.getLastLocation();
-                        });
+                        //});
                     }
 
                     cancelCheckInButton.setOnClickListener(v -> {
@@ -107,6 +107,7 @@ public class EventCheckInFragment extends DialogFragment {
                             Date currentTime = Calendar.getInstance().getTime();
                             event.addEventAttendee(user.getUserID(), new Time((currentTime).getTime()), checkInLocation);
                             database.storeUser(user);
+                            dismiss();
                         });
 //                        dismiss();
 
