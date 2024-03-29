@@ -163,7 +163,7 @@ public class UserTest {
         Event mockEvent = mockEvent(dateValues,locationValues);
         String eventID = mockEvent.getEventID();
         User mockUser = mockUser();
-        Integer times = 0;
+        Integer times = 1;
         mockUser.addEventToEventsAttending(eventID);
 
         assertEquals(times,mockUser.getTimesAttended(eventID));

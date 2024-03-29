@@ -141,8 +141,13 @@ public class Event implements Serializable{
         if (!this.hasCapacity | (this.CheckInIDs.size() < this.EventCapacity)) {
             // add attendee information to appropriate arrays
             this.CheckInIDs.add(userID);
+
             // convert location to string for proper firebase storing
-            this.CheckInLocations.add(checkInLocation.get(0).toString() + "@" + checkInLocation.get(1).toString());
+            // for handling optional check in location
+            if(!checkInLocation.isEmpty()) {
+                this.CheckInLocations.add(checkInLocation.get(0).toString() + "@" + checkInLocation.get(1).toString());
+            }
+
             this.CheckInTimes.add(checkInTime.getTime());
             // ensure attendee is not in both userID lists
             this.SignUpIDs.remove(userID);
@@ -162,6 +167,14 @@ public class Event implements Serializable{
     public void addEventSignUp(String userID) {
         // add a possible attendees "promise" to attend to list
         this.SignUpIDs.add(userID);
+    }
+
+    public void deleteEventSignUp(String userID){
+        this.SignUpIDs.remove(userID);
+    }
+
+    public String getCreatorID(){
+        return getEventOrganizerID();
     }
 
     /**

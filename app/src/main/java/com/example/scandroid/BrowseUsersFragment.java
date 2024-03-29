@@ -17,25 +17,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * BrowseUsersFragment handles the list of all users in BrowseActivity
  * A simple {@link Fragment} subclass.
- * Use the {@link BrowseUsersFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class BrowseUsersFragment extends Fragment implements onClickListener, UsersArrayAdapter.OnProfileImageClickListener {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     ArrayList<Tuple<User, Bitmap>> allUsers;
     ArrayAdapter<Tuple<User, Bitmap>> allUserAdapter;
     private final DBAccessor database = new DBAccessor();
@@ -45,36 +36,13 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
     ListView allUsersList;
     int listSize = 0;
     Button prevButton, nextButton;
-
-    public BrowseUsersFragment() {
-        // required empty public constructor
-    }
+    TextView loadingTextView;
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BrowseUsersFragment.
+     * Default constructor for BrowseUsersFragment
      */
-    // TODO: Rename and change types and number of parameters
-    public static BrowseUsersFragment newInstance(String param1, String param2) {
-        BrowseUsersFragment fragment = new BrowseUsersFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public BrowseUsersFragment() {
+        // required empty public constructor
     }
 
     @Override
@@ -82,7 +50,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
         super.onViewCreated(view, savedInstanceState);
         allUsersList = view.findViewById(R.id.browse_users_list);
         createInitialPage(this::switchPage);
-
+        loadingTextView = view.findViewById(R.id.loading_browse_users_text);
         prevButton = view.findViewById(R.id.browse_users_previous_button);
         nextButton = view.findViewById(R.id.browse_users_next_button);
         prevButton.setOnClickListener(v -> {
@@ -123,52 +91,11 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
         });
 
     }
+
     /**
-     * Sets and creates the list of events
-     * @param page The current page to be viewed
-     * @param pageSize The number of users being displayed per page
+     * For switching pages within the list of all users
      */
     //OpenAI, 2024, ChatGPT, How to split list into different pages that can be switched between
-    private void setList(int page, int pageSize) {
-        int start = page * pageSize;
-        allUsers = new ArrayList<>();
-        database.getAllUserReferences(List -> {
-            int end = Math.min(start + pageSize, List.size());
-            for (String userID : List) {
-                database.accessUser(userID, user -> database.accessUserProfileImage(user.getUserID(), new BitmapCallback() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap) {
-                        allUsers.add(new Tuple<>(user, bitmap));
-                        if (allUsers.size() == List.size()) {
-                            List<Tuple<User, Bitmap>> subList = allUsers.subList(start, end);
-                            ArrayList<Tuple<User, Bitmap>> currentPageList = new ArrayList<>(subList);
-                            allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, getActivity().getSupportFragmentManager(), BrowseUsersFragment.this);
-                            allUsersList.setAdapter(allUserAdapter);
-                            nextButton.setVisibility(View.VISIBLE);
-                            prevButton.setVisibility(View.VISIBLE);
-                        }
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Exception e) {
-                        Bitmap newProfilePicture = new ProfilePictureGenerator().generatePictureBitmap(user.getUserName());
-                        database.storeUserProfileImage(userID, newProfilePicture);
-                        allUsers.add(new Tuple<>(user, newProfilePicture));
-                        if (allUsers.size() == List.size()) {
-                            List<Tuple<User, Bitmap>> subList = allUsers.subList(start, end);
-                            ArrayList<Tuple<User, Bitmap>> currentPageList = new ArrayList<>(subList);
-                            allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, getActivity().getSupportFragmentManager(), BrowseUsersFragment.this);
-                            allUsersList.setAdapter(allUserAdapter);
-                            nextButton.setVisibility(View.VISIBLE);
-                            prevButton.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }));
-            }
-        });
-    }
-
-
     public void switchPage(){
         int start = currentPage * pageSize;
         int end = Math.min(start + pageSize, listSize);
@@ -178,6 +105,11 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
         allUsersList.setAdapter(allUserAdapter);
     }
 
+    /**
+     * Creates the initial list of all users in app and then sets the first page of users
+     * @param callback Synchronize creation of list before setting and switching page
+     */
+    //OpenAI, 2024, ChatGPT, How to create list before switching page
     public void createInitialPage(Runnable callback){
         allUsers = new ArrayList<>();
         database.getAllUserReferences(List -> {
@@ -188,12 +120,13 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
                     public void onBitmapLoaded(Bitmap bitmap) {
                         allUsers.add(new Tuple<>(user, bitmap));
                         if (allUsers.size() == List.size()) {
-                            List<Tuple<User, Bitmap>> subList = allUsers.subList(0, 5);
+                            List<Tuple<User, Bitmap>> subList = allUsers.subList(0, pageSize);
                             ArrayList<Tuple<User, Bitmap>> currentPageList = new ArrayList<>(subList);
                             allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, getActivity().getSupportFragmentManager(), BrowseUsersFragment.this);
                             allUsersList.setAdapter(allUserAdapter);
                             nextButton.setVisibility(View.VISIBLE);
                             prevButton.setVisibility(View.VISIBLE);
+                            loadingTextView.setVisibility(View.INVISIBLE);
                             callback.run();
                         }
                     }
@@ -204,12 +137,13 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
                         database.storeUserProfileImage(userID, newProfilePicture);
                         allUsers.add(new Tuple<>(user, newProfilePicture));
                         if (allUsers.size() == List.size()) {
-                            List<Tuple<User, Bitmap>> subList = allUsers.subList(0, 5);
+                            List<Tuple<User, Bitmap>> subList = allUsers.subList(0, pageSize);
                             ArrayList<Tuple<User, Bitmap>> currentPageList = new ArrayList<>(subList);
                             allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, getActivity().getSupportFragmentManager(), BrowseUsersFragment.this);
                             allUsersList.setAdapter(allUserAdapter);
                             nextButton.setVisibility(View.VISIBLE);
                             prevButton.setVisibility(View.VISIBLE);
+                            loadingTextView.setVisibility(View.INVISIBLE);
                             callback.run();
                         }
                     }
@@ -226,11 +160,21 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
         return inflater.inflate(R.layout.browse_users_fragment, container, false);
     }
 
+    /**
+     * Alert BrowseUsersFragment that a remove button has been pressed in order
+     * to update list.
+     */
     @Override
     public void onClick() {
         createInitialPage(this::switchPage);
     }
 
+    /**
+     * Alerts BrowseUsersFragment that a user's profile picture has been clicked on so that it knows to start
+     * an popup showing the picture in an AdminInspectImageFragment
+     * @param user The user associated with the profile picture that was clicked on
+     * @param bitmap The bitmap of the user profile image
+     */
     @Override
     public void onProfileImageClicked(User user, Bitmap bitmap) {
         DialogFragment imageInspectPrompt = new AdminInspectImageFragment(bitmap, BrowseUsersFragment.this);

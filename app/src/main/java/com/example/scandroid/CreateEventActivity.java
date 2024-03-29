@@ -96,21 +96,17 @@ public class CreateEventActivity extends AppCompatActivity {
             qrNote.setVisibility(View.INVISIBLE);
         }
 
-        posterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AllowAccessCameraRollFragment chooseImageFragment = AllowAccessCameraRollFragment.newInstance(eventID, eventPoster.getId(), "event", null);
-                // Use a FragmentTransaction to add the fragment to the layout
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.add(android.R.id.content, chooseImageFragment);
-                transaction.commit();
-            }
+        posterButton.setOnClickListener(v -> {
+            AllowAccessCameraRollFragment chooseImageFragment = AllowAccessCameraRollFragment.newInstance(eventID, eventPoster.getId(), "event", null);
+            // Use a FragmentTransaction to add the fragment to the layout
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(android.R.id.content, chooseImageFragment);
+            transaction.commit();
         });
 
         //Source: https://www.geeksforgeeks.org/datepicker-in-android/
         //User edits the event's date
         editEventDate.setOnClickListener(new View.OnClickListener() {
-
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -130,6 +126,9 @@ public class CreateEventActivity extends AppCompatActivity {
                     else {
                         // Proceed with setting the selected date
                         editEventDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                     }
                 }, year, month, day);
 
@@ -144,7 +143,11 @@ public class CreateEventActivity extends AppCompatActivity {
             int minute = calendar.get(Calendar.MINUTE);
 
             TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this, R.style.TimePickerTheme,
-                    (view, hourOfDay, minute1) -> editEventTime.setText(hourOfDay + ":" + minute1), hour, minute, false);
+                    (view, hourOfDay, minute1) -> {
+                        editEventTime.setText(hourOfDay + ":" + minute1);
+                        calendar.set(Calendar.MINUTE, minute1);
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    }, hour, minute, false);
             timePickerDialog.show();
         });
 
@@ -169,9 +172,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
             if (isValidInput) {
                 //If this was a new event, create new Event object, new QR codes and store those
-                ArrayList<Double> coords = null;
+                ArrayList<Double> coords = new LocationGeocoder(CreateEventActivity.this).addressToCoordinates(eventLocation);
                 if (newEvent) {
-                    coords = new LocationGeocoder(CreateEventActivity.this).addressToCoordinates(eventLocation);
                     event = new Event(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(),
                             eventName, eventDescription, calendar, coords);
                     if (coords.size() == 0) {

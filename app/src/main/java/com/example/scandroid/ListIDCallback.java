@@ -3,7 +3,7 @@ package com.example.scandroid;
 import java.util.ArrayList;
 
 /**
- * UserCallback is an interface used for handling list retrieval callbacks.
+ * ListIDCallback is an interface used for handling list retrieval callbacks.
  */
 public interface ListIDCallback {
 

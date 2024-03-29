@@ -13,6 +13,11 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Calendar;
 
+/**
+ * AdminInspectUserFragment is shown when a user with admin permissions browses and clicks on an user profile
+ * Allows the admin user to view the selected user's name, email, phone number, and about me.
+ * The option to remove the selected user's profile from the app is present as well.
+ */
 public class AdminInspectUserFragment extends DialogFragment {
     private final DBAccessor database = new DBAccessor();
     String userID;
@@ -36,6 +41,7 @@ public class AdminInspectUserFragment extends DialogFragment {
             userID = bundle.getString("userID");
             database.accessUser(userID, user -> {
                 if (user != null) {
+                    //Fill out the selected user's profile details
                     userNameText.setText(user.getUserName());
                     emailText.setText(user.getUserEmail());
                     phoneNumberText.setText(user.getUserPhoneNumber());
@@ -43,7 +49,7 @@ public class AdminInspectUserFragment extends DialogFragment {
                     cancelButton.setOnClickListener(v -> dismiss());
                     removeButton.setOnClickListener(v -> {
                         database.deleteUser(userID);
-                        listener.onClick();
+                        listener.onClick(); //Alert calling activity about a removal click
                         dismiss();
                     });
                 } else {

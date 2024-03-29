@@ -5,6 +5,7 @@ package com.example.scandroid;
  * @param <A> The type of the first object
  * @param <B> The type of the second object
  */
+//OpenAI, 2024, ChatGPT, How to store 2 objects in a list
 public class Tuple<A, B> {
     public final A first;
     public final B second;
