@@ -30,35 +30,23 @@ public class CheckInOrPromoActivity extends AppCompatActivity {
 
         database = new DBAccessor();
         String eventID = (String) getIntent().getSerializableExtra("eventID");
+        String userID = getIntent().getStringExtra("userID");
 
-        database.accessEvent(eventID, new EventCallback() {
-            @Override
-            public void onEventReceived(Event event) {
-                if (event != null) {
-                    checkInButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            DialogFragment checkInPrompt = new EventCheckInFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putString("eventID", eventID);
-                            checkInPrompt.setArguments(bundle);
-
-                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            transaction.add(android.R.id.content, checkInPrompt);
-                            transaction.commit();
-                            finish();
-                        }
-                    });
-                    promoButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(CheckInOrPromoActivity.this, EventInfoActivity.class);
-                            intent.putExtra("eventID", eventID);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                }
+        database.accessEvent(eventID, event -> {
+            if (event != null) {
+                checkInButton.setOnClickListener(v -> {
+                    Intent intent = new Intent(CheckInOrPromoActivity.this, EventCheckInActivity.class);
+                    intent.putExtra("eventID", eventID);
+                    intent.putExtra("userID", userID);
+                    startActivity(intent);
+                    finish();
+                });
+                promoButton.setOnClickListener(v -> {
+                    Intent intent = new Intent(CheckInOrPromoActivity.this, EventInfoActivity.class);
+                    intent.putExtra("eventID", eventID);
+                    startActivity(intent);
+                    finish();
+                });
             }
         });
     }

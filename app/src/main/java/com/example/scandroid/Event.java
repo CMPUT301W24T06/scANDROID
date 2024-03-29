@@ -141,10 +141,13 @@ public class Event implements Serializable{
         if (!this.hasCapacity | (this.CheckInIDs.size() < this.EventCapacity)) {
             // add attendee information to appropriate arrays
             this.CheckInIDs.add(userID);
+
             // convert location to string for proper firebase storing
-            if (checkInLocation != null){
+            // for handling optional check in location
+            if(!checkInLocation.isEmpty()) {
                 this.CheckInLocations.add(checkInLocation.get(0).toString() + "@" + checkInLocation.get(1).toString());
             }
+
             this.CheckInTimes.add(checkInTime.getTime());
             // ensure attendee is not in both userID lists
             this.SignUpIDs.remove(userID);
@@ -266,9 +269,9 @@ public class Event implements Serializable{
         for (int i = 0; i < this.AnnouncementTitles.size(); i++) {
             EventAnnouncementList.add(
                     new EventAnnouncement(
-                        this.AnnouncementTitles.get(i),
-                        this.AnnouncementAbouts.get(i),
-                        new Time(this.AnnouncementTimes.get(i))));
+                            this.AnnouncementTitles.get(i),
+                            this.AnnouncementAbouts.get(i),
+                            new Time(this.AnnouncementTimes.get(i))));
         }
         return EventAnnouncementList;
     }
@@ -286,17 +289,28 @@ public class Event implements Serializable{
 
             // locations are stored as "@" delimited string for firestore
             // must separate longitude and latitude from concatenated string
-            String locationAsString = this.CheckInLocations.get(i);
-            String[] locationAsArray = locationAsString.split("@");
-            ArrayList<Double> locationAsDoubles = new ArrayList<>();
-            locationAsDoubles.add(Double.parseDouble(locationAsArray[0]));
-            locationAsDoubles.add(Double.parseDouble(locationAsArray[1]));
+            // for handling optional check in location
+            if(!this.CheckInLocations.get(i).isEmpty()) {
+                String locationAsString = this.CheckInLocations.get(i);
+                String[] locationAsArray = locationAsString.split("@");
+                ArrayList<Double> locationAsDoubles = new ArrayList<>();
+                locationAsDoubles.add(Double.parseDouble(locationAsArray[0]));
+                locationAsDoubles.add(Double.parseDouble(locationAsArray[1]));
 
-            EventAttendeeList.add(
-                    new CheckIn(
-                            this.CheckInIDs.get(i),
-                            new Time(this.CheckInTimes.get(i)),
-                            locationAsDoubles));
+
+                EventAttendeeList.add(
+                        new CheckIn(
+                                this.CheckInIDs.get(i),
+                                new Time(this.CheckInTimes.get(i)),
+                                locationAsDoubles));
+            }
+            else { // no check in location
+                EventAttendeeList.add(
+                        new CheckIn(
+                                this.CheckInIDs.get(i),
+                                new Time(this.CheckInTimes.get(i)),
+                                null));
+            }
         }
         return EventAttendeeList;
     }
@@ -532,7 +546,6 @@ public class Event implements Serializable{
     } // end public class EventAnnouncement
 
 } // end public class Event
-
 
 
 
