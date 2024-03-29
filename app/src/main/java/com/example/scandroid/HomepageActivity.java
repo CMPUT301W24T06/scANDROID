@@ -102,7 +102,9 @@ public class HomepageActivity extends AppCompatActivity {
                     case R.id.home_button:
                         return true;
                     case R.id.qr_button:
-                        startActivity(new Intent(getApplicationContext(), QRScannerActivity.class));
+                        Intent intent = new Intent(getApplicationContext(), QRScannerActivity.class);
+                        intent.putExtra("userID", userID);
+                        startActivity(intent);
                         return true;
                     case R.id.browse_button:
                         startActivity(new Intent(getApplicationContext(), BrowseActivity.class));
@@ -140,7 +142,7 @@ public class HomepageActivity extends AppCompatActivity {
         super.onResume();
         DBAccessor database = new DBAccessor();
         database.accessUser(userID, user -> {
-           if (user == null) {
+            if (user == null) {
                 //Create a new User object
                 user = new User();
                 user.setUserID(userID);
@@ -149,23 +151,23 @@ public class HomepageActivity extends AppCompatActivity {
             }
 
 
-                homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
-                homepagePager.setAdapter(homepageActivityPageAdapter);
+            homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
+            homepagePager.setAdapter(homepageActivityPageAdapter);
 
-                TextView profileName = findViewById(R.id.homepage_name_text);
-                profileName.setText(user.getUserName());
-                profilePicture = findViewById(R.id.profile_image);
-                database.accessUserProfileImage(userID, new BitmapCallback() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap) {
-                        profilePicture.setImageBitmap(bitmap);
-                    }
+            TextView profileName = findViewById(R.id.homepage_name_text);
+            profileName.setText(user.getUserName());
+            profilePicture = findViewById(R.id.profile_image);
+            database.accessUserProfileImage(userID, new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    profilePicture.setImageBitmap(bitmap);
+                }
 
-                    @Override
-                    public void onBitmapFailed(Exception e) {
-                        Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
     }

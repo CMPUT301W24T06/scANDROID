@@ -102,15 +102,16 @@ public class User {
     public void addEventToEventsAttending(String event){
         if(eventsAttending.contains(event)){
             Integer timesAttendedValue = timesAttended.get(event);
-            if(timesAttendedValue != null){
+            if(timesAttendedValue != null) {
                 timesAttended.replace(event,timesAttendedValue+1);
-            } else {
-                timesAttended.replace(event,1);
+            }
+            else {
+                timesAttended.put(event, 1);
             }
         }
         else{
             eventsAttending.add(event);
-            timesAttended.put(event,1);
+            timesAttended.put(event, 1);
         }
     }
 
