@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,7 +65,6 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
         backButton.setOnClickListener(v -> finish());
 
         eventID = (String) getIntent().getSerializableExtra("eventID");
-        userID = (String) getIntent().getSerializableExtra("userID");
 
 
         database.accessEvent(eventID, event -> {
@@ -121,15 +121,42 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                     });
                 }
             });
-            promiseCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    // If checkbox is checked, perform action (implement Firebase)
-                    event.addEventSignUp(userID);
-                    Log.d("Checkbox", "Checkbox is checked");
-                    // Implement your Firebase logic here
+
+            String deviceID = new DeviceIDRetriever(EventInfoActivity.this).getDeviceId();
+            database.accessUser(deviceID, user -> {
+                if (user != null) {
+                    userID = user.getUserID();
+                    if (event.getEventSignUps().contains(userID)){
+                        promiseCheckbox.setChecked(true);
+                    }
+                    // get the userID
+                    promiseCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        if (isChecked) {
+                            if (!userID.equals(event.getCreatorID())) {
+                                // If checkbox is checked and the user is not the creator, add the user ID to the sign-ups list
+                                event.addEventSignUp(userID);
+                                database.storeEvent(event);
+                                user.addEventToEventsAttending(eventID);
+                                database.storeUser(user);
+                                Log.d("Checkbox", "Checkbox is checked");
+                            } else {
+                                // If the user is the creator, prevent sign-up and show a message
+                                Toast.makeText(EventInfoActivity.this, "You cannot sign up for your own event.", Toast.LENGTH_SHORT).show();
+                                promiseCheckbox.setChecked(false); // Uncheck the checkbox
+                            }
+                        }
+                            else {
+                            // If checkbox is unchecked, remove the user from SignUPs
+                            event.deleteEventSignUp(userID);
+                            database.storeEvent(event);
+                            user.removeEventToEventsAttending(eventID);
+                            database.storeUser(user);
+                            Log.d("Checkbox", "Checkbox is unchecked");
+                        }
+                    });
                 } else {
-                    // If checkbox is unchecked, nothing
-                    Log.d("Checkbox", "Checkbox is unchecked");
+                    // user information couldn't be retrieved
+                    Log.e("User", "User information not found");
                 }
             });
         });

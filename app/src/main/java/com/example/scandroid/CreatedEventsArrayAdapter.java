@@ -26,25 +26,28 @@ import java.util.ArrayList;
  * used in the app for displaying created events in a list view.
  */
 public class CreatedEventsArrayAdapter extends ArrayAdapter<Tuple<Event, Bitmap>> {
-    FragmentManager fragmentManager;
-    boolean isAdmin;
-    private OnProfileImageClickListener onProfileImageClickListener;
+    private OnEventPosterClickListener onEventPosterClickListener;
+
     /**
      * Constructs a new CreatedEventsArrayAdapter
      *
      * @param context context where the adapter is being used
      * @param myEvents list of event IDs to display
-     *
+     * @param onEventPosterClickListener Listening activity
      */
-    public CreatedEventsArrayAdapter(Context context, ArrayList<Tuple<Event, Bitmap>> myEvents, FragmentManager fragmentManager, OnProfileImageClickListener onProfileImageClickListener) {
+    public CreatedEventsArrayAdapter(Context context, ArrayList<Tuple<Event, Bitmap>> myEvents, OnEventPosterClickListener onEventPosterClickListener) {
         super(context,0, myEvents);
-        this.fragmentManager = fragmentManager;
-        this.onProfileImageClickListener = onProfileImageClickListener;
+        this.onEventPosterClickListener = onEventPosterClickListener;
     }
 
-    public CreatedEventsArrayAdapter(Context context, ArrayList<Tuple<Event, Bitmap>> myEvents, FragmentManager fragmentManager) {
+    /**
+     * Constructs a new CreatedEventsArrayAdapter without an event poster listener
+     *
+     * @param context context where the adapter is being used
+     * @param myEvents list of event IDs to display
+     */
+    public CreatedEventsArrayAdapter(Context context, ArrayList<Tuple<Event, Bitmap>> myEvents) {
         super(context,0, myEvents);
-        this.fragmentManager = fragmentManager;
     }
 
     /**
@@ -73,23 +76,19 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<Tuple<Event, Bitmap>
         String eventName = tuple.first.getEventName();
         eventNameText.setText(eventName);
         eventPoster.setImageBitmap(tuple.second);
-        if (onProfileImageClickListener!=null) {
+        if (onEventPosterClickListener!=null) {
             eventPoster.setOnClickListener(v -> {
-                //DialogFragment imageInspectPrompt = new AdminInspectImageFragment(bitmap);
-                //Bundle bundle = new Bundle();
-                //bundle.putString("eventID", eventID);
-                //imageInspectPrompt.setArguments(bundle);
-
-                //FragmentTransaction transaction = fragmentManager.beginTransaction();
-                //transaction.add(android.R.id.content, imageInspectPrompt);
-                //transaction.commit();
-                onProfileImageClickListener.onProfileImageClicked(tuple.first, tuple.second);
+                onEventPosterClickListener.onEventPosterClicked(tuple.first, tuple.second);
             });
         }
         return view;
     }
 
-    public interface OnProfileImageClickListener {
-        void onProfileImageClicked(Event event, Bitmap bitmap);
+    /**
+     * Interface to allow for communication with host activity
+     * Used for communicating about an ImageView listener of event poster in the array
+     */
+    public interface OnEventPosterClickListener {
+        void onEventPosterClicked(Event event, Bitmap bitmap);
     }
 }

@@ -101,17 +101,15 @@ public class User {
      */
     public void addEventToEventsAttending(String event){
         if(eventsAttending.contains(event)){
-            Integer timesAttendedValue = timesAttended.get(event);
-            if(timesAttendedValue != null) {
+            if(timesAttendedValue != null){
                 timesAttended.replace(event,timesAttendedValue+1);
-            }
-            else {
-                timesAttended.put(event, 1);
+            } else {
+                timesAttended.replace(event,1);
             }
         }
         else{
             eventsAttending.add(event);
-            timesAttended.put(event, 1);
+            timesAttended.put(event,1);
         }
     }
 
@@ -131,6 +129,13 @@ public class User {
         eventsOrganized.remove(event);
     }
 
+    /**
+     * Remove an event from the user's list of events they are attending.
+     * @param event An event's ID.
+     */
+    public void removeEventToEventsAttending(String event){
+        eventsAttending.remove(event);
+    }
     /**
      * Adds an event to a user's list of events they wish to receive notifications from.
      * @param event an event's ID.

@@ -15,6 +15,9 @@ import org.w3c.dom.Text;
  * Popup fragment to alert users to the removal of an event
  */
 public class RemovalNoticeFragment extends DialogFragment {
+    /**
+     * Default constructor for the RemovalNoticeFragment
+     */
     RemovalNoticeFragment(){
 
     }

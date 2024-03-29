@@ -151,8 +151,8 @@ public class HomepageActivity extends AppCompatActivity {
             }
 
 
-                homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
-                homepagePager.setAdapter(homepageActivityPageAdapter);
+            homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
+            homepagePager.setAdapter(homepageActivityPageAdapter);
 
             TextView profileName = findViewById(R.id.homepage_name_text);
             profileName.setText(user.getUserName());

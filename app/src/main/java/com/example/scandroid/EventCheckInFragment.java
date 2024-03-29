@@ -72,8 +72,36 @@ public class EventCheckInFragment extends DialogFragment {
                 if (event != null) {
                     checkInLocation = new ArrayList<>();
                     eventTitle.setText(event.getEventName());
-                    eventLocation.setText(new LocationGeocoder(context).coordinatesToAddress(event.getEventLocation()));
-                    String userID = new DeviceIDRetriever(context).getDeviceId();
+                    eventLocation.setText(new LocationGeocoder(getActivity()).coordinatesToAddress(event.getEventLocation()));
+
+                    if (pushNotifBox.isChecked()) {
+                        database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
+                            user.addEventToNotifiedBy(eventID);
+                            database.storeUser(user);
+                        });
+                    }
+
+                    if (trackLocationBox.isChecked()) {
+                        // track location something in database?
+                        //database.accessUser(new DeviceIDRetriever(requireActivity()).getDeviceId(), user -> {
+                            // would set check in location here
+                            Location userLocation = new LocationRetriever(requireContext()).getLastKnownLocation();
+                            checkInLocation.add(userLocation.getLatitude());
+                            checkInLocation.add(userLocation.getLongitude());
+//                            FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+//                            if (ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                                // TODO: Consider calling
+//                                //    ActivityCompat#requestPermissions
+//                                // here to request the missing permissions, and then overriding
+//                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                                //                                          int[] grantResults)
+//                                // to handle the case where the user grants the permission. See the documentation
+//                                // for ActivityCompat#requestPermissions for more details.
+//                                return;
+//                            }
+//                            fusedLocationClient.getLastLocation();
+                        //});
+                    }
 
                     cancelCheckInButton.setOnClickListener(v -> {
                         dismiss();
@@ -98,10 +126,10 @@ public class EventCheckInFragment extends DialogFragment {
                         database.accessUser(userID, user1 -> {
                             user1.addEventToEventsAttending(eventID);
                             // source: https://stackoverflow.com/a/5369753
-                            Time time = new Time(Calendar.getInstance().getTime().getTime());
-
-                            event.addEventAttendee(user1.getUserID(), time, checkInLocation);
-                            database.storeUser(user1);
+                            Date currentTime = Calendar.getInstance().getTime();
+                            event.addEventAttendee(user.getUserID(), new Time((currentTime).getTime()), checkInLocation);
+                            database.storeUser(user);
+                            dismiss();
                         });
                         dismiss();
                     });
