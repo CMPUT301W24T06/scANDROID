@@ -41,36 +41,46 @@ public class EventAttendeesArrayAdapter extends ArrayAdapter<Event.CheckIn> {
         }
 
         Event.CheckIn attendeeCheckIn = getItem(position);
-        assert attendeeCheckIn != null;
-        String userID = attendeeCheckIn.getUserID();
-        DBAccessor database = new DBAccessor();
-        database.accessUser(userID, new UserCallback() {
-            @Override
-            public void onUserRetrieved(User user) {
-                attendeeUser = user;
-            }
-        });
+        if (attendeeCheckIn != null) {
+            String userID = attendeeCheckIn.getUserID();
+            DBAccessor database = new DBAccessor();
+            database.accessUser(userID, new UserCallback() {
+                @Override
+                public void onUserRetrieved(User user) {
+                    TextView checkInTime = view.findViewById(R.id.event_attendees_list_checkin_time);
+                    TextView attendCount = view.findViewById(R.id.event_attendees_list_attendance_count);
+                    TextView attendeeName = view.findViewById(R.id.my_events_content_name);
+                    ImageView profilePicture = view.findViewById(R.id.my_events_content_poster);
 
-        TextView checkInTime = view.findViewById(R.id.event_attendees_list_checkin_time);
-        TextView attendCount = view.findViewById(R.id.event_attendees_list_attendance_count);
-        TextView attendeeName = view.findViewById(R.id.my_events_content_name);
-        ImageView profilePicture = view.findViewById(R.id.my_events_content_poster);
+                    String checkInTimeText = "Check-in Time: " + attendeeCheckIn.getCheckInTime();
+                    checkInTime.setText(checkInTimeText);
 
-        String checkInTimeText = "Check-in Time: " + attendeeCheckIn.getCheckInTime();
-        checkInTime.setText(checkInTimeText);
-        attendCount.setText(attendeeUser.getTimesAttended(currentEventID));
-        attendeeName.setText(attendeeUser.getUserName());
-        database.accessUserProfileImage(attendeeCheckIn.getUserID(), new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                profilePicture.setImageBitmap(bitmap);
-            }
+                    if (user != null) {
+                        String timesAttended = String.valueOf(user.getTimesAttended(currentEventID));
+                        attendCount.setText(timesAttended);
+                        attendeeName.setText(user.getUserName());
 
-            @Override
-            public void onBitmapFailed(Exception e) {
-                Log.d("BitmapLoad", "Failed to load image bitmap");
-            }
-        });
+                        database.accessUserProfileImage(attendeeCheckIn.getUserID(), new BitmapCallback() {
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap) {
+                                profilePicture.setImageBitmap(bitmap);
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Exception e) {
+                                Log.d("BitmapLoad", "Failed to load image bitmap");
+                            }
+                        });
+                    } else {
+                        // Handle case when user is null
+                        attendCount.setText("N/A");
+                        attendeeName.setText("N/A");
+                        // Set a default profile picture or handle it as per your requirement
+                    }
+                }
+            });
+        }
+
         return view;
     }
 }
