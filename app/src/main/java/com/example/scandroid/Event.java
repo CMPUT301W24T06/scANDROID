@@ -271,9 +271,9 @@ public class Event implements Serializable{
         for (int i = 0; i < this.AnnouncementTitles.size(); i++) {
             EventAnnouncementList.add(
                     new EventAnnouncement(
-                            this.AnnouncementTitles.get(i),
-                            this.AnnouncementAbouts.get(i),
-                            new Time(this.AnnouncementTimes.get(i))));
+                        this.AnnouncementTitles.get(i),
+                        this.AnnouncementAbouts.get(i),
+                        new Time(this.AnnouncementTimes.get(i))));
         }
         return EventAnnouncementList;
     }
@@ -291,28 +291,17 @@ public class Event implements Serializable{
 
             // locations are stored as "@" delimited string for firestore
             // must separate longitude and latitude from concatenated string
-            // for handling optional check in location
-            if(!this.CheckInLocations.get(i).isEmpty()) {
-                String locationAsString = this.CheckInLocations.get(i);
-                String[] locationAsArray = locationAsString.split("@");
-                ArrayList<Double> locationAsDoubles = new ArrayList<>();
-                locationAsDoubles.add(Double.parseDouble(locationAsArray[0]));
-                locationAsDoubles.add(Double.parseDouble(locationAsArray[1]));
+            String locationAsString = this.CheckInLocations.get(i);
+            String[] locationAsArray = locationAsString.split("@");
+            ArrayList<Double> locationAsDoubles = new ArrayList<>();
+            locationAsDoubles.add(Double.parseDouble(locationAsArray[0]));
+            locationAsDoubles.add(Double.parseDouble(locationAsArray[1]));
 
-
-                EventAttendeeList.add(
-                        new CheckIn(
-                                this.CheckInIDs.get(i),
-                                new Time(this.CheckInTimes.get(i)),
-                                locationAsDoubles));
-            }
-            else { // no check in location
-                EventAttendeeList.add(
-                        new CheckIn(
-                                this.CheckInIDs.get(i),
-                                new Time(this.CheckInTimes.get(i)),
-                                null));
-            }
+            EventAttendeeList.add(
+                    new CheckIn(
+                            this.CheckInIDs.get(i),
+                            new Time(this.CheckInTimes.get(i)),
+                            locationAsDoubles));
         }
         return EventAttendeeList;
     }
@@ -556,6 +545,7 @@ public class Event implements Serializable{
     } // end public class EventAnnouncement
 
 } // end public class Event
+
 
 
 

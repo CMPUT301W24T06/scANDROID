@@ -1,25 +1,24 @@
 package com.example.scandroid;
 
+
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.util.Log;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * CreatedEventsArrayAdapter is an ArrayAdapter implementation
@@ -71,10 +70,18 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<Tuple<Event, Bitmap>
 
         TextView eventNameText = view.findViewById(R.id.my_events_content_name);
         ImageView eventPoster = view.findViewById(R.id.my_events_content_poster);
+        TextView eventStatusText = view.findViewById(R.id.my_events_content_status);
+        ImageView eventStatusCircle = view.findViewById(R.id.my_events_content_circle_status);
         Tuple<Event, Bitmap> tuple = getItem(position);
         assert tuple != null;
         String eventName = tuple.first.getEventName();
         eventNameText.setText(eventName);
+        //Check if event date earlier than today
+        if (Calendar.getInstance().after(tuple.first.getEventDate())){
+            eventStatusText.setText("Live");
+            Drawable redCircleDrawable = ContextCompat.getDrawable(getContext(), R.drawable.red_circle_status);
+            eventStatusCircle.setImageDrawable(redCircleDrawable);
+        }
         eventPoster.setImageBitmap(tuple.second);
         if (onEventPosterClickListener!=null) {
             eventPoster.setOnClickListener(v -> {

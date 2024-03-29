@@ -126,6 +126,9 @@ public class CreateEventActivity extends AppCompatActivity {
                     else {
                         // Proceed with setting the selected date
                         editEventDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                     }
                 }, year, month, day);
 
@@ -140,7 +143,11 @@ public class CreateEventActivity extends AppCompatActivity {
             int minute = calendar.get(Calendar.MINUTE);
 
             TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this, R.style.TimePickerTheme,
-                    (view, hourOfDay, minute1) -> editEventTime.setText(hourOfDay + ":" + minute1), hour, minute, false);
+                    (view, hourOfDay, minute1) -> {
+                        editEventTime.setText(hourOfDay + ":" + minute1);
+                        calendar.set(Calendar.MINUTE, minute1);
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    }, hour, minute, false);
             timePickerDialog.show();
         });
 

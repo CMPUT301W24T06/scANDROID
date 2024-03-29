@@ -136,7 +136,7 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                                 // If checkbox is checked and the user is not the creator, add the user ID to the sign-ups list
                                 event.addEventSignUp(userID);
                                 database.storeEvent(event);
-                                user.addEventToEventsAttending(eventID);
+                                user.addEventToEventsSignedUp(eventID);
                                 database.storeUser(user);
                                 Log.d("Checkbox", "Checkbox is checked");
                             } else {
@@ -149,7 +149,7 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                             // If checkbox is unchecked, remove the user from SignUPs
                             event.deleteEventSignUp(userID);
                             database.storeEvent(event);
-                            user.removeEventToEventsAttending(eventID);
+                            user.removeEventToEventsSignedUp(eventID);
                             database.storeUser(user);
                             Log.d("Checkbox", "Checkbox is unchecked");
                         }
