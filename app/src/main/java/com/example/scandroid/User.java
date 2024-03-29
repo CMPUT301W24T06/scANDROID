@@ -101,6 +101,7 @@ public class User {
      */
     public void addEventToEventsAttending(String event){
         if(eventsAttending.contains(event)){
+            Integer timesAttendedValue = timesAttended.get(event);
             if(timesAttendedValue != null){
                 timesAttended.replace(event,timesAttendedValue+1);
             } else {
