@@ -54,6 +54,7 @@ public class HomepageActivity extends AppCompatActivity {
         setContentView(R.layout.homepage_activity);
         userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
         //userID = "testID";
+        //userID = "e9256b128bd8fb6a";
 
         // deals with the bottom bar
         navigationBar = findViewById(R.id.navigation_bar);

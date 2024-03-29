@@ -28,6 +28,7 @@ public class User {
     private String userID;
     private ArrayList<String> eventsAttending;
     private ArrayList<String> eventsOrganized;
+    private ArrayList<String> eventsSignedUp;
     public ArrayList<String> notifiedBy;
     private String profilePictureUrl;
     private boolean hasAdminPermissions;
@@ -42,6 +43,7 @@ public class User {
         this.userName = ""; // Default to an empty string for userName
         this.eventsAttending = new ArrayList<>();
         this.eventsOrganized = new ArrayList<>();
+        this.eventsSignedUp = new ArrayList<>();
         this.notifiedBy = new ArrayList<>();
         this.timesAttended = new HashMap<>();
         this.userLocation = null; // Default to null for userLocation
@@ -64,6 +66,7 @@ public class User {
         this.userID = userID;
         this.eventsAttending = new ArrayList<String>();
         this.eventsOrganized = new ArrayList<String>();
+        this.eventsSignedUp = new ArrayList<>();
         this.notifiedBy = new ArrayList<String>();
         //set the default value of a user's name to a Guest name if no name is provided.
         if(userName == null){
@@ -115,11 +118,27 @@ public class User {
     }
 
     /**
+     * Adds an event to the user's list of events they are signed up to
+     * @param event an event's ID
+     */
+    public void addEventToEventsSignedUp(String event){
+        this.eventsSignedUp.add(event);
+    }
+
+    /**
      * Adds an event to the user's list of events they have organized.
      * @param event An event's ID.
      */
     public void addEventToEventsOrganized(String event){
         eventsOrganized.add(event);
+    }
+
+    /**
+     * Remove an event from the user's list of event's they are signed up to
+     * @param event an event's ID
+     */
+    public void removeEventToEventsSignedUp(String event){
+        eventsSignedUp.remove(event);
     }
 
     /**
@@ -213,6 +232,13 @@ public class User {
      */
     public ArrayList<String> getEventsOrganized() {
         return eventsOrganized;
+    }
+
+    /**
+     * @return the list of events a user is signed up to
+     */
+    public ArrayList<String> getEventsSignedUp() {
+        return eventsSignedUp;
     }
 
     /**
