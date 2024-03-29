@@ -142,7 +142,9 @@ public class Event implements Serializable{
             // add attendee information to appropriate arrays
             this.CheckInIDs.add(userID);
             // convert location to string for proper firebase storing
-            this.CheckInLocations.add(checkInLocation.get(0).toString() + "@" + checkInLocation.get(1).toString());
+            if (checkInLocation != null){
+                this.CheckInLocations.add(checkInLocation.get(0).toString() + "@" + checkInLocation.get(1).toString());
+            }
             this.CheckInTimes.add(checkInTime.getTime());
             // ensure attendee is not in both userID lists
             this.SignUpIDs.remove(userID);

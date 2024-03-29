@@ -5,7 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+/**
+ * BitmapConfigurator manipulates Drawable objects by converting them into Bitmaps
+ */
 public class BitmapConfigurator {
+    /**
+     * Default constructor for BitmapConfigurator
+     */
     BitmapConfigurator(){
 
     }

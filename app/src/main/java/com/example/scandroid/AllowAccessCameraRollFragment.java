@@ -37,6 +37,7 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
     ImageView posterOrProfileImageView;
     String accessType;
 
+    //OpenAI, 2024, ChatGPT, How to access and select images from gallery
     private final ActivityResultLauncher<String> pickImageLauncher =
             registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
                 if (result != null) {
@@ -44,10 +45,28 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
                 }
             });
 
+    /**
+     * Default constructor for AllowAccessCameraRollFragment
+     */
     public AllowAccessCameraRollFragment() {
 
     }
 
+    /**
+     * Called to create the view for this fragment, using the given layout inflater
+     * and container. Initializes views and handles UI interactions such as the back and remove
+     * buttons.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to. The fragment should not add the
+     *                           view itself, but this can be used to generate the LayoutParams
+     *                           of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
+     *                           saved state as given here.
+     * @return A View inflated from the fragment_admin_key layout.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,21 +75,20 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
         Button choosePicture = view.findViewById(R.id.camera_roll_access_button);
         Button removePicture = view.findViewById(R.id.remove_picture_button);
         assert getArguments() != null;
-        ID = getArguments().getString("ID");
-        int viewID = getArguments().getInt("viewID");
-        accessType = getArguments().getString("type");
+        ID = getArguments().getString("ID"); //User or event ID
+        int viewID = getArguments().getInt("viewID"); //Image view ID from create event or user profile activities
+        accessType = getArguments().getString("type"); //String to inform whether event poster or profile picture
         posterOrProfileImageView = findImageView(viewID);
 
         removePicture.setOnClickListener(v -> {
             if (Objects.equals(accessType, "user")) {
                 database.accessUser(ID, user -> {
                     String name = getArguments().getString("username");
+                    //Generate new profile picture since user will have no picture after removing their current one
                     pictureBitmap = new ProfilePictureGenerator().generatePictureBitmap(name);
-                    //database.storeUserProfileImage(ID, pictureBitmap);
                     posterOrProfileImageView.setImageBitmap(pictureBitmap);
                 });
-            }
-            else {
+            } else {
                 database.deleteEventPoster(ID);
                 Drawable defaultPoster = ResourcesCompat.getDrawable(getResources(), R.drawable.add_poster_icon, requireContext().getTheme());
                 posterOrProfileImageView.setImageDrawable(defaultPoster);
@@ -115,6 +133,12 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
         return fragment;
     }
 
+    /**
+     * Handle the user's selected image from gallery, storing it in the database and setting the
+     * corresponding ImageView's bitmap
+     * @param imageUri Selected image from gallery
+     */
+    //OpenAI, 2024, ChatGPT, How to access and select images from gallery
     private void handleImageSelection(Uri imageUri) {
 
         try {
@@ -153,10 +177,16 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
         }
         dismiss();
     }
+
+    /**
+     * Find the corresponding ImageView from the calling activity
+     * @param viewID ID of a view in the activity
+     * @return The host activity ImageView of user profile picture or event poster
+     */
     public ImageView findImageView(int viewID){
         Activity hostActivity = getActivity();
         if (hostActivity != null) {
-            // Access views or perform actions in the hosting Activity
+            // Access view in the hosting Activity
             return hostActivity.findViewById(viewID);
         }
         return null;
