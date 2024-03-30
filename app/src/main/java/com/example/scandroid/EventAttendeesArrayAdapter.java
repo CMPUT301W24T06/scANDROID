@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Array adapter for the list of users that are attending an event
@@ -23,10 +24,13 @@ import java.util.ArrayList;
 
 public class EventAttendeesArrayAdapter extends ArrayAdapter<Event.CheckIn> {
     private String currentEventID;
+    private HashMap<String, User> userMap; // Store user instances based on their IDs
+
     User attendeeUser;
     public EventAttendeesArrayAdapter(Context context, ArrayList<Event.CheckIn> attendees, String eventID) {
         super(context,0, attendees);
         currentEventID = eventID;
+        userMap = new HashMap<>();
     }
 
     @NonNull
@@ -56,7 +60,7 @@ public class EventAttendeesArrayAdapter extends ArrayAdapter<Event.CheckIn> {
                     checkInTime.setText(checkInTimeText);
 
                     if (user != null) {
-                        String timesAttended = String.valueOf(user.getTimesAttended(currentEventID));
+                        String timesAttended = "Attendance Count: " + String.valueOf(user.getTimesAttended(currentEventID));
                         attendCount.setText(timesAttended);
                         attendeeName.setText(user.getUserName());
 
