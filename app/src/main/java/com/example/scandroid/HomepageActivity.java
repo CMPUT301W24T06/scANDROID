@@ -208,7 +208,6 @@ public class HomepageActivity extends AppCompatActivity {
      * @param randomName The randomly generated name to be used as the guest ID.
      */
     public void onMaybeLaterClicked(String randomName) {
-        // Handle "Maybe Later" button click
         // Close the fragment and set the generated random name as the activity name
         updateActivityName(randomName);
         updateNameInFirebase(randomName);
@@ -220,7 +219,6 @@ public class HomepageActivity extends AppCompatActivity {
      * @param enteredName the name entered by the user
      */
     public void onEnterClicked(String enteredName) {
-        // Handle "Enter" button click
         // Close the fragment and set the entered name as the activity name
         updateActivityName(enteredName);
         updateNameInFirebase(enteredName);

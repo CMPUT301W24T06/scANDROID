@@ -113,11 +113,16 @@ public class EventCheckInActivity extends AppCompatActivity {
                             checkInLocation.add(userLocation.getLatitude());
                             checkInLocation.add(userLocation.getLongitude());
                         }
+                        if (!trackLocationBox.isChecked()) {
+                            checkInLocation.add(0.0);
+                            checkInLocation.add(0.0);
+                        }
 
                         // source: https://stackoverflow.com/a/5369753
                         Time time = new Time(Calendar.getInstance().getTime().getTime());
                         event.addEventAttendee(userID, time, checkInLocation);
                         user.addEventToEventsAttending(eventID);
+
 
                         database.storeEvent(event);
                         database.storeUser(user);

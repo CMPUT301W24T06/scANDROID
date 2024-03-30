@@ -1,6 +1,7 @@
 package com.example.scandroid;
 
 import android.location.Location;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -33,7 +34,7 @@ public class User {
     private String profilePictureUrl;
     private boolean hasAdminPermissions;
 
-    private HashMap<String, Integer> timesAttended = new HashMap<>() ;
+    public HashMap<String, Integer> timesAttended = new HashMap<>() ;
     //TODO - make the user's location optional
     @Nullable private Location userLocation;
 
@@ -103,18 +104,25 @@ public class User {
      * @param event An eventID.
      */
     public void addEventToEventsAttending(String event){
+        Log.d("User", "Adding event to eventsAttending: " + event);
         if(eventsAttending.contains(event)){
             Integer timesAttendedValue = timesAttended.get(event);
             if(timesAttendedValue != null){
-                timesAttended.replace(event,timesAttendedValue+1);
+                this.timesAttended.replace(event,timesAttendedValue+1);
+                Log.d("User", "Incrementing attendance count for event " + event + ": " + (timesAttendedValue + 1));
             } else {
-                timesAttended.replace(event,1);
+                this.timesAttended.put(event,1);
+                Log.d("User", "Initializing attendance count for event " + event + " to 1");
             }
         }
+
         else{
-            eventsAttending.add(event);
-            timesAttended.put(event,1);
+            this.eventsAttending.add(event);
+            this.timesAttended.put(event,1);
+            Log.d("User", "Adding new event " + event + " to eventsAttending with attendance count 1");
         }
+        Log.d("User", "timesAttended after adding event " + event + ": " + timesAttended.get(event));
+
     }
 
     /**
@@ -246,6 +254,10 @@ public class User {
      * @return The number of times a User has attended a given event.
      */
     public Integer getTimesAttended(String event){
+
+        Log.d("Your tag","Event ID: " + event);
+        Integer attendanceCount = timesAttended.get(event);
+        Log.d("Your tag","Attendance Count: " + attendanceCount);
         return timesAttended.get(event);
     }
 

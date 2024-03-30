@@ -301,6 +301,7 @@ public class Event implements Serializable{
                                 this.CheckInIDs.get(i),
                                 new Time(this.CheckInTimes.get(i)),
                                 locationAsDoubles));
+
             }
             else { // no check in location
                 EventAttendeeList.add(
