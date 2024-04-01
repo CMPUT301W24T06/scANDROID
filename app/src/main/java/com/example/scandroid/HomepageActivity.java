@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,10 +16,13 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -129,7 +133,18 @@ public class HomepageActivity extends AppCompatActivity {
             Intent intent = new Intent(HomepageActivity.this, CreateEventActivity.class);
             startActivity(intent);
         });
+        
+        getFCMToken();
+    }
 
+    private void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task ->  {
+            if (task.isSuccessful()){
+                String token = task.getResult();
+                db.collection("Users").document(userID)
+                        .update("fcmToken", token);
+            }
+        });
     }
 
     /**

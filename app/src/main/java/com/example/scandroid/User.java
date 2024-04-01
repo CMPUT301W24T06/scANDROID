@@ -33,6 +33,7 @@ public class User {
     public ArrayList<String> notifiedBy;
     private String profilePictureUrl;
     private boolean hasAdminPermissions;
+    private String fcmToken;
 
     public HashMap<String, Integer> timesAttended = new HashMap<>() ;
     //TODO - make the user's location optional
@@ -321,4 +322,14 @@ public class User {
         this.hasAdminPermissions = adminPermissions;
     }
 
+    public String getFCMToken() {
+        return fcmToken;
+    }
+
+    /**
+     * @param FCMToken string that allows the user to receive post notifications
+     */
+    public void setFCMToken(String FCMToken) {
+        this.fcmToken = FCMToken;
+    }
 }
