@@ -189,21 +189,6 @@ public class HomepageActivity extends AppCompatActivity {
     }
 
     /**
-     * Updates the user profile by retrieving the updated user name from SharedPreferences
-     * and updating the TextView with the updated user name.
-     */
-    private void updateProfile() {
-        // Retrieve the updated user name from SharedPreferences or any other storage mechanism
-        SharedPreferences sharedPreferences = getSharedPreferences("namePref", MODE_PRIVATE);
-        String updatedUserName = sharedPreferences.getString("updatedUserName", "");
-
-        // Update the TextView with the updated user name
-        TextView homepageNameText = findViewById(R.id.homepage_name_text);
-        homepageNameText.setText(updatedUserName);
-    }
-
-
-    /**
      * Displays the welcome fragment
      * and gives the user the option to enter their name upon first using the app
      */
@@ -215,47 +200,6 @@ public class HomepageActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(android.R.id.content, welcomeFragment);
         transaction.commit();
-    }
-
-    /**
-     * Deals with if the user chooses not to enter their name when prompted by the fragment
-     * by displaying a randomly generated Guest ID and updating the database
-     * @param randomName The randomly generated name to be used as the guest ID.
-     */
-    public void onMaybeLaterClicked(String randomName) {
-        // Close the fragment and set the generated random name as the activity name
-        updateActivityName(randomName);
-        updateNameInFirebase(randomName);
-    }
-
-    /**
-     * Deals with if the user chooses to enter their name when prompted by the fragment
-     * by saving and displaying the name entered and updating the database
-     * @param enteredName the name entered by the user
-     */
-    public void onEnterClicked(String enteredName) {
-        // Close the fragment and set the entered name as the activity name
-        updateActivityName(enteredName);
-        updateNameInFirebase(enteredName);
-    }
-
-    /**
-     * Updates the user's name displayed on the homepage profile
-     * @param newName the new name to be displayed
-     */
-    private void updateActivityName(String newName) {
-        TextView homepageNameText = findViewById(R.id.homepage_name_text);
-        homepageNameText.setText(newName);
-    }
-
-    /**
-     * Updates the user's name in the database
-     * @param newName the new name to be updated in the database
-     */
-    private void updateNameInFirebase(String newName) {
-        // Update the user's name in Firebase
-        db.collection("Users").document(userID)
-                .update("userName", newName);
     }
 
     public void onNameReceived(Bundle data) {
