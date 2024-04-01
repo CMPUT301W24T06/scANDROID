@@ -22,7 +22,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/green"
-        android:text="@string/check_in_text"
+        android:text="@string/get_started_text"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

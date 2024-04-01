@@ -75,4 +75,6 @@
     <string name="scan_code_text">Scan QR Code</string>
     <string name="update_my_event">Update My Event</string>
     <string name="change_event_poster">Change Poster</string>
+    <string name="remove_event_text">Remove Event</string>
+    <string name="get_started_text">Get Started</string>
 </resources>
