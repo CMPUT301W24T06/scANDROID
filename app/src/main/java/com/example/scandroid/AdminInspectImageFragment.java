@@ -1,5 +1,6 @@
 package com.example.scandroid;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,14 +14,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * AdminInspectImageFragment is shown when a user clicks on a profile picture or event poster while
+ * browsing events and users. Admins are given the option to remove and delete those images.
+ */
 public class AdminInspectImageFragment extends DialogFragment {
     private final DBAccessor database = new DBAccessor();
     String userID;
     String eventID;
     Bitmap picture;
+    onClickListener listener;
 
-    public AdminInspectImageFragment(Bitmap picture){
+    /**
+     * Constructor for AdminInspectImageFragment
+     * @param picture Event poster or user profile picture that was clicked on
+     * @param listener Listener to communicate with activity that called this fragment
+     */
+    public AdminInspectImageFragment(Bitmap picture, onClickListener listener){
         this.picture = picture;
+        this.listener = listener;
     }
 
     @Nullable
@@ -41,16 +53,26 @@ public class AdminInspectImageFragment extends DialogFragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             imageView.setImageBitmap(picture);
+            //If this fragment was created from clicking on a profile picture
             if (bundle.getString("userID") != null){
                 userID = bundle.getString("userID");
-                removeButton.setOnClickListener(v -> database.deleteUserProfileImage(userID));
-
+                removeButton.setOnClickListener(v -> {
+                        database.deleteUserProfileImage(userID);
+                        listener.onClick(); //Alert calling activity that remove button has been pressed
+                        dismiss();
+            });
+            //If this fragment was created from clicking on an event poster
             } else if (bundle.getString("eventID") != null){
                 eventID = bundle.getString("eventID");
-                removeButton.setOnClickListener(v -> database.deleteEventPoster(eventID));
+                removeButton.setOnClickListener(v -> {
+                        database.deleteEventPoster(eventID);
+                        listener.onClick(); //Alert calling activity that remove button has been pressed
+                        dismiss();
+                });
             }
 
         }
+
         return view;
     }
 }

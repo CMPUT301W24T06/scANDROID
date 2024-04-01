@@ -2,19 +2,27 @@ package com.example.scandroid;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -33,67 +41,153 @@ public class MyEventsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String userID;
     private String userType;
-    ArrayAdapter<String> myEventsAdapter;
+    ArrayAdapter<Tuple<Event, Bitmap>> myEventsAdapter;
     private DBAccessor database;
+    private ArrayList<String>  myEventIDs = new ArrayList<>();
+    private ArrayList<String> myRealEventIDs;
+    private ArrayList<Tuple<Event, Bitmap>> allMyEvents;
+    private ListView myEventsList;
+    private TextView loadingTextView;
 
+    /**
+     * Default constructor for the MyEventsFragment.
+     */
+    public MyEventsFragment() {
+        // Required empty public constructor
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        super.onCreate(savedInstanceState);
         database = new DBAccessor();
-        if (getArguments() != null) {
-            userID = getArguments().getString(ARG_PARAM1);
-            userType = getArguments().getString(ARG_PARAM2);
-        }
-        ListView myEventsList = view.findViewById(R.id.my_events_list);
+        //if (getArguments() != null) {
+            //userID = getArguments().getString(ARG_PARAM1);
+            //userType = getArguments().getString(ARG_PARAM2);
+       //}
+        myEventsList = view.findViewById(R.id.my_events_list);
+        loadingTextView = view.findViewById(R.id.loading_my_events_text);
+
+        myRealEventIDs = new ArrayList<>();
+        allMyEvents = new ArrayList<>();
+        //change from here
         new DBAccessor().accessUser(userID, user -> {
             if (Objects.equals(userType, "organizer")) {
-                ArrayList<String> myEvents = user.getEventsOrganized();
-                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
-                myEventsList.setAdapter(myEventsAdapter);
+                myEventIDs = user.getEventsOrganized();
             } else if (Objects.equals(userType, "attendee")){
-                ArrayList<String> myEvents = user.getEventsAttending();
-                myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
-                myEventsList.setAdapter(myEventsAdapter);
+                ArrayList<String> attendingEvents = new ArrayList<>();
+                attendingEvents = user.getEventsAttending();
+                myEventIDs.addAll(attendingEvents);
+                ArrayList<String> signedUpEvents = user.getEventsSignedUp();
+                for (String eventID : signedUpEvents){
+                    if (!myEventIDs.contains(eventID)){
+                        myEventIDs.add(eventID);
+                    }
+                }
             }
+            if (!myEventIDs.isEmpty()){
+                makeEventList(user);
+            } else {
+                loadingTextView.setText("No events");
+            }
+
         });
 
-        myEventsList.setOnItemClickListener((parent, view1, position, id) -> {
-            String eventID = myEventsAdapter.getItem(position);
-            if (Objects.equals(userType, "organizer")){
-                database.accessEvent(eventID, event -> {
-                    // Source: https://stackoverflow.com/a/24610673/20869063 Stack Overflow. Answered by Ahmad, Nisar. Downloaded 2024-03-07
-                    Intent i = new Intent(getActivity(), EditEventActivity.class);
-                    i.putExtra("event", (Serializable) event);
-                    startActivity(i);
-                });
+       myEventsList.setOnItemClickListener((parent, view1, position, id) -> {
+            //String eventID = myEventsAdapter.getItem(position);
+            Event event = myEventsAdapter.getItem(position).first;
+            if (Objects.equals(userType, "organizer")) {
+
+                // Source: https://stackoverflow.com/a/24610673/20869063 Stack Overflow. Answered by Ahmad, Nisar. Downloaded 2024-03-07
+                Intent i = new Intent(getActivity(), EditEventActivity.class);
+                i.putExtra("event", (Serializable) event);
+                startActivity(i);
+
             } else {
                 Intent viewEventIntent = new Intent(view1.getContext(), EventInfoActivity.class);
-                viewEventIntent.putExtra("eventID", eventID);
+                viewEventIntent.putExtra("eventID", event.getEventID());
                 startActivity(viewEventIntent);
             }
-            //Retrieve the new information about the lists
-            new DBAccessor().accessUser(userID, user -> {
-                if (Objects.equals(userType, "organizer")) {
-                    ArrayList<String> myEvents = user.getEventsOrganized();
-                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
-                    myEventsList.setAdapter(myEventsAdapter);
-                }
-                else if (Objects.equals(userType, "attendee")){
-                    ArrayList<String> myEvents = user.getEventsAttending();
-                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), myEvents, getActivity().getSupportFragmentManager());
-                    myEventsList.setAdapter(myEventsAdapter);
-                }
-                //Update the adapter
-                myEventsAdapter.notifyDataSetChanged();
-            });
         });
     }
 
+    /**
+     * Create a list of events
+     * @param user The user where the list of the events came from
+     */
+    public void makeEventList(User user){
+        List<String> eventsToRemove = new ArrayList<>();
+        myRealEventIDs = new ArrayList<>();
+        allMyEvents = new ArrayList<>();
+        for (String anEvent : myEventIDs) {
+            database.accessEvent(anEvent, event -> {
+                if (event == null) {
+                    RemovalNoticeFragment removalNoticeFragment = new RemovalNoticeFragment();
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.add(android.R.id.content, removalNoticeFragment);
+                    transaction.commit();
+                    eventsToRemove.add(anEvent);
+                } else {
+                    myRealEventIDs.add(anEvent);
+                }
 
+                if (myRealEventIDs.size() + eventsToRemove.size() == myEventIDs.size()) {
+                    // Remove the events that need to be removed
+                    if (Objects.equals(userType, "organizer")){
+                        myEventIDs.removeAll(eventsToRemove);
+                    } else {
+                        ArrayList<String> attendingEvents = user.getEventsAttending();
+                        ArrayList<String> signedUpEvents = user.getEventsSignedUp();
+                        for (String eventID : eventsToRemove){
+                            if (attendingEvents.contains(eventID)){
+                                attendingEvents.remove(eventID);
+                            } else {
+                                signedUpEvents.remove(eventID);
+                            }
+                        }
+                    }
+                    database.storeUser(user);
+                    //OpenAI, 2024, ChatGPT, How to sort list of objects by Calendar
+                    Comparator<Tuple<Event, Bitmap>> dateComparator = (tuple1, tuple2) -> {
+                        Calendar date1 = tuple1.first.getEventDate();
+                        Calendar date2 = tuple2.first.getEventDate();
 
-    public MyEventsFragment() {
-        // Required empty public constructor
+                        // Compare dates
+                        if (date1.before(date2)) {
+                            return -1;
+                        } else if (date1.after(date2)) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    };
+                    //loop through events here and get their posters to add to tuple
+                    for (String eventID : myEventIDs){
+                        database.accessEvent(eventID, event1 -> database.accessEventPoster(eventID, new BitmapCallback() {
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap) {
+                                allMyEvents.add(new Tuple<>(event1, bitmap));
+                                if (allMyEvents.size() == myEventIDs.size()){
+                                    allMyEvents.sort(dateComparator);
+                                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), allMyEvents);
+                                    myEventsList.setAdapter(myEventsAdapter);
+                                    loadingTextView.setVisibility(View.INVISIBLE);
+                                }
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Exception e) {
+                                allMyEvents.add(new Tuple<>(event, null));
+                                if (allMyEvents.size() == myEventIDs.size()) {
+                                    allMyEvents.sort(dateComparator);
+                                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), allMyEvents);
+                                    myEventsList.setAdapter(myEventsAdapter);
+                                    loadingTextView.setVisibility(View.INVISIBLE);
+                                }
+                            }
+                        }));
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -130,5 +224,4 @@ public class MyEventsFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.my_events_fragment, container, false);
     }
-
 }

@@ -133,9 +133,12 @@ public class DBAFirestoreTest {
         Event mockEvent = mockEvent(this.dateValues, this.locationValues);
 
         // add a checkIn and an announcement to the Event
-        User mockUser = mockUser();
+        User mockUser1 = mockUser();
+        User mockUser2 = mockUser();
         mockEvent.addEventAnnouncement("A_Title", "A_About", new Time(45240000));
-        mockEvent.addEventAttendee(mockUser.getUserID(), new Time(45240000), locationValues);
+        mockEvent.setEventCapacity(40);
+        mockEvent.addEventSignUp(mockUser2.getUserID());
+        mockEvent.addEventAttendee(mockUser1.getUserID(), new Time(45240000), locationValues);
 
         // initialize wait to ensure database write takes place before testing
         CountDownLatch latch = new CountDownLatch(1);
@@ -158,6 +161,9 @@ public class DBAFirestoreTest {
         // remaining simple untested fields
         assertEquals(mockEvent.getEventLocation(), recievedEvent[0].getEventLocation());
         assertEquals(mockEvent.getEventOrganizerID(), recievedEvent[0].getEventOrganizerID());
+        assertEquals(mockEvent.getEventCapacity(), recievedEvent[0].getEventCapacity());
+        assertEquals(mockEvent.getEventHasCapacity(), recievedEvent[0].getEventHasCapacity());
+        assertEquals(mockEvent.getEventSignUps(), recievedEvent[0].getEventSignUps());
 
         // milestone fields
         assertEquals(mockEvent.getEventMilestoneSeries(), recievedEvent[0].getEventMilestoneSeries());

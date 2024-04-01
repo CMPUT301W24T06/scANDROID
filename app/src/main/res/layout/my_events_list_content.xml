@@ -48,4 +48,24 @@
             android:src="@drawable/image_camera_roll" />
     </androidx.cardview.widget.CardView>
 
+    <ImageView
+        android:id="@+id/my_events_content_circle_status"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="80dp"
+        android:src="@drawable/orange_circle_status"
+        app:layout_constraintEnd_toEndOf="@+id/my_events_content_border"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/my_events_content_status"
+        android:layout_width="69dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:text="Upcoming"
+        app:layout_constraintStart_toEndOf="@+id/my_events_content_circle_status"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.scandroid;
 
 import android.location.Location;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -28,11 +29,12 @@ public class User {
     private String userID;
     private ArrayList<String> eventsAttending;
     private ArrayList<String> eventsOrganized;
+    private ArrayList<String> eventsSignedUp;
     public ArrayList<String> notifiedBy;
     private String profilePictureUrl;
     private boolean hasAdminPermissions;
 
-    private HashMap<String, Integer> timesAttended = new HashMap<>() ;
+    public HashMap<String, Integer> timesAttended = new HashMap<>() ;
     //TODO - make the user's location optional
     @Nullable private Location userLocation;
 
@@ -42,6 +44,7 @@ public class User {
         this.userName = ""; // Default to an empty string for userName
         this.eventsAttending = new ArrayList<>();
         this.eventsOrganized = new ArrayList<>();
+        this.eventsSignedUp = new ArrayList<>();
         this.notifiedBy = new ArrayList<>();
         this.timesAttended = new HashMap<>();
         this.userLocation = null; // Default to null for userLocation
@@ -64,6 +67,7 @@ public class User {
         this.userID = userID;
         this.eventsAttending = new ArrayList<String>();
         this.eventsOrganized = new ArrayList<String>();
+        this.eventsSignedUp = new ArrayList<>();
         this.notifiedBy = new ArrayList<String>();
         //set the default value of a user's name to a Guest name if no name is provided.
         if(userName == null){
@@ -100,14 +104,33 @@ public class User {
      * @param event An eventID.
      */
     public void addEventToEventsAttending(String event){
+        Log.d("User", "Adding event to eventsAttending: " + event);
         if(eventsAttending.contains(event)){
             Integer timesAttendedValue = timesAttended.get(event);
-            timesAttended.replace(event,timesAttendedValue+1);
+            if(timesAttendedValue != null){
+                this.timesAttended.replace(event,timesAttendedValue+1);
+                Log.d("User", "Incrementing attendance count for event " + event + ": " + (timesAttendedValue + 1));
+            } else {
+                this.timesAttended.put(event,1);
+                Log.d("User", "Initializing attendance count for event " + event + " to 1");
+            }
         }
+
         else{
-            eventsAttending.add(event);
-            timesAttended.put(event,0);
+            this.eventsAttending.add(event);
+            this.timesAttended.put(event,1);
+            Log.d("User", "Adding new event " + event + " to eventsAttending with attendance count 1");
         }
+        Log.d("User", "timesAttended after adding event " + event + ": " + timesAttended.get(event));
+
+    }
+
+    /**
+     * Adds an event to the user's list of events they are signed up to
+     * @param event an event's ID
+     */
+    public void addEventToEventsSignedUp(String event){
+        this.eventsSignedUp.add(event);
     }
 
     /**
@@ -118,6 +141,29 @@ public class User {
         eventsOrganized.add(event);
     }
 
+    /**
+     * Remove an event from the user's list of event's they are signed up to
+     * @param event an event's ID
+     */
+    public void removeEventToEventsSignedUp(String event){
+        eventsSignedUp.remove(event);
+    }
+
+    /**
+     * Remove an event from the user's list of events they have organized.
+     * @param event An event's ID.
+     */
+    public void removeEventToEventsOrganized(String event){
+        eventsOrganized.remove(event);
+    }
+
+    /**
+     * Remove an event from the user's list of events they are attending.
+     * @param event An event's ID.
+     */
+    public void removeEventToEventsAttending(String event){
+        eventsAttending.remove(event);
+    }
     /**
      * Adds an event to a user's list of events they wish to receive notifications from.
      * @param event an event's ID.
@@ -197,10 +243,21 @@ public class User {
     }
 
     /**
+     * @return the list of events a user is signed up to
+     */
+    public ArrayList<String> getEventsSignedUp() {
+        return eventsSignedUp;
+    }
+
+    /**
      * @param event an eventID
      * @return The number of times a User has attended a given event.
      */
     public Integer getTimesAttended(String event){
+
+        Log.d("Your tag","Event ID: " + event);
+        Integer attendanceCount = timesAttended.get(event);
+        Log.d("Your tag","Attendance Count: " + attendanceCount);
         return timesAttended.get(event);
     }
 

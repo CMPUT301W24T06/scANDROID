@@ -4,20 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -26,6 +20,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -59,6 +54,7 @@ public class HomepageActivity extends AppCompatActivity {
         setContentView(R.layout.homepage_activity);
         userID = new DeviceIDRetriever(HomepageActivity.this).getDeviceId();
         //userID = "testID";
+        //userID = "e9256b128bd8fb6a";
 
         // deals with the bottom bar
         navigationBar = findViewById(R.id.navigation_bar);
@@ -107,7 +103,9 @@ public class HomepageActivity extends AppCompatActivity {
                     case R.id.home_button:
                         return true;
                     case R.id.qr_button:
-                        startActivity(new Intent(getApplicationContext(), QRScannerActivity.class));
+                        Intent intent = new Intent(getApplicationContext(), QRScannerActivity.class);
+                        intent.putExtra("userID", userID);
+                        startActivity(intent);
                         return true;
                     case R.id.browse_button:
                         startActivity(new Intent(getApplicationContext(), BrowseActivity.class));
@@ -145,30 +143,32 @@ public class HomepageActivity extends AppCompatActivity {
         super.onResume();
         DBAccessor database = new DBAccessor();
         database.accessUser(userID, user -> {
-           if (user == null) {
+            if (user == null) {
                 //Create a new User object
                 user = new User();
                 user.setUserID(userID);
                 displayWelcomeFragment();
                 database.storeUser(user);
             }
-                homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
-                homepagePager.setAdapter(homepageActivityPageAdapter);
 
-                TextView profileName = findViewById(R.id.homepage_name_text);
-                profileName.setText(user.getUserName());
-                profilePicture = findViewById(R.id.profile_image);
-                database.accessUserProfileImage(userID, new BitmapCallback() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap) {
-                        profilePicture.setImageBitmap(bitmap);
-                    }
 
-                    @Override
-                    public void onBitmapFailed(Exception e) {
-                        Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            homepageActivityPageAdapter = new HomepageActivityPageAdapter(this, userID);
+            homepagePager.setAdapter(homepageActivityPageAdapter);
+
+            TextView profileName = findViewById(R.id.homepage_name_text);
+            profileName.setText(user.getUserName());
+            profilePicture = findViewById(R.id.profile_image);
+            database.accessUserProfileImage(userID, new BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    profilePicture.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e) {
+                    Toast.makeText(HomepageActivity.this, "Failed to retrieve profile picture", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
     }
@@ -208,7 +208,6 @@ public class HomepageActivity extends AppCompatActivity {
      * @param randomName The randomly generated name to be used as the guest ID.
      */
     public void onMaybeLaterClicked(String randomName) {
-        // Handle "Maybe Later" button click
         // Close the fragment and set the generated random name as the activity name
         updateActivityName(randomName);
         updateNameInFirebase(randomName);
@@ -220,7 +219,6 @@ public class HomepageActivity extends AppCompatActivity {
      * @param enteredName the name entered by the user
      */
     public void onEnterClicked(String enteredName) {
-        // Handle "Enter" button click
         // Close the fragment and set the entered name as the activity name
         updateActivityName(enteredName);
         updateNameInFirebase(enteredName);

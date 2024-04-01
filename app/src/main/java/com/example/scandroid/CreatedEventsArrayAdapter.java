@@ -1,43 +1,52 @@
 package com.example.scandroid;
 
+
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.util.Log;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * CreatedEventsArrayAdapter is an ArrayAdapter implementation
  * used in the app for displaying created events in a list view.
  */
-public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
-    FragmentManager fragmentManager;
-    boolean isAdmin;
+public class CreatedEventsArrayAdapter extends ArrayAdapter<Tuple<Event, Bitmap>> {
+    private OnEventPosterClickListener onEventPosterClickListener;
+
     /**
      * Constructs a new CreatedEventsArrayAdapter
      *
      * @param context context where the adapter is being used
      * @param myEvents list of event IDs to display
-     *
+     * @param onEventPosterClickListener Listening activity
      */
-    public CreatedEventsArrayAdapter(Context context, ArrayList<String> myEvents, FragmentManager fragmentManager) {
+    public CreatedEventsArrayAdapter(Context context, ArrayList<Tuple<Event, Bitmap>> myEvents, OnEventPosterClickListener onEventPosterClickListener) {
         super(context,0, myEvents);
-        this.fragmentManager = fragmentManager;
+        this.onEventPosterClickListener = onEventPosterClickListener;
+    }
+
+    /**
+     * Constructs a new CreatedEventsArrayAdapter without an event poster listener
+     *
+     * @param context context where the adapter is being used
+     * @param myEvents list of event IDs to display
+     */
+    public CreatedEventsArrayAdapter(Context context, ArrayList<Tuple<Event, Bitmap>> myEvents) {
+        super(context,0, myEvents);
     }
 
     /**
@@ -61,45 +70,32 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<String> {
 
         TextView eventNameText = view.findViewById(R.id.my_events_content_name);
         ImageView eventPoster = view.findViewById(R.id.my_events_content_poster);
-        String eventID = getItem(position);
-        assert eventID != null;
-        DBAccessor database = new DBAccessor();
-        database.accessEvent(eventID, event -> {
-            String eventName = event.getEventName();
-            eventNameText.setText(eventName);
-        });
-
-        database.accessEventPoster(eventID, new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                eventPoster.setImageBitmap(bitmap);
-                String userID = new DeviceIDRetriever(getContext()).getDeviceId();
-
-                database.accessUser(userID, user -> {
-                    isAdmin = user.getHasAdminPermissions();
-                    if (isAdmin){
-                        eventPoster.setOnClickListener(v -> {
-                            DialogFragment imageInspectPrompt = new AdminInspectImageFragment(bitmap);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("eventID", eventID);
-                            imageInspectPrompt.setArguments(bundle);
-
-                            FragmentTransaction transaction = fragmentManager.beginTransaction();
-                            transaction.add(android.R.id.content, imageInspectPrompt);
-                            transaction.commit();
-                        });
-                    }
-                });
-
-
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e) {
-                Toast.makeText(view.getContext(), "Failed to retrieve event poster", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        TextView eventStatusText = view.findViewById(R.id.my_events_content_status);
+        ImageView eventStatusCircle = view.findViewById(R.id.my_events_content_circle_status);
+        Tuple<Event, Bitmap> tuple = getItem(position);
+        assert tuple != null;
+        String eventName = tuple.first.getEventName();
+        eventNameText.setText(eventName);
+        //Check if event date earlier than today
+        if (Calendar.getInstance().after(tuple.first.getEventDate())){
+            eventStatusText.setText("Live");
+            Drawable redCircleDrawable = ContextCompat.getDrawable(getContext(), R.drawable.red_circle_status);
+            eventStatusCircle.setImageDrawable(redCircleDrawable);
+        }
+        eventPoster.setImageBitmap(tuple.second);
+        if (onEventPosterClickListener!=null) {
+            eventPoster.setOnClickListener(v -> {
+                onEventPosterClickListener.onEventPosterClicked(tuple.first, tuple.second);
+            });
+        }
         return view;
+    }
+
+    /**
+     * Interface to allow for communication with host activity
+     * Used for communicating about an ImageView listener of event poster in the array
+     */
+    public interface OnEventPosterClickListener {
+        void onEventPosterClicked(Event event, Bitmap bitmap);
     }
 }

@@ -48,7 +48,7 @@ public class HomepageActivityPageAdapter extends FragmentStateAdapter {
     }
 
     /**
-     * returns the total number of fragments managed by the adapter (2 in this case)
+     * Returns the total number of fragments managed by the adapter (2 in this case)
      * @return The number of fragments.
      */
     @Override

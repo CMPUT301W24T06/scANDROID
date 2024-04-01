@@ -16,7 +16,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.Objects;
 
 /**
- * BrowseActivity activity
+ * BrowseActivity is activity for browsing all users and events in the app
  * It extends AppCompatActivity in order to be compatible with
  * older versions of Android as well as use modern Android features.
  */
@@ -82,5 +82,12 @@ public class BrowseActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //browseActivityPageAdapter = new BrowseActivityPageAdapter(this);
+        //browsePager.setAdapter(browseActivityPageAdapter);
     }
 }
