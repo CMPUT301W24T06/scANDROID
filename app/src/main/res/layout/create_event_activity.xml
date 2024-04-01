@@ -7,46 +7,53 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+
     <RelativeLayout
         android:id="@+id/blue_background"
-        android:layout_width="420dp"
-        android:layout_height="250dp"
+        android:layout_width="422dp"
+        android:layout_height="220dp"
         android:background="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
+        <TextView
+            android:id="@+id/create_event_page_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="89dp"
+            android:text="@string/your_event_text"
+            android:textColor="@color/white"
+            android:textSize="50sp" />
+
+        <ImageView
+            android:id="@+id/create_event_poster"
+            android:layout_width="169dp"
+            android:layout_height="104dp"
+            android:layout_below="@+id/create_event_page_title"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="128dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/add_poster_icon" />
+
+        <Button
+            android:id="@+id/create_event_change_poster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/create_event_poster"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="143dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/app_name"
+            android:text="@string/change_event_poster"
+            android:textColor="@color/black" />
     </RelativeLayout>
-
-
-    <ImageView
-        android:id="@+id/create_event_poster"
-        android:layout_width="192dp"
-        android:layout_height="152dp"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/add_poster_icon"
-        app:layout_constraintBottom_toBottomOf="@+id/blue_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="@+id/blue_background"
-        app:layout_constraintTop_toTopOf="@+id/blue_background"
-        app:layout_constraintVertical_bias="0.715" />
-
-    <Button
-        android:id="@+id/create_event_change_poster"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/app_name"
-        android:text="@string/change_event_poster"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/blue_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_poster" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/back_arrow"
@@ -158,20 +165,17 @@
         android:id="@+id/attendee_limit_button"
         android:layout_width="275dp"
         android:layout_height="48dp"
-        android:layout_marginTop="696dp"
-        android:layout_marginBottom="170dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="@color/black"
         android:text="@string/set_or_edit_an_attendee_limit"
         android:textSize="17sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/event_description_edit_text" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/current_limit_text"
         android:layout_width="81dp"
         android:layout_height="15dp"
         android:layout_marginStart="52dp"
@@ -180,10 +184,10 @@
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/current_limit_value"
-        app:layout_constraintHorizontal_bias="0.913"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.827" />
+        app:layout_constraintTop_toBottomOf="@+id/attendee_limit_button"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/create_event_confirm_button"
@@ -197,7 +201,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/current_limit_text" />
 
     <TextView
         android:id="@+id/create_event_note_text"
@@ -216,11 +220,11 @@
         android:id="@+id/create_event_description_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/event_description_text"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.086"
+        app:layout_constraintHorizontal_bias="0.093"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_event_time_button" />
 
@@ -252,29 +256,18 @@
         app:layout_constraintTop_toBottomOf="@+id/create_event_time_text" />
 
     <TextView
-        android:id="@+id/create_event_page_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/your_event_text"
-        android:textColor="@color/white"
-        android:textSize="50sp"
-        app:layout_constraintBottom_toTopOf="@+id/create_event_poster"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/blue_background" />
-
-    <TextView
         android:id="@+id/current_limit_value"
         android:layout_width="77dp"
         android:layout_height="15dp"
-        android:layout_marginEnd="116dp"
+        android:layout_marginEnd="124dp"
+        android:paddingStart="5dp"
         android:text="N/A"
         android:textAlignment="textStart"
         android:textColor="#FF9900"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.827" />
+        app:layout_constraintTop_toBottomOf="@+id/attendee_limit_button"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
