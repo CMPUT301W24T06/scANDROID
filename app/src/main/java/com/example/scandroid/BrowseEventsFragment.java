@@ -41,7 +41,6 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
     Button prevButton, nextButton;
     int listSize = 0;
     TextView loadingTextView;
-
     androidx.appcompat.widget.SearchView searchEventsView;
 
     /**

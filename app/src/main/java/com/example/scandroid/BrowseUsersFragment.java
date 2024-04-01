@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -37,6 +38,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
     int listSize = 0;
     Button prevButton, nextButton;
     TextView loadingTextView;
+    androidx.appcompat.widget.SearchView searchUsersView;
 
     /**
      * Default constructor for BrowseUsersFragment
@@ -53,6 +55,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
         loadingTextView = view.findViewById(R.id.loading_browse_users_text);
         prevButton = view.findViewById(R.id.browse_users_previous_button);
         nextButton = view.findViewById(R.id.browse_users_next_button);
+        searchUsersView = view.findViewById(R.id.users_search);
         prevButton.setOnClickListener(v -> {
             if (currentPage > 0) {
                 currentPage--;
@@ -87,6 +90,18 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
                     transaction.commit();
                     return true;
                 });
+            }
+        });
+        searchUsersView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchUsersList(newText);
+                return true;
             }
         });
 
@@ -185,5 +200,20 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.add(android.R.id.content, imageInspectPrompt);
         transaction.commit();
+    }
+    public void searchUsersList(String text){
+        ArrayList<Tuple<User, Bitmap>> usersResults = new ArrayList<>();
+        for (Tuple<User, Bitmap> userData: allUsers){
+            User user = userData.first;
+            String userName = user.getUserName();
+            if (userName.toLowerCase().contains(text.toLowerCase())){
+                usersResults.add(userData);
+            }
+        }
+        if (allUserAdapter != null) {
+            allUserAdapter.clear(); // Clear existing data from the adapter
+            allUserAdapter.addAll(usersResults); // Add filtered results to the adapter
+            allUserAdapter.notifyDataSetChanged(); // Notify adapter of changes
+        }
     }
 }
