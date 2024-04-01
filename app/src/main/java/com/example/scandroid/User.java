@@ -269,6 +269,13 @@ public class User {
     public boolean getHasAdminPermissions(){
         return this.hasAdminPermissions;
     }
+    /**
+     * Retrieves a Firebase Cloud Messaging token which allows for the user to receive post notifications from organizers
+     * @return String value which is the user's token
+     */
+    public String getFCMToken() {
+        return fcmToken;
+    }
 
     /* ------- *
      * SETTERS *
@@ -320,10 +327,6 @@ public class User {
      */
     public void setHasAdminPermissions(boolean adminPermissions){
         this.hasAdminPermissions = adminPermissions;
-    }
-
-    public String getFCMToken() {
-        return fcmToken;
     }
 
     /**

@@ -35,6 +35,10 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
         editNotificationPeriods = findViewById(R.id.notification_periods);
         sendNotificationButton = findViewById(R.id.send_notification_button);
 
+        // get all the attendees with getEventAttendeeList()
+        // get all those attendees fcm tokens
+        // send the notification
+
         backButton.setOnClickListener(v -> finish());
     }
 }

@@ -50,6 +50,16 @@ public class CheckInScreenActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // handle clicking on a notification and making sure it takes us to EventViewAnnouncementsActivity
+        if (getIntent().getExtras() != null){
+            Intent intent = new Intent(this, EventViewAnnouncementsActivity.class);
+            startActivity(intent);
+        }
+        else{ // takes user to homepage by default
+            Intent intent = new Intent(this, HomepageActivity.class);
+            startActivity(intent);
+        }
     }
 
 }
