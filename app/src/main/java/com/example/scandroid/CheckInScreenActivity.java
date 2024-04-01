@@ -55,11 +55,7 @@ public class CheckInScreenActivity extends AppCompatActivity {
         if (getIntent().getExtras() != null){
             Intent intent = new Intent(this, EventViewAnnouncementsActivity.class);
             startActivity(intent);
-        }
-        else{ // takes user to homepage by default
-            Intent intent = new Intent(this, HomepageActivity.class);
-            startActivity(intent);
+            finish();
         }
     }
-
 }
