@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_event_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:id="@+id/create_event_activity"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/white">
 
     <RelativeLayout
         android:id="@+id/blue_background"
@@ -17,7 +17,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" >
+        app:layout_constraintVertical_bias="0.0">
 
     </RelativeLayout>
 
@@ -41,8 +41,8 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:contentDescription="@string/app_name"
-        android:textColor="@color/black"
         android:text="@string/change_event_poster"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/blue_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,8 +107,8 @@
         android:background="@drawable/button_outline_grey"
         android:hint="@string/enter_event_location_hint"
         android:inputType="textMultiLine"
-        android:textColorHint="#757575"
         android:padding="10dp"
+        android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_event_location_text" />
@@ -155,6 +155,36 @@
         app:layout_constraintTop_toBottomOf="@+id/create_event_description_text" />
 
     <Button
+        android:id="@+id/attendee_limit_button"
+        android:layout_width="275dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="696dp"
+        android:layout_marginBottom="170dp"
+        android:backgroundTint="@color/black"
+        android:text="@string/set_or_edit_an_attendee_limit"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Current limit: N/A"
+        android:textAlignment="center"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.826" />
+
+    <Button
         android:id="@+id/create_event_confirm_button"
         android:layout_width="300dp"
         android:layout_height="48dp"
@@ -166,13 +196,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <TextView
         android:id="@+id/create_event_note_text"
         android:layout_width="232dp"
         android:layout_height="29dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:text="@string/note_creating_an_event_will_generate_a_shareable_qr_code_that_users_can_scan_for_attendance_text"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -205,6 +235,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_event_date_button" />
 
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/edit_event_time_button"
         android:layout_width="170dp"
@@ -230,16 +261,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/blue_background" />
-
-    <CheckBox
-        android:id="@+id/checkBox2"
-        android:layout_width="292dp"
-        android:layout_height="47dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/attendee_limit_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_description_edit_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

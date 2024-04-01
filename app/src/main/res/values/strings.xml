@@ -76,4 +76,5 @@
     <string name="update_my_event">Update My Event</string>
     <string name="change_event_poster">Change Poster</string>
     <string name="attendee_limit_text">This event has an attendee limit</string>
+    <string name="set_or_edit_an_attendee_limit">Set or edit an attendee limit</string>
 </resources>
