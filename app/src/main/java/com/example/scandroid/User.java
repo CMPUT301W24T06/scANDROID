@@ -34,8 +34,7 @@ public class User {
     private String profilePictureUrl;
     private boolean hasAdminPermissions;
     private String fcmToken;
-
-    public HashMap<String, Integer> timesAttended = new HashMap<>() ;
+    public HashMap<String, Long> timesAttended = new HashMap<>() ;
 
     // Add a default constructor
     public User() {
@@ -104,19 +103,19 @@ public class User {
     public void addEventToEventsAttending(String event){
         Log.d("User", "Adding event to eventsAttending: " + event);
         if(eventsAttending.contains(event)){
-            Integer timesAttendedValue = timesAttended.get(event);
+            Integer timesAttendedValue = Math.toIntExact(timesAttended.get(event));
             if(timesAttendedValue != null){
-                this.timesAttended.replace(event,timesAttendedValue+1);
+                this.timesAttended.replace(event, (long) (timesAttendedValue+1));
                 Log.d("User", "Incrementing attendance count for event " + event + ": " + (timesAttendedValue + 1));
             } else {
-                this.timesAttended.put(event,1);
+                this.timesAttended.put(event, 1L);
                 Log.d("User", "Initializing attendance count for event " + event + " to 1");
             }
         }
 
         else{
             this.eventsAttending.add(event);
-            this.timesAttended.put(event,1);
+            this.timesAttended.put(event, 1L);
             Log.d("User", "Adding new event " + event + " to eventsAttending with attendance count 1");
         }
         Log.d("User", "timesAttended after adding event " + event + ": " + timesAttended.get(event));
@@ -222,7 +221,7 @@ public class User {
         unpackagedUser.profilePictureUrl = snapshot.getString("profilePictureURL");
         unpackagedUser.hasAdminPermissions = (boolean) snapshot.get("isAdmin");
         unpackagedUser.fcmToken = snapshot.getString("fcmToken");
-        unpackagedUser.timesAttended = (HashMap<String, Integer>) snapshot.get("timesAttended");
+        unpackagedUser.timesAttended = (HashMap<String, Long>) snapshot.get("timesAttended");
 
         // return re-constructed User object
         return unpackagedUser;
@@ -231,6 +230,13 @@ public class User {
     /* ------- *
      * GETTERS *
      * ------- */
+
+    /**
+     * @return Admin key corresponding to User
+     */
+    public String getAdminKey() {
+        return this.adminKey;
+    }
 
     /**
      * @return the URL of the user's profile picture
@@ -311,9 +317,13 @@ public class User {
     public Integer getTimesAttended(String event){
 
         Log.d("Your tag","Event ID: " + event);
-        Integer attendanceCount = timesAttended.get(event);
+        Integer attendanceCount = Math.toIntExact(timesAttended.get(event));
         Log.d("Your tag","Attendance Count: " + attendanceCount);
-        return timesAttended.get(event);
+        if (attendanceCount != null) {
+            return attendanceCount;
+        } else {
+            return 0;
+        }
     }
 
     /**
