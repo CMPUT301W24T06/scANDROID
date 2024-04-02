@@ -12,12 +12,10 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.checkerframework.checker.units.qual.C;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -379,5 +377,61 @@ public class DBAFirestoreTest {
         assertEquals(0, receivedDelUserIDs.size());
 
     } // end public void testDeleteUser
+
+    @Test
+    public void testRestoreUserFields() throws InterruptedException {
+        // create User object to test with
+        User mockUser = mockUser();
+        String mockProfileURL = "mockProfileURL";
+        boolean isAdmin = true;
+
+        // create Event objects to test with
+        Event mockEventAttend = mockEvent(this.dateValues, this.locationValues);
+        Event mockEventOrganize = mockEvent(this.dateValues, this.locationValues);
+        Event mockEventNotifyMe = mockEvent(this.dateValues, this.locationValues);
+        Event mockEventSignUp = mockEvent(this.dateValues, this.locationValues);
+
+        // populate User attributes
+        mockUser.setProfilePictureUrl(mockProfileURL);
+        mockUser.setHasAdminPermissions(isAdmin);
+        mockUser.addEventToEventsAttending(mockEventAttend.getEventID());
+        mockUser.addEventToEventsOrganized(mockEventOrganize.getEventID());
+        mockUser.addEventToEventsSignedUp(mockEventSignUp.getEventID());
+        mockUser.addEventToNotifiedBy(mockEventNotifyMe.getEventID());
+
+        // initialize wait to ensure database write takes place before testing
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // store User in database and give time to take place
+        this.dbA.storeUser(mockUser);
+        latch.await(1, TimeUnit.SECONDS);
+
+        // set location to save accessedUser and get accessedUser
+        final User[] recievedUser = new User[1];
+        this.dbA.accessUser(mockUser.getUserID(), user -> {
+            if (user != null) {
+                recievedUser[0] = user;
+            }
+        });
+
+        // after delay to ensure user access, assert attributes
+        latch.await(1, TimeUnit.SECONDS);
+        assertEquals(mockUser.getUserID(), recievedUser[0].getUserID());
+        assertEquals(mockUser.getUserEmail(), recievedUser[0].getUserEmail());
+        assertEquals(mockUser.getUserPhoneNumber(), recievedUser[0].getUserPhoneNumber());
+        assertEquals(mockUser.getUserAboutMe(), recievedUser[0].getUserAboutMe());
+        assertEquals(mockUser.getAdminKey(), recievedUser[0].getAdminKey());
+        assertEquals(mockUser.getUserID(), recievedUser[0].getUserID());
+        assertEquals(mockUser.getEventsAttending(), recievedUser[0].getEventsAttending());
+        assertEquals(mockUser.getEventsOrganized(), recievedUser[0].getEventsOrganized());
+        assertEquals(mockUser.getEventsSignedUp(), recievedUser[0].getEventsSignedUp());
+        assertEquals(mockUser.getNotifiedBy(), recievedUser[0].getNotifiedBy());
+        assertEquals(mockUser.getProfilePictureUrl(), recievedUser[0].getProfilePictureUrl());
+        assertEquals(mockUser.getFCMToken(), recievedUser[0].getFCMToken());
+        assertEquals(
+                mockUser.getTimesAttended(mockEventAttend.getEventID()),
+                recievedUser[0].getTimesAttended(mockEventAttend.getEventID()));
+
+    } // end public void testRestoreUserFields()
 
 } // end public class DBAFirestoreTest
