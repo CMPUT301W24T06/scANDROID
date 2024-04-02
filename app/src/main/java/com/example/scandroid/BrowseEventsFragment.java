@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -40,6 +41,7 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
     Button prevButton, nextButton;
     int listSize = 0;
     TextView loadingTextView;
+    androidx.appcompat.widget.SearchView searchEventsView;
 
     /**
      * Default constructor for BrowseEventsFragment
@@ -54,6 +56,8 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
         allEventsList = view.findViewById(R.id.browse_event_list);
         //OpenAI, 2024, ChatGPT, How to create list before switching page
         loadingTextView = view.findViewById(R.id.loading_browse_events_text);
+        searchEventsView = view.findViewById(R.id.events_search);
+        searchEventsView.clearFocus();
         createInitialPage(this::switchPage);
 
         //Listener for opening activity showing event page when clicking on an event in list
@@ -96,7 +100,18 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
                 });
             }
         });
+        searchEventsView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchEventsList(newText);
+                return true;
+            }
+        });
     }
 
     /**
@@ -193,5 +208,21 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.add(android.R.id.content, imageInspectPrompt);
         transaction.commit();
+    }
+
+    public void searchEventsList(String text){
+        ArrayList<Tuple<Event, Bitmap>> eventsResults = new ArrayList<>();
+        for (Tuple<Event, Bitmap> eventData: allEvents){
+            Event event = eventData.first;
+            String eventName = event.getEventName();
+            if (eventName.toLowerCase().contains(text.toLowerCase())){
+                eventsResults.add(eventData);
+            }
+        }
+        if (allEventsAdapter != null) {
+            allEventsAdapter.clear(); // Clear existing data from the adapter
+            allEventsAdapter.addAll(eventsResults); // Add filtered results to the adapter
+            allEventsAdapter.notifyDataSetChanged(); // Notify adapter of changes
+        }
     }
 }
