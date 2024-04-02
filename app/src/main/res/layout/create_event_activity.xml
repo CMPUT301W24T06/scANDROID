@@ -20,6 +20,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/back_arrow"
+            android:layout_width="48dp"
+            android:layout_height="52dp"
+            android:background="@drawable/back_arrow_icon"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/app_name"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/create_event_page_title"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/create_event_page_title"
             android:layout_width="wrap_content"
@@ -55,18 +68,6 @@
             android:textColor="@color/black" />
     </RelativeLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/back_arrow"
-        android:layout_width="48dp"
-        android:layout_height="52dp"
-        android:background="@drawable/back_arrow_icon"
-        android:backgroundTint="@color/white"
-        android:contentDescription="@string/app_name"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/create_event_page_title"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/create_event_name_text"
