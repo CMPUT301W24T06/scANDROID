@@ -41,6 +41,7 @@ public class Event implements Serializable{
     private ArrayList<Long> CheckInTimes;
     private ArrayList<String> CheckInLocations;
     private ArrayList<String> SignUpIDs;
+    private Integer attendeeLimit;
 
 
     /* ----------- *
@@ -88,6 +89,9 @@ public class Event implements Serializable{
         this.EventDateDetails.put("DAY_OF_MONTH", (long) eventDate.get(Calendar.DAY_OF_MONTH));
         this.EventDateDetails.put("HOUR_OF_DAY", (long) eventDate.get(Calendar.HOUR_OF_DAY));
         this.EventDateDetails.put("MINUTE", (long) eventDate.get(Calendar.MINUTE));
+
+        //initialize event attendee limit to null.
+        this.attendeeLimit = null;
     }
 
     /**
@@ -113,6 +117,9 @@ public class Event implements Serializable{
 
         // Initialize Date data structure
         this.EventDateDetails = new HashMap<>();
+
+        //initialize attendee limit to null
+        this.attendeeLimit = null;
     }
 
     /* ------- *
@@ -252,6 +259,13 @@ public class Event implements Serializable{
 
         // return fully detailed event map
         return packagedEvent;
+    }
+    public void addLimit(Integer num){
+        this.attendeeLimit = num;
+    }
+
+    public void removeLimit(){
+        this.attendeeLimit = 0;
     }
 
     /* ------- *
