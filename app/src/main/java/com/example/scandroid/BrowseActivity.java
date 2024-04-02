@@ -25,6 +25,7 @@ public class BrowseActivity extends AppCompatActivity {
     ViewPager2 browsePager;
     BrowseActivityPageAdapter browseActivityPageAdapter;
     BottomNavigationView navigationBar;
+    int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +42,7 @@ public class BrowseActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 browsePager.setCurrentItem(tab.getPosition());
+                position = tab.getPosition();
             }
 
             @Override
@@ -87,7 +89,8 @@ public class BrowseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //browseActivityPageAdapter = new BrowseActivityPageAdapter(this);
-        //browsePager.setAdapter(browseActivityPageAdapter);
+        browseActivityPageAdapter = new BrowseActivityPageAdapter(this);
+        browsePager.setAdapter(browseActivityPageAdapter);
+        browsePager.setCurrentItem(position);
     }
 }

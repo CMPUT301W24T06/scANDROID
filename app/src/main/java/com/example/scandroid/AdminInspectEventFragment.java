@@ -36,24 +36,21 @@ public class AdminInspectEventFragment extends DialogFragment {
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            eventID = bundle.getString("eventID");
-            database.accessEvent(eventID, event -> {
-                if (event != null) {
-                    eventTitle.setText(event.getEventName());
-                    eventLocation.setText(new LocationGeocoder(getActivity()).coordinatesToAddress(event.getEventLocation()));
-                    Calendar calendar = event.getEventDate();
-                    String eventDateText = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
-                    eventDate.setText(eventDateText);
-                    cancelButton.setOnClickListener(v -> dismiss());
-                    removeButton.setOnClickListener(v -> {
-                        database.deleteEvent(eventID);
-                        listener.onClick();
-                        dismiss();
-                    });
-                } else {
-                    dismiss();
-                }
+            Event event = (Event)bundle.getSerializable("event");
+            assert event != null;
+            eventID = event.getEventID();
+            eventTitle.setText(event.getEventName());
+            eventLocation.setText(new LocationGeocoder(getActivity()).coordinatesToAddress(event.getEventLocation()));
+            Calendar calendar = event.getEventDate();
+            String eventDateText = calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+            eventDate.setText(eventDateText);
+            cancelButton.setOnClickListener(v -> dismiss());
+            removeButton.setOnClickListener(v -> {
+                database.deleteEvent(eventID);
+                listener.onClick();
+                dismiss();
             });
+
         }
         return view;
     }
