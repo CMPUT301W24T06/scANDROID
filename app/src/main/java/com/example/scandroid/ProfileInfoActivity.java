@@ -19,7 +19,6 @@ import android.widget.TextView;
  * or they are selected from the list when browsing all users.
  */
 public class ProfileInfoActivity extends AppCompatActivity implements onClickListener{
-    User currentUser;
     String userID;
     boolean isAttendee;
     Bitmap userProfilePicture;

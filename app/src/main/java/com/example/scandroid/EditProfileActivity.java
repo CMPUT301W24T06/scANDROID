@@ -29,7 +29,6 @@ public class EditProfileActivity extends AppCompatActivity{
     private ImageView profileImageView;
     private String userID;
     private User currentUser;
-    private Uri selectedImageUri;
 
     /**
      * Initializes the activity and sets up views, listeners, and data retrieval.

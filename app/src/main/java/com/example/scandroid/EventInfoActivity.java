@@ -36,6 +36,7 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
     private Button removeButton;
     private TextView eventDescription;
     private DBAccessor database;
+    private Event event;
     private String eventID;
     private String userID;
     private Calendar calendar = Calendar.getInstance();
@@ -62,10 +63,12 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
 
         backButton.setOnClickListener(v -> finish());
 
-        eventID = (String) getIntent().getSerializableExtra("eventID");
+        event = (Event) getIntent().getSerializableExtra("event");
+        assert event != null;
+        eventID = event.getEventID();
 
 
-        database.accessEvent(eventID, event -> {
+
             bigEventName.setText(event.getEventName());
             eventName.setText(event.getEventName());
             calendar = event.getEventDate();
@@ -110,10 +113,6 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                 if (user.getHasAdminPermissions()){
                     removeButton.setVisibility(View.VISIBLE);
                     removeButton.setOnClickListener(v -> {
-                        //database.accessUser(event.getEventOrganizerID(), organizerUser -> {
-                            //organizerUser.removeEventToEventsOrganized(eventID);
-                            //database.storeUser(organizerUser);
-                        //});
                         database.deleteEvent(eventID);
                         finish();
                     });
@@ -159,11 +158,8 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                     Log.e("User", "User information not found");
                 }
             });
-        });
+
     }
-
-
-
     @Override
     public void onClick() {
         posterButton.setImageBitmap(null);
