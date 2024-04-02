@@ -116,7 +116,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
         int end = Math.min(start + pageSize, listSize);
         List<Tuple<User, Bitmap>> subList = allUsers.subList(start, end);
         ArrayList<Tuple<User, Bitmap>> currentPageList = new ArrayList<>(subList);
-        allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, getActivity().getSupportFragmentManager(), BrowseUsersFragment.this);
+        allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, BrowseUsersFragment.this);
         allUsersList.setAdapter(allUserAdapter);
     }
 
@@ -137,7 +137,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
                         if (allUsers.size() == List.size()) {
                             List<Tuple<User, Bitmap>> subList = allUsers.subList(0, pageSize);
                             ArrayList<Tuple<User, Bitmap>> currentPageList = new ArrayList<>(subList);
-                            allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, getActivity().getSupportFragmentManager(), BrowseUsersFragment.this);
+                            allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, BrowseUsersFragment.this);
                             allUsersList.setAdapter(allUserAdapter);
                             nextButton.setVisibility(View.VISIBLE);
                             prevButton.setVisibility(View.VISIBLE);
@@ -154,7 +154,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
                         if (allUsers.size() == List.size()) {
                             List<Tuple<User, Bitmap>> subList = allUsers.subList(0, pageSize);
                             ArrayList<Tuple<User, Bitmap>> currentPageList = new ArrayList<>(subList);
-                            allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, getActivity().getSupportFragmentManager(), BrowseUsersFragment.this);
+                            allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, BrowseUsersFragment.this);
                             allUsersList.setAdapter(allUserAdapter);
                             nextButton.setVisibility(View.VISIBLE);
                             prevButton.setVisibility(View.VISIBLE);

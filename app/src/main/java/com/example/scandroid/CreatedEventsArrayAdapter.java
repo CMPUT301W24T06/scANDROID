@@ -43,7 +43,7 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<Tuple<Event, Bitmap>
      * Constructs a new CreatedEventsArrayAdapter without an event poster listener
      *
      * @param context context where the adapter is being used
-     * @param myEvents list of event IDs to display
+     * @param myEvents list of events and their posters to display
      */
     public CreatedEventsArrayAdapter(Context context, ArrayList<Tuple<Event, Bitmap>> myEvents) {
         super(context,0, myEvents);

@@ -24,19 +24,16 @@ import java.util.ArrayList;
  * a list of users
  */
 public class UsersArrayAdapter extends ArrayAdapter<Tuple<User, Bitmap>> {
-    FragmentManager fragmentManager;
-    boolean isAdmin;
+
     private OnProfileImageClickListener onProfileImageClickListener;
     /**
      * Constructs a new UsersArrayAdapter
      *
      * @param context context where the adapter is being used
-     * @param userIDs list of user IDs to display
+     * @param users list of users and their profile pictures to display
      */
-    public UsersArrayAdapter(Context context, ArrayList<Tuple<User, Bitmap>> userIDs,
-                             FragmentManager fragmentManager, OnProfileImageClickListener onProfileImageClickListener) {
-        super(context,0, userIDs);
-        this.fragmentManager = fragmentManager;
+    public UsersArrayAdapter(Context context, ArrayList<Tuple<User, Bitmap>> users, OnProfileImageClickListener onProfileImageClickListener) {
+        super(context,0, users);
         this.onProfileImageClickListener = onProfileImageClickListener;
     }
 
