@@ -1,12 +1,12 @@
 package com.example.scandroid;
 
-import android.location.Location;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
@@ -25,7 +25,7 @@ public class User {
     private String userPhoneNumber;
     //TODO - (FRONT END) set character limit for userAboutMe.
     private String userAboutMe;
-    private final String adminKey = "ThisPersonIsAnAdmin1298";
+    private String adminKey = "ThisPersonIsAnAdmin1298";
     private String userID;
     private ArrayList<String> eventsAttending;
     private ArrayList<String> eventsOrganized;
@@ -36,8 +36,6 @@ public class User {
     private String fcmToken;
 
     public HashMap<String, Integer> timesAttended = new HashMap<>() ;
-    //TODO - make the user's location optional
-    @Nullable private Location userLocation;
 
     // Add a default constructor
     public User() {
@@ -48,7 +46,6 @@ public class User {
         this.eventsSignedUp = new ArrayList<>();
         this.notifiedBy = new ArrayList<>();
         this.timesAttended = new HashMap<>();
-        this.userLocation = null; // Default to null for userLocation
     }
 
     /* ----------- *
@@ -66,10 +63,10 @@ public class User {
      */
     public User(String userID, String userName, String userPhoneNumber, String userAboutMe, String userEmail) {
         this.userID = userID;
-        this.eventsAttending = new ArrayList<String>();
-        this.eventsOrganized = new ArrayList<String>();
+        this.eventsAttending = new ArrayList<>();
+        this.eventsOrganized = new ArrayList<>();
         this.eventsSignedUp = new ArrayList<>();
-        this.notifiedBy = new ArrayList<String>();
+        this.notifiedBy = new ArrayList<>();
         //set the default value of a user's name to a Guest name if no name is provided.
         if(userName == null){
             Random random_num = new Random();
@@ -172,6 +169,63 @@ public class User {
     public void addEventToNotifiedBy(String event){
         notifiedBy.add(event);
         //user will get notifications for this event.
+    }
+
+    /**
+     * Simplify User object to hashmap to be stored in Firestore database.
+     * @return packaged User object
+     */
+    public Map<String, Object> packageUser() {
+        // initialize map for event fields to be stored
+        Map<String, Object> packagedUser = new HashMap<>();
+
+        // assign event details to map
+        packagedUser.put("name", this.userName);
+        packagedUser.put("email", this.userEmail);
+        packagedUser.put("phoneNumber", this.userPhoneNumber);
+        packagedUser.put("aboutMe", this.userAboutMe);
+        packagedUser.put("adminKey", this.adminKey);
+        packagedUser.put("ID", this.userID);
+        packagedUser.put("eventsAttending", this.eventsAttending);
+        packagedUser.put("eventsOrganizing", this.eventsOrganized);
+        packagedUser.put("eventsSignedUp", this.eventsSignedUp);
+        packagedUser.put("eventsNotifiedBy", this.notifiedBy);
+        packagedUser.put("profilePictureURL", this.profilePictureUrl);
+        packagedUser.put("isAdmin", this.hasAdminPermissions);
+        packagedUser.put("fcmToken", this.fcmToken);
+        packagedUser.put("timesAttended", this.timesAttended);
+
+        // return fully detailed event map
+        return packagedUser;
+    }
+
+    /**
+     * Extracts necessary data from snapshot to create an instance of User. <br>
+     * @param snapshot Document read from Firestore database with User.accessUser() data.
+     * @return User object with appropriate attributes
+     */
+    public static User unpackageUser(DocumentSnapshot snapshot) {
+        // initialize return Event
+        User unpackagedUser = new User();
+
+        // Extract data from the DocumentSnapshot
+        unpackagedUser.userName = snapshot.getString("name");
+        unpackagedUser.userEmail = snapshot.getString("email");
+        unpackagedUser.userPhoneNumber = snapshot.getString("phoneNumber");
+        unpackagedUser.userAboutMe = snapshot.getString("aboutMe");
+        unpackagedUser.adminKey = snapshot.getString("adminKey");
+        unpackagedUser.userID = snapshot.getString("ID");
+        unpackagedUser.eventsAttending = (ArrayList<String>) snapshot.get("eventsAttending");
+        unpackagedUser.eventsOrganized = (ArrayList<String>) snapshot.get("eventsOrganizing");
+        unpackagedUser.eventsSignedUp = (ArrayList<String>) snapshot.get("eventsSignedUp");
+        unpackagedUser.notifiedBy = (ArrayList<String>) snapshot.get("eventsNotifiedBy");
+        unpackagedUser.profilePictureUrl = snapshot.getString("profilePictureURL");
+        unpackagedUser.hasAdminPermissions = (boolean) snapshot.get("isAdmin");
+        unpackagedUser.fcmToken = snapshot.getString("fcmToken");
+        unpackagedUser.timesAttended = (HashMap<String, Integer>) snapshot.get("timesAttended");
+
+        // return re-constructed User object
+        return unpackagedUser;
     }
 
     /* ------- *
