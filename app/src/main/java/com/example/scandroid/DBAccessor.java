@@ -849,8 +849,6 @@ public class DBAccessor {
          * @param callback To handle asynchronous operations for accessing firebase
          */
         private void accessUser(String UserID, UserCallback callback) {
-//            final User[] retrievedUser = new User[1];
-
             // Get a User via UserID
             // Source: https://chat.openai.com/share/e135f2dc-cd2f-47ca-b48e-55115d41e6bf
             this.UserRef.document(UserID).get()
@@ -859,7 +857,7 @@ public class DBAccessor {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 Log.d("Firestore", "DocumentSnapshot data: " + document.getData());
-                                User retrievedUser = task.getResult().toObject(User.class);
+                                User retrievedUser = User.unpackageUser(document);
                                 callback.onUserRetrieved(retrievedUser);
                             } else {
                                 Log.d("Firestore", "No such document");
@@ -870,8 +868,6 @@ public class DBAccessor {
                             callback.onUserRetrieved(null);
                         }
                     });
-
-//            return retrievedUser[0];
         }
 
         /**
@@ -913,9 +909,12 @@ public class DBAccessor {
          * @param user User object to be added or updated.
          */
         private void storeUser(User user) {
+            // package User attributes into a hashmap for storage
+            Map<String, Object> packedUser = user.packageUser();
+
             // Store a User with UserID as key
             // Source: https://firebase.google.com/docs/firestore/manage-data/add-data#update_elements_in_an_array
-            this.UserRef.document(user.getUserID()).set(user)
+            this.UserRef.document(user.getUserID()).set(packedUser)
                     .addOnSuccessListener(aVoid -> Log.d("Firestore", "User successfully written!"))
                     .addOnFailureListener(e -> Log.w("Firestore", "Error writing User document", e));
         }
