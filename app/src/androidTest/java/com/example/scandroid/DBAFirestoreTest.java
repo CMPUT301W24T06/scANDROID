@@ -383,6 +383,7 @@ public class DBAFirestoreTest {
         // create User object to test with
         User mockUser = mockUser();
         String mockProfileURL = "mockProfileURL";
+        String mockFCMToken = "mockFCMToken";
         boolean isAdmin = true;
 
         // create Event objects to test with
@@ -394,6 +395,7 @@ public class DBAFirestoreTest {
         // populate User attributes
         mockUser.setProfilePictureUrl(mockProfileURL);
         mockUser.setHasAdminPermissions(isAdmin);
+        mockUser.setFCMToken(mockFCMToken);
         mockUser.addEventToEventsAttending(mockEventAttend.getEventID());
         mockUser.addEventToEventsOrganized(mockEventOrganize.getEventID());
         mockUser.addEventToEventsSignedUp(mockEventSignUp.getEventID());
