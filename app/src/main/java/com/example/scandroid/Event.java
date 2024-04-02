@@ -193,8 +193,6 @@ public class Event implements Serializable{
 
     /**
      * Extracts necessary data from snapshot to create an instance of Event. <br>
-     * Solution provided by ChatGPT via Simon Thang. <br>
-     * {@see <a href="https://chat.openai.com/share/e135f2dc-cd2f-47ca-b48e-55115d41e6bf"> ChatGPT Conversation </a>}
      * @param snapshot Document read from Firestore database with Event.accessEvent() data.
      * @return Event object with appropriate attributes
      */
@@ -221,9 +219,10 @@ public class Event implements Serializable{
         unpackagedEvent.EventCapacity = (Long) snapshot.get("capacity");
         unpackagedEvent.hasCapacity = (Boolean) snapshot.get("hasCapacity");
 
+        // return re-constructed Event object
         return unpackagedEvent;
 
-    } // end of fromSnapshot
+    } // end of unpackageEvent
 
     /**
      * Simplify Event object to hashmap to be stored in Firestore database.

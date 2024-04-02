@@ -62,9 +62,9 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
 
         //Listener for opening activity showing event page when clicking on an event in list
         allEventsList.setOnItemClickListener((parent, view1, position, id) -> {
-            String eventID = allEventsAdapter.getItem(position).first.getEventID();
+            Event event = allEventsAdapter.getItem(position).first;
             Intent viewEventIntent = new Intent(view1.getContext(), EventInfoActivity.class);
-            viewEventIntent.putExtra("eventID", eventID);
+            viewEventIntent.putExtra("event", event);
             startActivity(viewEventIntent);
         });
 
@@ -90,7 +90,7 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
                 allEventsList.setOnItemLongClickListener((parent, view12, position, id) -> {
                     DialogFragment eventInspectPrompt = new AdminInspectEventFragment(BrowseEventsFragment.this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("eventID", allEventsAdapter.getItem(position).first.getEventID());
+                    bundle.putSerializable("event", allEventsAdapter.getItem(position).first);
                     eventInspectPrompt.setArguments(bundle);
 
                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();

@@ -103,7 +103,7 @@ public class MyEventsFragment extends Fragment {
 
             } else {
                 Intent viewEventIntent = new Intent(view1.getContext(), EventInfoActivity.class);
-                viewEventIntent.putExtra("eventID", event.getEventID());
+                viewEventIntent.putExtra("event", event);
                 startActivity(viewEventIntent);
             }
         });
@@ -120,10 +120,12 @@ public class MyEventsFragment extends Fragment {
         for (String anEvent : myEventIDs) {
             database.accessEvent(anEvent, event -> {
                 if (event == null) {
-                    RemovalNoticeFragment removalNoticeFragment = new RemovalNoticeFragment();
-                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.add(android.R.id.content, removalNoticeFragment);
-                    transaction.commit();
+                    if (Objects.equals(userType, "organizer")) {
+                        RemovalNoticeFragment removalNoticeFragment = new RemovalNoticeFragment();
+                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                        transaction.add(android.R.id.content, removalNoticeFragment);
+                        transaction.commit();
+                    }
                     eventsToRemove.add(anEvent);
                 } else {
                     myRealEventIDs.add(anEvent);

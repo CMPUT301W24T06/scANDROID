@@ -107,11 +107,6 @@ public class AllowAccessCameraRollFragment extends DialogFragment {
         return view;
     }
 
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
-    }
-
     /**
      * Creates an AllowAccessCameraRollFragment and allows the transfer of user/event IDs between edit profile page and create
      * event page
