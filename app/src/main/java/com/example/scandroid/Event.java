@@ -290,7 +290,9 @@ public class Event implements Serializable{
         for (int i = 0; i < CheckInIDs.size(); i++) {
 
             // for handling optional check in location
-            if(this.CheckInLocations.get(i).isEmpty()) {
+            if(!this.CheckInLocations.get(i).isEmpty()) {
+                // locations are stored as "@" delimited string for firestore
+                // must separate longitude and latitude from concatenated string
                 String locationAsString = this.CheckInLocations.get(i);
                 String[] locationAsArray = locationAsString.split("@");
                 ArrayList<Double> locationAsDoubles = new ArrayList<>();
