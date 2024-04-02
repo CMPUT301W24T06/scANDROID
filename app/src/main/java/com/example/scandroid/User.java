@@ -33,6 +33,7 @@ public class User {
     public ArrayList<String> notifiedBy;
     private String profilePictureUrl;
     private boolean hasAdminPermissions;
+    private String fcmToken;
 
     public HashMap<String, Integer> timesAttended = new HashMap<>() ;
     //TODO - make the user's location optional
@@ -268,6 +269,13 @@ public class User {
     public boolean getHasAdminPermissions(){
         return this.hasAdminPermissions;
     }
+    /**
+     * Retrieves a Firebase Cloud Messaging token which allows for the user to receive post notifications from organizers
+     * @return String value which is the user's token
+     */
+    public String getFCMToken() {
+        return fcmToken;
+    }
 
     /* ------- *
      * SETTERS *
@@ -321,4 +329,10 @@ public class User {
         this.hasAdminPermissions = adminPermissions;
     }
 
+    /**
+     * @param FCMToken string that allows the user to receive post notifications
+     */
+    public void setFCMToken(String FCMToken) {
+        this.fcmToken = FCMToken;
+    }
 }

@@ -210,6 +210,7 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
         transaction.commit();
     }
 
+    // Credit: https://www.youtube.com/watch?v=DWIGAkYkpg8
     public void searchEventsList(String text){
         ArrayList<Tuple<Event, Bitmap>> eventsResults = new ArrayList<>();
         for (Tuple<Event, Bitmap> eventData: allEvents){

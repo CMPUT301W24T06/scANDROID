@@ -38,12 +38,10 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
     private DBAccessor database;
     private String eventID;
     private String userID;
-    private Event event;
     private Calendar calendar = Calendar.getInstance();
     private AppCompatButton backButton;
     Bitmap eventPoster;
     CheckBox promiseCheckbox;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -138,6 +136,7 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                                 database.storeEvent(event);
                                 user.addEventToEventsSignedUp(eventID);
                                 database.storeUser(user);
+                                Toast.makeText(getApplicationContext(), "You have signed up for this event", Toast.LENGTH_SHORT).show();
                                 Log.d("Checkbox", "Checkbox is checked");
                             } else {
                                 // If the user is the creator, prevent sign-up and show a message
@@ -151,6 +150,7 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                             database.storeEvent(event);
                             user.removeEventToEventsSignedUp(eventID);
                             database.storeUser(user);
+                            Toast.makeText(getApplicationContext(), "You are no longer signed up for this event.", Toast.LENGTH_SHORT).show();
                             Log.d("Checkbox", "Checkbox is unchecked");
                         }
                     });
