@@ -201,6 +201,8 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
         transaction.add(android.R.id.content, imageInspectPrompt);
         transaction.commit();
     }
+
+    // Credit: https://www.youtube.com/watch?v=DWIGAkYkpg8
     public void searchUsersList(String text){
         ArrayList<Tuple<User, Bitmap>> usersResults = new ArrayList<>();
         for (Tuple<User, Bitmap> userData: allUsers){
