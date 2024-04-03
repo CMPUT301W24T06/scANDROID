@@ -120,10 +120,12 @@ public class EventCheckInActivity extends AppCompatActivity {
 
                         // source: https://stackoverflow.com/a/5369753
                         Time time = new Time(Calendar.getInstance().getTime().getTime());
-                        event.addEventAttendee(userID, time, checkInLocation);
+                        if (user.getEventsAttending().contains(eventID)){
+                            event.addExistingEventAttendee(userID, time, checkInLocation);
+                        } else {
+                            event.addEventAttendee(userID, time, checkInLocation);
+                        }
                         user.addEventToEventsAttending(eventID);
-
-
                         database.storeEvent(event);
                         database.storeUser(user);
                         finish();
