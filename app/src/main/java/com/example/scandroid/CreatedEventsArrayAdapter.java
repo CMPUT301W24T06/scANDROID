@@ -76,11 +76,24 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<Tuple<Event, Bitmap>
         assert tuple != null;
         String eventName = tuple.first.getEventName();
         eventNameText.setText(eventName);
+        Calendar eventDate = tuple.first.getEventDate();
+        //OpenAI, 2024, ChatGPT, How to make a copy of a calendar object at midnight
+        Calendar midnight = (Calendar) eventDate.clone();
+        midnight.set(Calendar.MINUTE, 0);
+        midnight.set(Calendar.HOUR_OF_DAY, 0);
+        midnight.set(Calendar.SECOND, 0);
         //Check if event date earlier than today
         if (Calendar.getInstance().after(tuple.first.getEventDate())){
-            eventStatusText.setText("Live");
-            Drawable redCircleDrawable = ContextCompat.getDrawable(getContext(), R.drawable.red_circle_status);
-            eventStatusCircle.setImageDrawable(redCircleDrawable);
+            //Check if event date is after midnight of that day
+            if (tuple.first.getEventDate().after(midnight)){
+                eventStatusText.setText("Ended");
+                Drawable blackCircleDrawable = ContextCompat.getDrawable(getContext(), R.drawable.black_circle_status);
+                eventStatusCircle.setImageDrawable(blackCircleDrawable);
+            } else {
+                eventStatusText.setText("Live");
+                Drawable redCircleDrawable = ContextCompat.getDrawable(getContext(), R.drawable.red_circle_status);
+                eventStatusCircle.setImageDrawable(redCircleDrawable);
+            }
         }
         eventPoster.setImageBitmap(tuple.second);
         if (onEventPosterClickListener!=null) {
