@@ -122,6 +122,9 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
             String deviceID = new DeviceIDRetriever(EventInfoActivity.this).getDeviceId();
             database.accessUser(deviceID, user -> {
                 if (user != null) {
+                    if (user.getEventsAttending().contains(eventID)){
+                        promiseCheckbox.setVisibility(View.INVISIBLE);
+                    }
                     userID = user.getUserID();
                     if (event.getEventSignUps().contains(userID)){
                         promiseCheckbox.setChecked(true);

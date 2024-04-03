@@ -158,7 +158,20 @@ public class Event implements Serializable{
             }
         }
     }
+    /**
+     * Update an attending user's location and check in time.
+     * @param userID            UserID of attendee that is has already checked into the Event
+     * @param checkInTime       The HrMin time that the attendee is checking-in
+     * @param checkInLocation   Geographical coordinates of Event {latitude, longitude}
+     */
+    public void addExistingEventAttendee(String userID, Time checkInTime, ArrayList<Double> checkInLocation){
+        int position = this.CheckInIDs.indexOf(userID);
+        if(!checkInLocation.isEmpty()) {
+            this.CheckInLocations.set(position, checkInLocation.get(0).toString() + "@" + checkInLocation.get(1).toString());
+        }
+        this.CheckInTimes.set(position, checkInTime.getTime());
 
+    }
 
     /**
      * Add an attendee to the "promise to attend" list.
