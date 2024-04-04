@@ -76,6 +76,9 @@
             android:name=".EventAttendeesActivity"
             android:exported="false" />
         <activity
+            android:name=".EventSignUpsActivity"
+            android:exported="false" />
+        <activity
             android:name=".EventQRCodesActivity"
             android:exported="true" />
         <activity

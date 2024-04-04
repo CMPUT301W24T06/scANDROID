@@ -42,7 +42,9 @@ public class ProfileInfoActivity extends AppCompatActivity implements onClickLis
         if (getIntent().getSerializableExtra("attendee") != null){
             isAttendee = true;
             Event.CheckIn attendeeCheckIn = (Event.CheckIn) getIntent().getSerializableExtra("attendee");
-            profileCheckInText.setText((CharSequence) attendeeCheckIn.getCheckInTime());
+            assert attendeeCheckIn != null;
+            String checkInTimeText = "Check-in Time: " + attendeeCheckIn.getCheckInTime();
+            profileCheckInText.setText(checkInTimeText);
             userID = attendeeCheckIn.getUserID();
         } else {
             profileCountText.setVisibility(View.INVISIBLE);
@@ -87,16 +89,33 @@ public class ProfileInfoActivity extends AppCompatActivity implements onClickLis
                 transaction.add(android.R.id.content, imageInspectPrompt);
                 transaction.commit();
             });
+
+            if (getIntent().getBooleanExtra("ifAdmin", false)){
+                removeButton.setVisibility(View.VISIBLE);
+                removeButton.setOnClickListener(v -> {
+                    database.deleteUser(userID);
+                    for (String eventID: user.getEventsSignedUp()){
+                        database.accessEvent(eventID, event -> {
+                            event.deleteEventSignUp(userID);
+                            database.storeEvent(event);
+                        });
+                    }
+                    for (String eventID: user.getEventsAttending()){
+                        database.accessEvent(eventID, event -> {
+                            event.deleteEventCheckIn(userID);
+                            database.storeEvent(event);
+                        });
+                    }
+
+                    for (String eventID: user.getEventsOrganized()){
+                        database.deleteEvent(eventID);
+                    }
+                    finish();
+                });
+            }
         });
 
-        if (getIntent().getBooleanExtra("ifAdmin", false)){
-            removeButton.setVisibility(View.VISIBLE);
-            removeButton.setOnClickListener(v -> {
-                database.deleteUser(userID);
-                database.deleteUserProfileImage(userID);
-                finish();
-            });
-        }
+
         backButton.setOnClickListener(v -> finish());
     }
 
