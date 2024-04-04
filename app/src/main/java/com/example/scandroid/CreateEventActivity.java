@@ -1,5 +1,6 @@
 package com.example.scandroid;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -22,8 +23,10 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.io.InputStream;
@@ -42,6 +45,9 @@ public class CreateEventActivity extends AppCompatActivity {
     Event event;
     Calendar calendar = Calendar.getInstance();
     ImageView eventPoster;
+    TextView attendeeLimit;
+    int attendeeLimitNum;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +63,8 @@ public class CreateEventActivity extends AppCompatActivity {
         posterButton = findViewById(R.id.create_event_change_poster);
         eventPoster = findViewById(R.id.create_event_poster);
         DBAccessor database = new DBAccessor();
+        Button setLimitButton = findViewById(R.id.attendee_limit_button);
+        attendeeLimit = findViewById(R.id.current_limit_value);
 
 
         //Fills in event details if this Activity was accessed by clicking on an existing event
@@ -75,6 +83,18 @@ public class CreateEventActivity extends AppCompatActivity {
                 editEventTime.setText(eventTime);
                 editEventLocation.setText(new LocationGeocoder(CreateEventActivity.this).coordinatesToAddress(event.getEventLocation()));
                 editEventDescription.setText(event.getEventDescription());
+                String limitString;
+                attendeeLimitNum = event.getEventCapacity();
+                if(attendeeLimitNum == 0){
+                    limitString = "N/A";
+                }
+                else if(attendeeLimitNum == 1){
+                    limitString ="1 Attendee";
+                }
+                else{
+                    limitString = String.format("%d Attendees", attendeeLimitNum);;
+                }
+                attendeeLimit.setText(limitString);
                 database.accessEventPoster(eventID, new BitmapCallback() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap) {
@@ -95,6 +115,7 @@ public class CreateEventActivity extends AppCompatActivity {
             TextView qrNote = findViewById(R.id.create_event_note_text);
             qrNote.setVisibility(View.INVISIBLE);
         }
+
 
         posterButton.setOnClickListener(v -> {
             AllowAccessCameraRollFragment chooseImageFragment = AllowAccessCameraRollFragment.newInstance(eventID, eventPoster.getId(), "event", null);
@@ -151,6 +172,11 @@ public class CreateEventActivity extends AppCompatActivity {
             timePickerDialog.show();
         });
 
+        setLimitButton.setOnClickListener(v ->{
+            showLimitAttendeesFragment();
+
+        });
+
         //Update or create a new Event and store in database
         confirmButton.setOnClickListener(v -> {
             String eventName = editEventName.getText().toString();
@@ -158,6 +184,7 @@ public class CreateEventActivity extends AppCompatActivity {
             String eventLocation = editEventLocation.getText().toString();
             String eventDate = editEventDate.getText().toString();
             String eventTime = editEventTime.getText().toString();
+            String attendeeLim = attendeeLimit.getText().toString();
 
 //            ArrayList<Double> coords = new LocationGeocoder(CreateEventActivity.this).addressToCoordinates(eventLocation);
 //            if (coords.size() == 0){
@@ -168,7 +195,7 @@ public class CreateEventActivity extends AppCompatActivity {
             posterBitmap = new BitmapConfigurator().drawableToBitmap(eventPoster.getDrawable());
 
             // validate input before performing database operations
-            boolean isValidInput = handleUserInput(eventName, eventLocation, eventDate, eventTime, eventDescription);
+            boolean isValidInput = handleUserInput(eventName, eventLocation, eventDate, eventTime, eventDescription, attendeeLim);
 
             if (isValidInput) {
                 //If this was a new event, create new Event object, new QR codes and store those
@@ -176,6 +203,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 if (newEvent) {
                     event = new Event(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(),
                             eventName, eventDescription, calendar, coords);
+                    event.setEventCapacity(attendeeLimitNum);
                     if (coords.size() == 0) {
                         Toast.makeText(CreateEventActivity.this, "Invalid event location", Toast.LENGTH_SHORT).show();
                         return;
@@ -193,6 +221,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     event.setEventName(eventName);
                     event.setEventDescription(eventDescription);
                     event.setEventLocation(coords);
+                    event.setEventCapacity(attendeeLimitNum);
                 }
                 database.storeEvent(event);
                 database.storeEventPoster(eventID, posterBitmap);
@@ -201,12 +230,12 @@ public class CreateEventActivity extends AppCompatActivity {
         });
         backButton.setOnClickListener(v -> finish());
     }
-    private boolean handleUserInput(String eventName, String location, String date, String time, String eventDescription){
+    private boolean handleUserInput(String eventName, String location, String date, String time, String eventDescription, String eventLimit){
         boolean isValid = true;
 
         // check if an event name is a string and if it is valid
-        if (eventName.isEmpty() || eventName.length() > 30) {
-            showToast("Please enter a valid event name (up to 30 characters)");
+        if (eventName.isEmpty() || eventName.length() > 20) {
+            showToast("Please enter a valid event name (up to 20 characters)");
             isValid = false;
             Log.d("Validation", "Event name validation failed");
         }
@@ -231,6 +260,11 @@ public class CreateEventActivity extends AppCompatActivity {
             isValid = false;
             Log.d("Validation", "Time validation failed");
         }
+        if (eventLimit.isEmpty()) {
+            showToast("Please input a number, or press 'cancel' to abort");
+            isValid = false;
+            Log.d("Validation","Attendee limit validation failed");
+        }
 
         return isValid;
     }
@@ -238,5 +272,27 @@ public class CreateEventActivity extends AppCompatActivity {
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-}
+
+    @SuppressLint("DefaultLocale")
+    public void onDataReceived(Bundle data){
+        int enteredLimit = data.getInt("attendeeLimit");
+        String finalAttendeeNum;
+        if (enteredLimit == 0){
+            finalAttendeeNum = "N/A";
+        }
+        else if(enteredLimit == 1){
+            finalAttendeeNum = "1 Attendee";
+        }
+        else{
+            finalAttendeeNum = String.format("%d Attendees", enteredLimit);
+        }
+        attendeeLimit.setText(finalAttendeeNum);
+        attendeeLimitNum = enteredLimit;
+    }
+
+    private void showLimitAttendeesFragment()
+    {
+        LimitAttendeesFragment limitAttendeesFragment = new LimitAttendeesFragment();
+        limitAttendeesFragment.show(getSupportFragmentManager(),"LimitAttendeesFragment");
+    }}
 
