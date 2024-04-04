@@ -83,7 +83,7 @@ public class MyEventsFragment extends Fragment {
                     }
                 }
             }
-            if (!myEventIDs.isEmpty()){
+            if (myEventIDs == null || !myEventIDs.isEmpty()){
                 makeEventList(user);
             } else {
                 loadingTextView.setText("No events");
