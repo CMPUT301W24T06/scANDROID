@@ -174,6 +174,19 @@ public class Event implements Serializable{
     }
 
     /**
+     * Remove an attending user from the list of check in attendees
+     * @param userID UserID of the attendee being removed
+     */
+    public void deleteEventCheckIn(String userID){
+        int position = this.CheckInIDs.indexOf(userID);
+        if (position != -1){
+            this.CheckInLocations.remove(position);
+            this.CheckInTimes.remove(position);
+            this.CheckInIDs.remove(position);
+        }
+    }
+
+    /**
      * Add an attendee to the "promise to attend" list.
      * @param userID    UserID of possible attendee who promises to attend Event
      */
@@ -460,7 +473,7 @@ public class Event implements Serializable{
      * Represents an Attendee of the Event. <br>
      * Organizers use a list of CheckIn's when viewing Users attending their Event.
      */
-    public static class CheckIn {
+    public static class CheckIn implements Serializable{
         private String UserID;
         private Time CheckInTime;
         private ArrayList<Double> CheckInLocation;

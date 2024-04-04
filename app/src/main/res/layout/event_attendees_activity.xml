@@ -26,36 +26,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/event_attendees_list_search_bar"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/attendee_search"
             android:layout_width="347dp"
             android:layout_height="55dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/button_outline_grey"
-            android:padding="10dp"
-            android:text="@string/search_with_attendee_name_text"
             android:textColor="#535353"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.36"
-            app:layout_constraintStart_toEndOf="@+id/event_attendees_list_back_arrow"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/event_attendees_list_search_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignEnd="@+id/event_attendees_list_search_bar"
-            android:layout_alignBottom="@+id/event_attendees_list_search_bar"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="9dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/search_icon"
-            app:layout_constraintEnd_toEndOf="@+id/event_attendees_list_search_bar"
-            app:layout_constraintHorizontal_bias="0.974"
-            app:layout_constraintStart_toStartOf="@+id/event_attendees_list_search_bar"
-            app:layout_constraintTop_toTopOf="@+id/event_attendees_list_search_bar" />
+            app:iconifiedByDefault="false"
+            app:queryHint="@string/search_with_attendee_name_text"/>
 
         <Spinner
             android:id="@+id/event_attendees_list_sort_icon"
@@ -64,9 +46,9 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="2dp"
             android:layout_marginBottom="9dp"
-            android:layout_toStartOf="@+id/event_attendees_list_search_bar"
+            android:layout_toStartOf="@+id/attendee_search"
             android:background="@drawable/dropdown_sort_icon"
-            app:layout_constraintEnd_toStartOf="@+id/event_attendees_list_search_bar"
+            app:layout_constraintEnd_toStartOf="@+id/attendee_search"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/event_attendees_list_back_arrow" />
     </RelativeLayout>
