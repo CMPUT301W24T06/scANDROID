@@ -1,267 +1,274 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
-
-    <RelativeLayout
-        android:id="@+id/blueBackgroundImageView"
+    android:layout_height="match_parent">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="237dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="0dp"
-        android:scaleType="centerCrop"
-        android:background="@color/blue">
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/back_arrow"
-        android:layout_width="48dp"
-        android:layout_height="52dp"
-        android:background="@drawable/back_arrow_icon"
-        android:backgroundTint="@color/white"
-        android:contentDescription="@string/app_name"
-        android:textColor="@color/white" />
-
-
-    <TextView
-        android:id="@+id/editProfileTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/edit_profile_text"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp" />
-
-    <RelativeLayout
-        android:id="@+id/editableTextFieldLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editProfileTextView"
-        android:layout_marginTop="16dp">
-
-        <EditText
-            android:id="@+id/nameEditText"
+        <RelativeLayout
+            android:id="@+id/blueBackgroundImageView"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="@string/guest_text"
-            android:textColor="@color/white"
-            android:textSize="40sp"
-            android:textStyle="bold" />
+            android:layout_height="237dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:scaleType="centerCrop"
+            android:background="@color/blue">
+        </RelativeLayout>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/edit_name_button"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignBottom="@id/nameEditText"
-            android:layout_marginStart="-143dp"
-            android:layout_marginBottom="7dp"
-            android:layout_toEndOf="@id/nameEditText"
-            android:background="@drawable/edit_name_pencil">
-        </androidx.appcompat.widget.AppCompatButton>
+            android:id="@+id/back_arrow"
+            android:layout_width="48dp"
+            android:layout_height="52dp"
+            android:background="@drawable/back_arrow_icon"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/app_name"
+            android:textColor="@color/white" />
 
-    </RelativeLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/edit_profile_image_outline"
-        android:layout_width="145dp"
-        android:layout_height="144dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="160dp"
-        android:clickable="false"
-
-        app:cardCornerRadius="80dp"
-        app:cardBackgroundColor="@android:color/white"/>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/edit_profile_image"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="161dp"
-        android:clickable="false"
-        app:cardElevation="4dp"
-        app:cardCornerRadius="80dp"
-        app:cardBackgroundColor="@android:color/white">
-
-        <ImageView
-            android:id="@+id/image_inside_card"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-
-            android:src="@drawable/guest_default_image">
-        </ImageView>
-
-    </androidx.cardview.widget.CardView>
-
-    <Button
-        android:id="@+id/changePictureTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/change_picture_text"
-        android:textColor="@android:color/black"
-        android:layout_below="@+id/edit_profile_image"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/transparent">
-    </Button>
-
-    <RelativeLayout
-        android:id="@+id/emailLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_profile_image"
-        android:layout_marginTop="32dp">
 
         <TextView
-            android:id="@+id/emailTextView"
+            android:id="@+id/editProfileTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/email_text"
-            android:paddingStart="30dp"
+            android:text="@string/edit_profile_text"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:textSize="18sp"/>
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp" />
 
-        <EditText
-            android:id="@+id/emailEditText"
-            android:layout_width="360dp"
-            android:layout_height="48dp"
-            android:layout_below="@id/emailTextView"
-            android:hint="@string/enter_your_email_text"
-            android:background="@drawable/button_outline_grey"
-            android:paddingStart="10dp"
-            android:paddingEnd="8dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="25.5dp"
-            android:layout_marginEnd="25.5dp">
-        </EditText>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/phoneLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/emailLayout"
-        android:layout_marginTop="12dp">
-
-        <TextView
-            android:id="@+id/phoneTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="30dp"
-            android:text="@string/phone_number_text"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/phoneEditText"
-            android:layout_width="360dp"
-            android:layout_height="48dp"
-            android:layout_below="@id/phoneTextView"
-            android:layout_marginStart="25.5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="25.5dp"
-            android:background="@drawable/button_outline_grey"
-            android:hint="@string/phone_number_text"
-            android:paddingStart="10dp"
-            android:paddingEnd="8dp">
-        </EditText>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/aboutMeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/phoneLayout"
-        android:layout_marginTop="7dp">
-
-        <TextView
-            android:id="@+id/aboutMeTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="30dp"
-            android:text="@string/about_me_text"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/aboutMeEditText"
-            android:layout_width="360dp"
-            android:layout_height="48dp"
-            android:layout_below="@id/aboutMeTextView"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="25.5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="25.5dp"
-            android:background="@drawable/button_outline_grey"
-            android:hint="@string/about_me_text"
-            android:paddingStart="10dp"
-            android:paddingEnd="8dp">
-        </EditText>
-
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/editableTextFieldLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/aboutMeEditText"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:orientation="horizontal">
+            android:layout_below="@id/editProfileTextView"
+            android:layout_marginTop="16dp">
 
-            <CheckBox
-                android:id="@+id/pushNotificationCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/black"
-                android:checked="false">
-            </CheckBox>
+            <EditText
+                android:id="@+id/nameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/guest_text"
+                android:textColor="@color/white"
+                android:textSize="40sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="-4dp"
-                android:text="@string/would_you_like_to_receive_push_notifications_about_your_event_text"
-                android:textSize="14sp"
-                android:textStyle="bold">
-            </TextView>
-        </LinearLayout>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/edit_name_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignBottom="@id/nameEditText"
+                android:layout_marginStart="-143dp"
+                android:layout_marginBottom="7dp"
+                android:layout_toEndOf="@id/nameEditText"
+                android:background="@drawable/edit_name_pencil">
+            </androidx.appcompat.widget.AppCompatButton>
+
+        </RelativeLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/edit_profile_image_outline"
+            android:layout_width="145dp"
+            android:layout_height="144dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="160dp"
+            android:clickable="false"
+
+            app:cardCornerRadius="80dp"
+            app:cardBackgroundColor="@android:color/white"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/edit_profile_image"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="161dp"
+            android:clickable="false"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="80dp"
+            app:cardBackgroundColor="@android:color/white">
+
+            <ImageView
+                android:id="@+id/image_inside_card"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+
+                android:src="@drawable/guest_default_image">
+            </ImageView>
+
+        </androidx.cardview.widget.CardView>
 
         <Button
-            android:id="@+id/updateButton"
-            android:layout_width="229dp"
+            android:id="@+id/changePictureTextView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="80dp"
-            android:layout_marginTop="175dp"
-            android:layout_marginEnd="80dp"
-            android:backgroundTint="@color/black"
-            android:text="@string/update_text">
+            android:text="@string/change_picture_text"
+            android:textColor="@android:color/black"
+            android:layout_below="@+id/edit_profile_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/transparent">
         </Button>
+
+        <RelativeLayout
+            android:id="@+id/emailLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_profile_image"
+            android:layout_marginTop="32dp">
+
+            <TextView
+                android:id="@+id/emailTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/email_text"
+                android:paddingStart="30dp"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
+
+            <EditText
+                android:id="@+id/emailEditText"
+                android:layout_width="360dp"
+                android:layout_height="48dp"
+                android:layout_below="@id/emailTextView"
+                android:hint="@string/enter_your_email_text"
+                android:background="@drawable/button_outline_grey"
+                android:paddingStart="10dp"
+                android:paddingEnd="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="25.5dp"
+                android:layout_marginEnd="25.5dp">
+            </EditText>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/phoneLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/emailLayout"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:id="@+id/phoneTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="30dp"
+                android:text="@string/phone_number_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/phoneEditText"
+                android:layout_width="360dp"
+                android:layout_height="48dp"
+                android:layout_below="@id/phoneTextView"
+                android:layout_marginStart="25.5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="25.5dp"
+                android:background="@drawable/button_outline_grey"
+                android:hint="@string/phone_number_text"
+                android:paddingStart="10dp"
+                android:paddingEnd="8dp">
+            </EditText>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/aboutMeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/phoneLayout"
+            android:layout_marginTop="7dp">
+
+            <TextView
+                android:id="@+id/aboutMeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="30dp"
+                android:text="@string/about_me_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/aboutMeEditText"
+                android:layout_width="360dp"
+                android:layout_height="48dp"
+                android:layout_below="@id/aboutMeTextView"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="25.5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="25.5dp"
+                android:background="@drawable/button_outline_grey"
+                android:hint="@string/about_me_text"
+                android:paddingStart="10dp"
+                android:paddingEnd="8dp">
+            </EditText>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/aboutMeEditText"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/pushNotificationCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/black"
+                    android:checked="false">
+                </CheckBox>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="-4dp"
+                    android:text="@string/would_you_like_to_receive_push_notifications_about_your_event_text"
+                    android:textSize="14sp"
+                    android:textStyle="bold">
+                </TextView>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/updateButton"
+                android:layout_width="229dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="175dp"
+                android:layout_marginEnd="80dp"
+                android:backgroundTint="@color/black"
+                android:text="@string/update_text">
+            </Button>
+
+        </RelativeLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/admin_wrench_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="end"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/admin_wrench">
+        </androidx.appcompat.widget.AppCompatButton>
+
 
     </RelativeLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/admin_wrench_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="end"
-        android:layout_marginEnd="4dp"
-        android:background="@drawable/admin_wrench">
-    </androidx.appcompat.widget.AppCompatButton>
-
-
-</RelativeLayout>
+</ScrollView>
