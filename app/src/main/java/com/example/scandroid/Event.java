@@ -160,7 +160,33 @@ public class Event implements Serializable{
             }
         }
     }
+    /**
+     * Update an attending user's location and check in time.
+     * @param userID            UserID of attendee that is has already checked into the Event
+     * @param checkInTime       The HrMin time that the attendee is checking-in
+     * @param checkInLocation   Geographical coordinates of Event {latitude, longitude}
+     */
+    public void addExistingEventAttendee(String userID, Time checkInTime, ArrayList<Double> checkInLocation){
+        int position = this.CheckInIDs.indexOf(userID);
+        if(!checkInLocation.isEmpty()) {
+            this.CheckInLocations.set(position, checkInLocation.get(0).toString() + "@" + checkInLocation.get(1).toString());
+        }
+        this.CheckInTimes.set(position, checkInTime.getTime());
 
+    }
+
+    /**
+     * Remove an attending user from the list of check in attendees
+     * @param userID UserID of the attendee being removed
+     */
+    public void deleteEventCheckIn(String userID){
+        int position = this.CheckInIDs.indexOf(userID);
+        if (position != -1){
+            this.CheckInLocations.remove(position);
+            this.CheckInTimes.remove(position);
+            this.CheckInIDs.remove(position);
+        }
+    }
 
     /**
      * Add an attendee to the "promise to attend" list.
@@ -254,7 +280,6 @@ public class Event implements Serializable{
         // return fully detailed event map
         return packagedEvent;
     }
-
     /* ------- *
      * GETTERS *
      * ------- */
@@ -442,6 +467,11 @@ public class Event implements Serializable{
         this.EventCapacity = (long) Math.abs(eventCapacity);
     }
 
+    public void removeEventCapacity(){
+        this.hasCapacity = false;
+        this.EventCapacity = 0L;
+    }
+
 
     /* -------------- *
      * NESTED CLASSES *
@@ -450,7 +480,7 @@ public class Event implements Serializable{
      * Represents an Attendee of the Event. <br>
      * Organizers use a list of CheckIn's when viewing Users attending their Event.
      */
-    public static class CheckIn {
+    public static class CheckIn implements Serializable{
         private String UserID;
         private Time CheckInTime;
         private ArrayList<Double> CheckInLocation;

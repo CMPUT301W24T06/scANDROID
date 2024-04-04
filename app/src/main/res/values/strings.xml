@@ -50,7 +50,7 @@
     <string name="email_text">Email</string>
     <string name="change_picture_text">Change Picture</string>
     <string name="search_with_attendee_name_text">Search with attendee name</string>
-    <string name="total_attendees_text">Total Attendees:</string>
+    <string name="total_attendees_text">Total Attendees: 0</string>
     <string name="welcome_text">Welcome!</string>
     <string name="would_you_like_to_enter_your_name_text">Would you like to enter your name?</string>
     <string name="optional_text">(Optional)</string>
@@ -84,4 +84,5 @@
     <string name="cancel_button_attendee_limit">Cancel</string>
     <string name="remove_button_attendee_limit">Remove</string>
     <string name="enter_whole_number">Enter a whole number</string>
+    <string name="signups">SignUps</string>
 </resources>

@@ -55,7 +55,7 @@ public class WelcomeFragment extends DialogFragment {
             //((HomepageActivity) requireActivity()).onMaybeLaterClicked(randomName);
             HomepageActivity activity = (HomepageActivity) getActivity();
             Bundle userNameGeneration = new Bundle();
-            userNameGeneration.putString("userName", randomName);
+            userNameGeneration.putString("name", randomName);
             if (activity != null) {
                 activity.onNameReceived(userNameGeneration);
             }
@@ -73,7 +73,7 @@ public class WelcomeFragment extends DialogFragment {
             }
             HomepageActivity activity = (HomepageActivity) getActivity();
             Bundle userNameGeneration = new Bundle();
-            userNameGeneration.putString("userName", enteredName);
+            userNameGeneration.putString("name", enteredName);
             if (activity != null) {
                 activity.onNameReceived(userNameGeneration);
 

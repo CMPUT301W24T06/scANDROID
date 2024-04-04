@@ -1,274 +1,280 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/create_event_activity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/create_event_activity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
-
-    <RelativeLayout
-        android:id="@+id/blue_background"
-        android:layout_width="422dp"
-        android:layout_height="220dp"
-        android:background="@color/blue"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/back_arrow"
-            android:layout_width="48dp"
-            android:layout_height="52dp"
-            android:background="@drawable/back_arrow_icon"
-            android:backgroundTint="@color/white"
-            android:contentDescription="@string/app_name"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toStartOf="@+id/create_event_page_title"
-            app:layout_constraintHorizontal_bias="0.0"
+        <RelativeLayout
+            android:id="@+id/blue_background"
+            android:layout_width="422dp"
+            android:layout_height="220dp"
+            android:background="@color/blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.555"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/back_arrow"
+                android:layout_width="48dp"
+                android:layout_height="52dp"
+                android:background="@drawable/back_arrow_icon"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/app_name"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toStartOf="@+id/create_event_page_title"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/create_event_page_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="89dp"
+                android:text="@string/your_event_text"
+                android:textColor="@color/white"
+                android:textSize="50sp" />
+
+            <ImageView
+                android:id="@+id/create_event_poster"
+                android:layout_width="169dp"
+                android:layout_height="104dp"
+                android:layout_below="@+id/create_event_page_title"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="128dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/add_poster_icon" />
+
+            <Button
+                android:id="@+id/create_event_change_poster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/create_event_poster"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="143dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/app_name"
+                android:text="@string/change_event_poster"
+                android:textColor="@color/black" />
+        </RelativeLayout>
+
 
         <TextView
-            android:id="@+id/create_event_page_title"
+            android:id="@+id/create_event_name_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="89dp"
-            android:text="@string/your_event_text"
-            android:textColor="@color/white"
-            android:textSize="50sp" />
+            android:layout_marginTop="16dp"
+            android:text="@string/event_name_text"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.084"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/blue_background" />
 
-        <ImageView
-            android:id="@+id/create_event_poster"
-            android:layout_width="169dp"
-            android:layout_height="104dp"
-            android:layout_below="@+id/create_event_page_title"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="128dp"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/add_poster_icon" />
+        <EditText
+            android:id="@+id/event_name_edit_text"
+            android:layout_width="360dp"
+            android:layout_height="48dp"
+            android:autofillHints="AUTOFILL_TYPE_TEXT"
+            android:background="@drawable/button_outline_grey"
+            android:hint="@string/enter_event_name_hint"
+            android:inputType="textMultiLine"
+            android:padding="10dp"
+            android:textColorHint="#757575"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_name_text" />
+
+        <TextView
+            android:id="@+id/create_event_location_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/event_location_text"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.084"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_name_edit_text" />
+
+        <EditText
+            android:id="@+id/event_location_edit_text"
+            android:layout_width="360dp"
+            android:layout_height="48dp"
+            android:autofillHints="AUTOFILL_TYPE_TEXT"
+            android:background="@drawable/button_outline_grey"
+            android:hint="@string/enter_event_location_hint"
+            android:inputType="textMultiLine"
+            android:padding="10dp"
+            android:textColorHint="#757575"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_location_text" />
+
+        <TextView
+            android:id="@+id/create_event_date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/event_date_text"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.078"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_location_edit_text" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/edit_event_date_button"
+            android:layout_width="170dp"
+            android:layout_height="48dp"
+            android:background="@drawable/button_outline_grey"
+            android:hint="@string/enter_event_date_hint"
+            android:inputType="date"
+            android:padding="10dp"
+            android:textColorHint="#757575"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.108"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_date_text" />
+
+        <EditText
+            android:id="@+id/event_description_edit_text"
+            android:layout_width="359dp"
+            android:layout_height="77dp"
+            android:background="@drawable/button_outline_grey"
+            android:hint="@string/enter_event_description_hint"
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine"
+            android:padding="10dp"
+            android:textColorHint="#757575"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.519"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_description_text" />
 
         <Button
-            android:id="@+id/create_event_change_poster"
+            android:id="@+id/attendee_limit_button"
+            android:layout_width="275dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/black"
+            android:text="@string/set_or_edit_an_attendee_limit"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_description_edit_text" />
+
+        <TextView
+            android:id="@+id/current_limit_text"
+            android:layout_width="81dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="52dp"
+            android:text="Current limit:"
+            android:textAlignment="textEnd"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/current_limit_value"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/attendee_limit_button"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/create_event_confirm_button"
+            android:layout_width="300dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/black"
+            android:text="@string/create_my_event_text"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/current_limit_text" />
+
+        <TextView
+            android:id="@+id/create_event_note_text"
+            android:layout_width="232dp"
+            android:layout_height="29dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/note_creating_an_event_will_generate_a_shareable_qr_code_that_users_can_scan_for_attendance_text"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_confirm_button"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/create_event_description_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/create_event_poster"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="143dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/app_name"
-            android:text="@string/change_event_poster"
-            android:textColor="@color/black" />
-    </RelativeLayout>
+            android:layout_marginTop="8dp"
+            android:text="@string/event_description_text"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.093"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_event_time_button" />
+
+        <TextView
+            android:id="@+id/create_event_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/event_time"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.079"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_event_date_button" />
 
 
-    <TextView
-        android:id="@+id/create_event_name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/event_name_text"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.084"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/blue_background" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/edit_event_time_button"
+            android:layout_width="170dp"
+            android:layout_height="48dp"
+            android:autofillHints="AUTOFILL_TYPE_DATE"
+            android:background="@drawable/button_outline_grey"
+            android:hint="@string/enter_event_date"
+            android:inputType="date"
+            android:textColorHint="#757575"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.107"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_event_time_text" />
 
-    <EditText
-        android:id="@+id/event_name_edit_text"
-        android:layout_width="360dp"
-        android:layout_height="48dp"
-        android:autofillHints="AUTOFILL_TYPE_TEXT"
-        android:background="@drawable/button_outline_grey"
-        android:hint="@string/enter_event_name_hint"
-        android:inputType="textMultiLine"
-        android:padding="10dp"
-        android:textColorHint="#757575"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_name_text" />
+        <TextView
+            android:id="@+id/current_limit_value"
+            android:layout_width="77dp"
+            android:layout_height="15dp"
+            android:layout_marginEnd="124dp"
+            android:paddingStart="5dp"
+            android:text="N/A"
+            android:textAlignment="textStart"
+            android:textColor="#FF9900"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/attendee_limit_button"
+            app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/create_event_location_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/event_location_text"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.084"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_name_edit_text" />
-
-    <EditText
-        android:id="@+id/event_location_edit_text"
-        android:layout_width="360dp"
-        android:layout_height="48dp"
-        android:autofillHints="AUTOFILL_TYPE_TEXT"
-        android:background="@drawable/button_outline_grey"
-        android:hint="@string/enter_event_location_hint"
-        android:inputType="textMultiLine"
-        android:padding="10dp"
-        android:textColorHint="#757575"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_location_text" />
-
-    <TextView
-        android:id="@+id/create_event_date_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/event_date_text"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.078"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_location_edit_text" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/edit_event_date_button"
-        android:layout_width="170dp"
-        android:layout_height="48dp"
-        android:background="@drawable/button_outline_grey"
-        android:hint="@string/enter_event_date_hint"
-        android:inputType="date"
-        android:padding="10dp"
-        android:textColorHint="#757575"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.108"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_date_text" />
-
-    <EditText
-        android:id="@+id/event_description_edit_text"
-        android:layout_width="359dp"
-        android:layout_height="77dp"
-        android:background="@drawable/button_outline_grey"
-        android:hint="@string/enter_event_description_hint"
-        android:importantForAutofill="no"
-        android:inputType="textMultiLine"
-        android:padding="10dp"
-        android:textColorHint="#757575"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.519"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_description_text" />
-
-    <Button
-        android:id="@+id/attendee_limit_button"
-        android:layout_width="275dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/black"
-        android:text="@string/set_or_edit_an_attendee_limit"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_description_edit_text" />
-
-    <TextView
-        android:id="@+id/current_limit_text"
-        android:layout_width="81dp"
-        android:layout_height="15dp"
-        android:layout_marginStart="52dp"
-        android:text="Current limit:"
-        android:textAlignment="textEnd"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/current_limit_value"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/attendee_limit_button"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/create_event_confirm_button"
-        android:layout_width="300dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/black"
-        android:text="@string/create_my_event_text"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/current_limit_text" />
-
-    <TextView
-        android:id="@+id/create_event_note_text"
-        android:layout_width="232dp"
-        android:layout_height="29dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/note_creating_an_event_will_generate_a_shareable_qr_code_that_users_can_scan_for_attendance_text"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_confirm_button"
-        tools:ignore="SmallSp" />
-
-    <TextView
-        android:id="@+id/create_event_description_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/event_description_text"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.093"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_event_time_button" />
-
-    <TextView
-        android:id="@+id/create_event_time_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/event_time"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.079"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_event_date_button" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/edit_event_time_button"
-        android:layout_width="170dp"
-        android:layout_height="48dp"
-        android:autofillHints="AUTOFILL_TYPE_DATE"
-        android:background="@drawable/button_outline_grey"
-        android:hint="@string/enter_event_date"
-        android:inputType="date"
-        android:textColorHint="#757575"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.107"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_time_text" />
-
-    <TextView
-        android:id="@+id/current_limit_value"
-        android:layout_width="77dp"
-        android:layout_height="15dp"
-        android:layout_marginEnd="124dp"
-        android:paddingStart="5dp"
-        android:text="N/A"
-        android:textAlignment="textStart"
-        android:textColor="#FF9900"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/attendee_limit_button"
-        app:layout_constraintVertical_bias="0.0" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

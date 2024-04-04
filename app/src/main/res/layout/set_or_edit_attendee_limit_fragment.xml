@@ -64,7 +64,7 @@
             >
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/cancel_button"
+                android:id="@+id/cancel_button_limit_attendees"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
@@ -78,7 +78,7 @@
                 android:textSize="18sp" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/remove_button"
+                android:id="@+id/remove_button_limit_attendees"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
@@ -92,7 +92,7 @@
                 android:textSize="18sp" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/confirm_button"
+                android:id="@+id/confirm_button_limit_attendees"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

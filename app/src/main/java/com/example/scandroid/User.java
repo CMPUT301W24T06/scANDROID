@@ -32,7 +32,7 @@ public class User {
     private ArrayList<String> eventsSignedUp;
     public ArrayList<String> notifiedBy;
     private String profilePictureUrl;
-    private boolean hasAdminPermissions;
+    private boolean hasAdminPermissions = false;
     private String fcmToken;
     public HashMap<String, Long> timesAttended = new HashMap<>() ;
 

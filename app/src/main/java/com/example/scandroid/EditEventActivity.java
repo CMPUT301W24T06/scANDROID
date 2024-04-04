@@ -35,6 +35,7 @@ public class EditEventActivity extends AppCompatActivity {
         eventCreateAnnouncementsPageButton = findViewById(R.id.announcements_button);
         eventLocationTrackingPageButton = findViewById(R.id.location_tracking_button);
         eventMilestonesPageButton = findViewById(R.id.milestones_button);
+        AppCompatButton eventSignUpsButton = findViewById(R.id.signups_button);
 
         backButton.setOnClickListener(v -> finish());
 
@@ -84,6 +85,14 @@ public class EditEventActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(EditEventActivity.this, EventMilestonesActivity.class);
+                    i.putExtra("event", getIntent().getSerializableExtra("event"));
+                    startActivity(i);
+                }
+            });
+            eventSignUpsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(EditEventActivity.this, EventSignUpsActivity.class);
                     i.putExtra("event", getIntent().getSerializableExtra("event"));
                     startActivity(i);
                 }
