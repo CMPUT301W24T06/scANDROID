@@ -49,6 +49,22 @@ public class AdminInspectUserFragment extends DialogFragment {
                     cancelButton.setOnClickListener(v -> dismiss());
                     removeButton.setOnClickListener(v -> {
                         database.deleteUser(userID);
+                        for (String eventID: user.getEventsSignedUp()){
+                            database.accessEvent(eventID, event -> {
+                                event.deleteEventSignUp(userID);
+                                database.storeEvent(event);
+                            });
+                        }
+                        for (String eventID: user.getEventsAttending()){
+                            database.accessEvent(eventID, event -> {
+                                event.deleteEventCheckIn(userID);
+                                database.storeEvent(event);
+                            });
+                        }
+
+                        for (String eventID: user.getEventsOrganized()){
+                            database.deleteEvent(eventID);
+                        }
                         listener.onClick(); //Alert calling activity about a removal click
                         dismiss();
                     });

@@ -202,6 +202,10 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
         transaction.commit();
     }
 
+    /**
+     * Search for specific users that match keyword
+     * @param text Keyword entered by the user
+     */
     // Credit: https://www.youtube.com/watch?v=DWIGAkYkpg8
     public void searchUsersList(String text){
         ArrayList<Tuple<User, Bitmap>> usersResults = new ArrayList<>();
