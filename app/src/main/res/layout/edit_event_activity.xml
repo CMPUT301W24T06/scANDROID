@@ -125,4 +125,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/location_tracking_button" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/signups_button"
+        android:layout_width="400dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/button_outline_grey"
+        android:drawableEnd="@drawable/forward_arrow_icon"
+        android:fontFamily="@font/poppins"
+        android:gravity="start|center_vertical"
+        android:padding="10dp"
+        android:text="@string/signups"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/milestones_button" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
