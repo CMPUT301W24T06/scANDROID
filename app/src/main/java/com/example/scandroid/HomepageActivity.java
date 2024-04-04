@@ -138,6 +138,7 @@ public class HomepageActivity extends AppCompatActivity {
         getFCMToken();
     }
 
+    // Credit: https://www.youtube.com/watch?v=NF0RzhXDRKw
     private void getFCMToken() {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task ->  {
             if (task.isSuccessful()){

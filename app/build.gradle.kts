@@ -64,5 +64,6 @@ dependencies {
     androidTestImplementation ("androidx.test.espresso:espresso-intents:3.5.1")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation ("com.google.android.gms:play-services-location:21.2.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
 apply(plugin = "com.google.gms.google-services")
