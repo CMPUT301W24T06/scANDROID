@@ -265,7 +265,6 @@ public class Event implements Serializable{
         // return fully detailed event map
         return packagedEvent;
     }
-
     /* ------- *
      * GETTERS *
      * ------- */
@@ -451,6 +450,11 @@ public class Event implements Serializable{
             this.hasCapacity = Boolean.FALSE;
         }
         this.EventCapacity = (long) Math.abs(eventCapacity);
+    }
+
+    public void removeEventCapacity(){
+        this.hasCapacity = false;
+        this.EventCapacity = 0L;
     }
 
 

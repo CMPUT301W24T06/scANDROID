@@ -203,13 +203,13 @@ public class HomepageActivity extends AppCompatActivity {
     }
 
     public void onNameReceived(Bundle data) {
-        String userName = data.getString("userName");
+        String userName = data.getString("name");
         TextView profileName = findViewById(R.id.homepage_name_text);
         profileName.setText(userName);
         Bitmap newProfilePicture = new ProfilePictureGenerator().generatePictureBitmap(userName);
         profilePicture.setImageBitmap(newProfilePicture);
         database.storeUserProfileImage(userID, newProfilePicture);
         db.collection("Users").document(userID)
-                .update("userName", userName);
+                .update("name", userName);
     }
 }
