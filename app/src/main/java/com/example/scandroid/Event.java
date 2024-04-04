@@ -465,11 +465,6 @@ public class Event implements Serializable{
         this.EventCapacity = (long) Math.abs(eventCapacity);
     }
 
-    public void removeEventCapacity(){
-        this.hasCapacity = false;
-        this.EventCapacity = 0L;
-    }
-
 
     /* -------------- *
      * NESTED CLASSES *
