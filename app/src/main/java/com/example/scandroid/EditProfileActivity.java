@@ -132,8 +132,8 @@ public class EditProfileActivity extends AppCompatActivity{
     private boolean handleUserInput(String name, String email, String phone){
         boolean isValid = true;
         // check if name is a string
-        if (name.isEmpty() || name.length() > 30 || !name.matches("[a-zA-Z]+")) {
-            showToast("Please enter a valid name (up to 30 characters)");
+        if (name.isEmpty() || name.length() > 15 || !name.matches("[a-zA-Z]+")) {
+            showToast("Please enter a valid name (up to 15 characters)");
             isValid = false;
         }
         // if user chooses to provide an email

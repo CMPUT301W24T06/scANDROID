@@ -205,8 +205,8 @@ public class CreateEventActivity extends AppCompatActivity {
         boolean isValid = true;
 
         // check if an event name is a string and if it is valid
-        if (eventName.isEmpty() || eventName.length() > 30) {
-            showToast("Please enter a valid event name (up to 30 characters)");
+        if (eventName.isEmpty() || eventName.length() > 20) {
+            showToast("Please enter a valid event name (up to 20 characters)");
             isValid = false;
             Log.d("Validation", "Event name validation failed");
         }
