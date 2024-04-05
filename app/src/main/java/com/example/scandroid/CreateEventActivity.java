@@ -209,8 +209,7 @@ public class CreateEventActivity extends AppCompatActivity {
                         return;
                     }
                     eventID = event.getEventID();
-                    new EventQRCodesActivity().generateCheckInQR(eventID, database);
-                    new EventQRCodesActivity().generatePromoQR(eventID, database);
+                    new EventQRCodesActivity().generateQRCodes(eventID, database);
 
                     database.accessUser(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(), user -> {
                         user.addEventToEventsOrganized(eventID);

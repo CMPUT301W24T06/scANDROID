@@ -23,6 +23,9 @@ import com.journeyapps.barcodescanner.CaptureActivity;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * QRScannerActivity activity provides functionality for scanning QR Codes using the device's camera.
  * It initializes the camera, handles scanning event details and check-in information,
@@ -34,6 +37,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 // code sourced from https://www.youtube.com/watch?v=jtT60yFPelI
 // source for navigation bar logic: https://www.youtube.com/watch?v=lOTIedfP1OA
 // gradle dependency for switch case:https://stackoverflow.com/questions/76430646/constant-expression-required-when-trying-to-create-a-switch-case-block
+// https://chat.openai.com/share/396352f1-a9ae-4df1-9cf4-9466658263d3
 public class QRScannerActivity extends AppCompatActivity {
     BottomNavigationView navigationBar;
     Button qr_scanner_button;
@@ -89,46 +93,37 @@ public class QRScannerActivity extends AppCompatActivity {
 
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
         if (result.getContents() != null) {
-            String eventID = result.getContents();
-            String userID = getIntent().getStringExtra("userID");
+            try {
+                String userID = getIntent().getStringExtra("userID");
 
-            Intent intent = new Intent(QRScannerActivity.this, CheckInOrPromoActivity.class);
-            intent.putExtra("eventID", eventID);
-            intent.putExtra("userID", userID);
-            startActivity(intent);
+                // Parse the JSON string into a JSONObject
+                JSONObject jsonObject = new JSONObject(result.getContents());
 
+                // Extract eventID and isPromo from the JSONObject
+                String eventID = jsonObject.getString("eventID");
+                boolean isPromo = jsonObject.getBoolean("isPromo");
 
+                // Now you have both the event ID and the type of QR code
+                // You can perform the appropriate action based on the QR code type
+                Intent intent;
+                if (isPromo) {
+                    // Handle promo QR code
+                    System.out.println("This is a promo QR code for event ID: " + eventID);
+                    intent = new Intent(QRScannerActivity.this, EventInfoActivity.class);
+                } else {
+                    // Handle check-in QR code
+                    System.out.println("This is a check-in QR code for event ID: " + eventID);
+                    intent = new Intent(QRScannerActivity.this, EventCheckInActivity.class);
+                }
+                intent.putExtra("eventID", eventID);
+                intent.putExtra("userID", userID);
+                startActivity(intent);
 
-//
-//            AlertDialog.Builder builder = new AlertDialog.Builder(QRScannerActivity.this);
-//            builder.setTitle("Promo or Check-In?");
-//
-//
-//            builder.setNeutralButton("Promo", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    // If the QR Code is for looking at promo for an event.
-//                    Intent intent = new Intent(QRScannerActivity.this, EventInfoActivity.class);
-//                    intent.putExtra("eventID", eventID);
-//                    startActivity(intent);
-//                    // dialog.dismiss();
-//                }
-//            }).show();
-//            builder.setNeutralButton("Check-In", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    // If the QR Code is for checking into an event.
-//                    // source: https://stackoverflow.com/a/15392591
-//                    DialogFragment checkInPrompt = new EventCheckInFragment();
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("eventID", eventID);
-//                    checkInPrompt.setArguments(bundle);
-//
-//                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//                    transaction.add(android.R.id.content, checkInPrompt);
-//                    transaction.commit();
-//                }
-//            });
+            } catch (JSONException e) {
+                // Handle JSON parsing error
+                throw new RuntimeException("Error parsing QR code content", e);
+            }
         }
     });
 }
+
