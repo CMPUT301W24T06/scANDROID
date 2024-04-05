@@ -26,7 +26,7 @@ import java.util.Calendar;
  * This activity displays the event's details
  * (title, location, date, time, and poster).
  */
-public class EventInfoActivity extends AppCompatActivity implements onClickListener{
+public class EventInfoActivity extends AppCompatActivity implements onClickListener {
     private ImageView posterButton;
     private TextView bigEventName;
     private TextView eventName;
@@ -64,9 +64,9 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
         backButton.setOnClickListener(v -> finish());
 
         event = (Event) getIntent().getSerializableExtra("event");
-        assert event != null;
-        eventID = event.getEventID();
 
+        if (event != null) {
+            eventID = event.getEventID();
 
 
             bigEventName.setText(event.getEventName());
@@ -110,7 +110,7 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
             });
 
             database.accessUser(new DeviceIDRetriever(EventInfoActivity.this).getDeviceId(), user -> {
-                if (user.getHasAdminPermissions()){
+                if (user.getHasAdminPermissions()) {
                     removeButton.setVisibility(View.VISIBLE);
                     removeButton.setOnClickListener(v -> {
                         database.deleteEvent(eventID);
@@ -122,11 +122,11 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
             String deviceID = new DeviceIDRetriever(EventInfoActivity.this).getDeviceId();
             database.accessUser(deviceID, user -> {
                 if (user != null) {
-                    if (user.getEventsAttending().contains(eventID)){
+                    if (user.getEventsAttending().contains(eventID)) {
                         promiseCheckbox.setVisibility(View.INVISIBLE);
                     }
                     userID = user.getUserID();
-                    if (event.getEventSignUps().contains(userID)){
+                    if (event.getEventSignUps().contains(userID)) {
                         promiseCheckbox.setChecked(true);
                     }
                     // get the userID
@@ -145,8 +145,7 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                                 Toast.makeText(EventInfoActivity.this, "You cannot sign up for your own event.", Toast.LENGTH_SHORT).show();
                                 promiseCheckbox.setChecked(false); // Uncheck the checkbox
                             }
-                        }
-                            else {
+                        } else {
                             // If checkbox is unchecked, remove the user from SignUPs
                             event.deleteEventSignUp(userID);
                             database.storeEvent(event);
@@ -161,8 +160,10 @@ public class EventInfoActivity extends AppCompatActivity implements onClickListe
                     Log.e("User", "User information not found");
                 }
             });
+        }
 
     }
+
     @Override
     public void onClick() {
         posterButton.setImageBitmap(null);

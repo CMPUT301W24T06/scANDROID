@@ -26,6 +26,8 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * QRScannerActivity activity provides functionality for scanning QR Codes using the device's camera.
  * It initializes the camera, handles scanning event details and check-in information,
@@ -41,6 +43,7 @@ import org.json.JSONObject;
 public class QRScannerActivity extends AppCompatActivity {
     BottomNavigationView navigationBar;
     Button qr_scanner_button;
+    DBAccessor database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,8 @@ public class QRScannerActivity extends AppCompatActivity {
         navigationBar = findViewById(R.id.navigation_bar);
         navigationBar.setSelectedItemId(R.id.qr_button);
         qr_scanner_button = findViewById(R.id.QR_scan_code_button);
+        database = new DBAccessor();
+
 
         navigationBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -103,21 +108,25 @@ public class QRScannerActivity extends AppCompatActivity {
                 String eventID = jsonObject.getString("eventID");
                 boolean isPromo = jsonObject.getBoolean("isPromo");
 
-                // Now you have both the event ID and the type of QR code
-                // You can perform the appropriate action based on the QR code type
-                Intent intent;
-                if (isPromo) {
-                    // Handle promo QR code
-                    System.out.println("This is a promo QR code for event ID: " + eventID);
-                    intent = new Intent(QRScannerActivity.this, EventInfoActivity.class);
-                } else {
-                    // Handle check-in QR code
-                    System.out.println("This is a check-in QR code for event ID: " + eventID);
-                    intent = new Intent(QRScannerActivity.this, EventCheckInActivity.class);
-                }
-                intent.putExtra("eventID", eventID);
-                intent.putExtra("userID", userID);
-                startActivity(intent);
+                database.accessEvent(eventID, event -> {
+                    // Now you have both the event ID and the type of QR code
+                    // You can perform the appropriate action based on the QR code type
+                    Intent intent;
+                    if (isPromo) {
+                        // Handle promo QR code
+                        System.out.println("This is a promo QR code for event ID: " + eventID);
+                        intent = new Intent(QRScannerActivity.this, EventInfoActivity.class);
+                    } else {
+                        // Handle check-in QR code
+                        System.out.println("This is a check-in QR code for event ID: " + eventID);
+                        intent = new Intent(QRScannerActivity.this, EventCheckInActivity.class);
+                    }
+
+                    intent.putExtra("event", event);
+                    intent.putExtra("eventID", eventID);
+                    intent.putExtra("userID", userID);
+                    startActivity(intent);
+                });
 
             } catch (JSONException e) {
                 // Handle JSON parsing error

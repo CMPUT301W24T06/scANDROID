@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Pair;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -68,9 +69,9 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
         //Fills in event details if this Activity was accessed by clicking on an existing event
-        event = (Event)getIntent().getSerializableExtra("event");
+        event = (Event) getIntent().getSerializableExtra("event");
 
-        if (event != null){
+        if (event != null) {
             newEvent = false;
             eventID = event.getEventID();
             database.accessEvent(eventID, retrievedEvent -> {
@@ -85,14 +86,13 @@ public class CreateEventActivity extends AppCompatActivity {
                 editEventDescription.setText(event.getEventDescription());
                 String limitString;
                 attendeeLimitNum = event.getEventCapacity();
-                if(attendeeLimitNum == 0){
+                if (attendeeLimitNum == 0) {
                     limitString = "N/A";
-                }
-                else if(attendeeLimitNum == 1){
-                    limitString ="1 Attendee";
-                }
-                else{
-                    limitString = String.format("%d Attendees", attendeeLimitNum);;
+                } else if (attendeeLimitNum == 1) {
+                    limitString = "1 Attendee";
+                } else {
+                    limitString = String.format("%d Attendees", attendeeLimitNum);
+                    ;
                 }
                 attendeeLimit.setText(limitString);
                 database.accessEventPoster(eventID, new BitmapCallback() {
@@ -131,6 +131,7 @@ public class CreateEventActivity extends AppCompatActivity {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
+
             @Override
             public void onClick(View v) {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -143,8 +144,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                     if (selectedDate.before(currentDate)) {
                         showToast("Please select a date in the future");
-                    }
-                    else {
+                    } else {
                         // Proceed with setting the selected date
                         editEventDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                         calendar.set(Calendar.YEAR, year);
@@ -172,7 +172,7 @@ public class CreateEventActivity extends AppCompatActivity {
             timePickerDialog.show();
         });
 
-        setLimitButton.setOnClickListener(v ->{
+        setLimitButton.setOnClickListener(v -> {
             showLimitAttendeesFragment();
 
         });
@@ -209,7 +209,10 @@ public class CreateEventActivity extends AppCompatActivity {
                         return;
                     }
                     eventID = event.getEventID();
-                    new EventQRCodesActivity().generateQRCodes(eventID, database);
+
+                    new EventQRCodesActivity().generateQRCode(eventID, true);
+                    new EventQRCodesActivity().generateQRCode(eventID, false);
+
 
                     database.accessUser(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(), user -> {
                         user.addEventToEventsOrganized(eventID);
@@ -229,7 +232,8 @@ public class CreateEventActivity extends AppCompatActivity {
         });
         backButton.setOnClickListener(v -> finish());
     }
-    private boolean handleUserInput(String eventName, String location, String date, String time, String eventDescription, String eventLimit){
+
+    private boolean handleUserInput(String eventName, String location, String date, String time, String eventDescription, String eventLimit) {
         boolean isValid = true;
 
         // check if an event name is a string and if it is valid
@@ -262,7 +266,7 @@ public class CreateEventActivity extends AppCompatActivity {
         if (eventLimit.isEmpty()) {
             showToast("Please input a number, or press 'cancel' to abort");
             isValid = false;
-            Log.d("Validation","Attendee limit validation failed");
+            Log.d("Validation", "Attendee limit validation failed");
         }
 
         return isValid;
@@ -273,25 +277,23 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     @SuppressLint("DefaultLocale")
-    public void onDataReceived(Bundle data){
+    public void onDataReceived(Bundle data) {
         int enteredLimit = data.getInt("attendeeLimit");
         String finalAttendeeNum;
-        if (enteredLimit == 0){
+        if (enteredLimit == 0) {
             finalAttendeeNum = "N/A";
-        }
-        else if(enteredLimit == 1){
+        } else if (enteredLimit == 1) {
             finalAttendeeNum = "1 Attendee";
-        }
-        else{
+        } else {
             finalAttendeeNum = String.format("%d Attendees", enteredLimit);
         }
         attendeeLimit.setText(finalAttendeeNum);
         attendeeLimitNum = enteredLimit;
     }
 
-    private void showLimitAttendeesFragment()
-    {
+    private void showLimitAttendeesFragment() {
         LimitAttendeesFragment limitAttendeesFragment = new LimitAttendeesFragment();
-        limitAttendeesFragment.show(getSupportFragmentManager(),"LimitAttendeesFragment");
-    }}
+        limitAttendeesFragment.show(getSupportFragmentManager(), "LimitAttendeesFragment");
+    }
+}
 
