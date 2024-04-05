@@ -24,22 +24,22 @@ public class Event implements Serializable{
     /* ------------------- *
      * ATTRIBUTES / FIELDS *
      * ------------------- */
-    private String EventID;
-    private String EventName;
-    private String EventOrganizerID;
-    private String EventDescription;
     private Long EventCapacity;
     private Boolean hasCapacity;
+    private HashMap<String, Long> EventDateDetails;
+    private String EventDescription;
+    private String EventID;
     private ArrayList<Double> EventLocation;
     private ArrayList<Long> EventMilestoneList;
     private ArrayList<Long> MilestoneSeries;
-    private ArrayList<String> AnnouncementTitles;
+    private String EventName;
+    private String EventOrganizerID;
     private ArrayList<String> AnnouncementAbouts;
     private ArrayList<Long> AnnouncementTimes;
-    private HashMap<String, Long> EventDateDetails;
+    private ArrayList<String> AnnouncementTitles;
     private ArrayList<String> CheckInIDs;
-    private ArrayList<Long> CheckInTimes;
     private ArrayList<String> CheckInLocations;
+    private ArrayList<Long> CheckInTimes;
     private ArrayList<String> SignUpIDs;
 
 
@@ -47,7 +47,7 @@ public class Event implements Serializable{
      * CONSTRUCTOR *
      * ----------- */
     /**
-     * Sole constructor for an <code>Event</code> object, specifying spacial and temporal details
+     * Sole public constructor for an <code>Event</code> object, specifying spacial and temporal details
      * as well as the name of the organizer and a poster image.
      *
      * @param eventOrganizerID UserID of User that created Event
@@ -59,6 +59,7 @@ public class Event implements Serializable{
     public Event(@NonNull String eventOrganizerID, @NonNull String eventName, String eventDescription,
                  @NonNull Calendar eventDate, ArrayList<Double> eventLocation) {
 
+        // Initialize general data structure
         EventID = UUID.randomUUID().toString(); // unique identifier for database key
         this.EventDescription = eventDescription;
         this.EventLocation = eventLocation;
@@ -91,11 +92,10 @@ public class Event implements Serializable{
     }
 
     /**
-     * Necessary empty constructor for Event.fromSnapshot method. <br>
-     * Solution provided by ChatGPT via Simon Thang. <br>
-     * {@see <a href="https://chat.openai.com/share/e135f2dc-cd2f-47ca-b48e-55115d41e6bf"> ChatGPT Conversation </a>}
+     * Necessary empty constructor for Event.unpackageEvent method.
      */
-    public Event() {
+    private Event() {
+        // Initialize general data structures
         this.EventLocation = new ArrayList<>(); // Ensure initial capacity
         this.EventMilestoneList = new ArrayList<>();
         this.MilestoneSeries = new ArrayList<>();
@@ -160,6 +160,28 @@ public class Event implements Serializable{
             }
         }
     }
+
+    /**
+     * Generate the next fibonacci valued attendee count milestone for the Event.
+     * Method is automatically run when enough attendees are checked-in to meet a current threshold.
+     */
+    private void addEventMilestone() {
+        int pastGreatest = this.MilestoneSeries.get(1).intValue();                                 // current greatest milestone threshold
+        this.EventMilestoneList.add((long) pastGreatest);
+        int nextGreatest = this.MilestoneSeries.get(0).intValue() + this.MilestoneSeries.get(1).intValue();   // next milestone threshold
+        this.MilestoneSeries.set(0, (long) pastGreatest);
+        this.MilestoneSeries.set(1, (long) nextGreatest);                                      // i.e. [2,3] becomes [3,5]
+    }
+
+    /**
+     * Add an attendee to the "promise to attend" list.
+     * @param userID    UserID of possible attendee who promises to attend Event
+     */
+    public void addEventSignUp(String userID) {
+        // add a possible attendees "promise" to attend to list
+        this.SignUpIDs.add(userID);
+    }
+
     /**
      * Update an attending user's location and check in time.
      * @param userID            UserID of attendee that is has already checked into the Event
@@ -189,33 +211,44 @@ public class Event implements Serializable{
     }
 
     /**
-     * Add an attendee to the "promise to attend" list.
-     * @param userID    UserID of possible attendee who promises to attend Event
+     * Remove a User from the sign up list of the Event.
+     * @param userID ID for User to remove from sign up list
      */
-    public void addEventSignUp(String userID) {
-        // add a possible attendees "promise" to attend to list
-        this.SignUpIDs.add(userID);
-    }
-
     public void deleteEventSignUp(String userID){
         this.SignUpIDs.remove(userID);
     }
 
-    public String getCreatorID(){
-        return getEventOrganizerID();
-    }
-
     /**
-     * Generate the next fibonacci valued attendee count milestone for the Event.
-     * Method is automatically run when enough attendees are checked-in to meet a current threshold.
+     * Simplify Event object to hashmap to be stored in Firestore database.
+     * @return packaged Event object
      */
-    private void addEventMilestone() {
-        int pastGreatest = this.MilestoneSeries.get(1).intValue();                                 // current greatest milestone threshold
-        this.EventMilestoneList.add((long) pastGreatest);
-        int nextGreatest = this.MilestoneSeries.get(0).intValue() + this.MilestoneSeries.get(1).intValue();   // next milestone threshold
-        this.MilestoneSeries.set(0, (long) pastGreatest);
-        this.MilestoneSeries.set(1, (long) nextGreatest);                                      // i.e. [2,3] becomes [3,5]
-    }
+    public Map<String, Object> packageEvent() {
+        // initialize map for event fields to be stored
+        Map<String, Object> packagedEvent = new HashMap<>();
+
+        // assign event details to map
+        packagedEvent.put("ID", this.EventID);
+        packagedEvent.put("date", this.EventDateDetails);
+        packagedEvent.put("description", this.EventDescription);
+        packagedEvent.put("location", this.EventLocation);
+        packagedEvent.put("milestoneList", this.EventMilestoneList);
+        packagedEvent.put("milestoneSeries", this.MilestoneSeries);
+        packagedEvent.put("name", this.EventName);
+        packagedEvent.put("organizerID", this.EventOrganizerID);
+        packagedEvent.put("announcementTitles", this.AnnouncementTitles);
+        packagedEvent.put("announcementAbouts", this.AnnouncementAbouts);
+        packagedEvent.put("announcementTimes", this.AnnouncementTimes);
+        packagedEvent.put("attendeeIDs", this.CheckInIDs);
+        packagedEvent.put("attendeeTimes", this.CheckInTimes);
+        packagedEvent.put("attendeeLocations", this.CheckInLocations);
+        packagedEvent.put("signUps", this.SignUpIDs);
+        packagedEvent.put("capacity", this.EventCapacity);
+        packagedEvent.put("hasCapacity", this.hasCapacity);
+
+        // return fully detailed event map
+        return packagedEvent;
+
+    } // end of packageEvent
 
     /**
      * Extracts necessary data from snapshot to create an instance of Event. <br>
@@ -250,39 +283,19 @@ public class Event implements Serializable{
 
     } // end of unpackageEvent
 
-    /**
-     * Simplify Event object to hashmap to be stored in Firestore database.
-     * @return packaged Event object
-     */
-    public Map<String, Object> packageEvent() {
-        // initialize map for event fields to be stored
-        Map<String, Object> packagedEvent = new HashMap<>();
 
-        // assign event details to map
-        packagedEvent.put("ID", this.EventID);
-        packagedEvent.put("date", this.EventDateDetails);
-        packagedEvent.put("description", this.EventDescription);
-        packagedEvent.put("location", this.EventLocation);
-        packagedEvent.put("milestoneList", this.EventMilestoneList);
-        packagedEvent.put("milestoneSeries", this.MilestoneSeries);
-        packagedEvent.put("name", this.EventName);
-        packagedEvent.put("organizerID", this.EventOrganizerID);
-        packagedEvent.put("announcementTitles", this.AnnouncementTitles);
-        packagedEvent.put("announcementAbouts", this.AnnouncementAbouts);
-        packagedEvent.put("announcementTimes", this.AnnouncementTimes);
-        packagedEvent.put("attendeeIDs", this.CheckInIDs);
-        packagedEvent.put("attendeeTimes", this.CheckInTimes);
-        packagedEvent.put("attendeeLocations", this.CheckInLocations);
-        packagedEvent.put("signUps", this.SignUpIDs);
-        packagedEvent.put("capacity", this.EventCapacity);
-        packagedEvent.put("hasCapacity", this.hasCapacity);
-
-        // return fully detailed event map
-        return packagedEvent;
-    }
     /* ------- *
      * GETTERS *
      * ------- */
+    /**
+     * Get the UserID for User that created the Event.
+     * @return UserID of organizer of Event
+     * @deprecated Use Event.getEventOrganizerID() instead
+     */
+    public String getCreatorID(){
+        return getEventOrganizerID();
+    }
+
     /**
      * @return List of all existing announcements of the Event.
      */
@@ -314,7 +327,7 @@ public class Event implements Serializable{
         for (int i = 0; i < CheckInIDs.size(); i++) {
 
             // for handling optional check in location
-            if(!this.CheckInLocations.get(i).isEmpty()) {
+            if (!this.CheckInLocations.get(i).isEmpty()) {
                 // locations are stored as "@" delimited string for firestore
                 // must separate longitude and latitude from concatenated string
                 String locationAsString = this.CheckInLocations.get(i);
@@ -323,15 +336,12 @@ public class Event implements Serializable{
                 locationAsDoubles.add(Double.parseDouble(locationAsArray[0]));
                 locationAsDoubles.add(Double.parseDouble(locationAsArray[1]));
 
+                EventAttendeeList.add(new CheckIn(
+                                            this.CheckInIDs.get(i),
+                                            new Time(this.CheckInTimes.get(i)),
+                                            locationAsDoubles));
 
-                EventAttendeeList.add(
-                        new CheckIn(
-                                this.CheckInIDs.get(i),
-                                new Time(this.CheckInTimes.get(i)),
-                                locationAsDoubles));
-
-            }
-            else { // no check in location
+            } else { // no check in location
                 EventAttendeeList.add(
                         new CheckIn(
                                 this.CheckInIDs.get(i),
@@ -348,6 +358,16 @@ public class Event implements Serializable{
     public Integer getEventAttendeesTotal() {
         return this.CheckInIDs.size();
     }
+
+    /**
+     * @return The maximum attendance capacity for the Event.
+     */
+    public Integer getEventCapacity() { return Math.toIntExact(this.EventCapacity); }
+
+    /**
+     * @return Flag of whether Event considers a capacity limit or not.
+     */
+    public Boolean getEventHasCapacity() { return this.hasCapacity; }
 
     /**
      * @return Day that Event will take place, includes time of Event.
@@ -408,20 +428,26 @@ public class Event implements Serializable{
      */
     public ArrayList<String> getEventSignUps() { return this.SignUpIDs; }
 
-    /**
-     * @return The maximum attendance capacity for the Event.
-     */
-    public Integer getEventCapacity() { return Math.toIntExact(this.EventCapacity); }
-
-    /**
-     * @return Flag of whether Event considers a capacity limit or not.
-     */
-    public Boolean getEventHasCapacity() { return this.hasCapacity; }
-
 
     /* ------- *
      * SETTERS *
      * ------- */
+    /**
+     * Set an attendee limit capacity for the Event. <br>
+     * > 0 : to enable capacity <br>
+     * = 0 : to disable capacity
+     * @param eventCapacity Maximum amount of attendees of the Event
+     */
+    public void setEventCapacity(int eventCapacity) {
+        // set boolean flag for having capacity and update capacity value
+        if (eventCapacity > 0) {
+            this.hasCapacity = Boolean.TRUE;
+        } else {
+            this.hasCapacity = Boolean.FALSE;
+        }
+        this.EventCapacity = (long) Math.abs(eventCapacity);
+    }
+
     /**
      * @param dateOfEvent Day that Event will take place, includes time of Event.
      */
@@ -450,22 +476,6 @@ public class Event implements Serializable{
      * @param nameOfEvent Name that the organizer has given the Event.
      */
     public void setEventName(String nameOfEvent) { this.EventName = nameOfEvent; }
-
-    /**
-     * Set an attendee limit capacity for the Event. <br>
-     * > 0 : to enable capacity <br>
-     * = 0 : to disable capacity
-     * @param eventCapacity Maximum amount of attendees of the Event
-     */
-    public void setEventCapacity(int eventCapacity) {
-        // set boolean flag for having capacity and update capacity value
-        if (eventCapacity > 0) {
-            this.hasCapacity = Boolean.TRUE;
-        } else {
-            this.hasCapacity = Boolean.FALSE;
-        }
-        this.EventCapacity = (long) Math.abs(eventCapacity);
-    }
 
 
     /* -------------- *
