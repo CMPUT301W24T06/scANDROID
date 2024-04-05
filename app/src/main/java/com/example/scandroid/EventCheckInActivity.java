@@ -82,12 +82,8 @@ public class EventCheckInActivity extends AppCompatActivity {
                     }
                 });
 
-        // Set up click listener for trackLocationBox
-        trackLocationBox.setOnClickListener(v -> {
-            if (trackLocationBox.isChecked()) {
-                checkAndRequestPermissions();
-            }
-        });
+
+        checkAndRequestPermissions();
 
 
         database.accessEvent(eventID, event -> {
@@ -120,7 +116,7 @@ public class EventCheckInActivity extends AppCompatActivity {
 
                         // source: https://stackoverflow.com/a/5369753
                         Time time = new Time(Calendar.getInstance().getTime().getTime());
-                        if (user.getEventsAttending().contains(eventID)){
+                        if (user.getEventsAttending().contains(eventID)) {
                             event.addExistingEventAttendee(userID, time, checkInLocation);
                         } else {
                             event.addEventAttendee(userID, time, checkInLocation);

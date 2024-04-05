@@ -2,14 +2,18 @@ package com.example.scandroid;
 
 import static com.google.firebase.appcheck.internal.util.Logger.TAG;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Pair;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,15 +26,18 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * EventQRCodesActivity is an activity that displays
  * the Promo and Check-In QR Codes for an event, and allows the event
  * organizer to share the QR Codes to other apps or email.
  */
+// source for generating qr code: https://youtu.be/n8HdrLYL9DA?si=u515CzkVDgDhSd3K
+//                                https://chat.openai.com/share/396352f1-a9ae-4df1-9cf4-9466658263d3
+//                                https://chat.openai.com/share/b2327949-844d-4167-8c4c-9240492b5db6
+
 public class EventQRCodesActivity extends AppCompatActivity {
     DBAccessor database;
     Event event;
@@ -41,97 +48,46 @@ public class EventQRCodesActivity extends AppCompatActivity {
     AppCompatButton sharePromoQRButton;
 
     /**
-     * This method generates a QR Code
-     * that links to a Promo page for an event.
-     * @param eventID The eventID of the event that is being promoted.
-     * @param dbAccessor DBAccessor, interface between scANDROID and Firestore database.
+     * This method generates QR Codes
+     * that link to a Check-In and a Promo page for an event.
+     *
+     * @param eventID The eventID of the event that is being promoted and organized.
      */
-    public void generatePromoQR(String eventID, DBAccessor dbAccessor) {
-        MultiFormatWriter writer = new MultiFormatWriter();
+    protected void generateQRCode(String eventID, boolean isPromo) {
+        JSONObject jsonObject = new JSONObject();
         try {
-            BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE, 650, 650);
-            // removed: promoQRCodeImgView.getWidth(), promoQRCodeImgView.getHeight()
-            BarcodeEncoder encoder = new BarcodeEncoder();
-            Bitmap bitmap = encoder.createBitmap(matrix);
+            jsonObject.put("eventID", eventID);
+            jsonObject.put("isPromo", isPromo);
 
-            dbAccessor.storeQRPromo(eventID, bitmap);
+            MultiFormatWriter writer = new MultiFormatWriter();
+            BitMatrix matrix;
+            try {
+                matrix = writer.encode(jsonObject.toString(), BarcodeFormat.QR_CODE, 650, 650);
 
-        } catch (WriterException e) {
-            throw new RuntimeException(e);
+                BarcodeEncoder encoder = new BarcodeEncoder();
+                Bitmap bitmap = encoder.createBitmap(matrix);
+
+                if (isPromo) {
+                    database.storeQRPromo(eventID, bitmap);
+                }
+                if (!isPromo) {
+                    database.storeQRMain(eventID, bitmap);
+                }
+
+            } catch (WriterException e) {
+                throw new RuntimeException(e);
+            }
+
+        } catch (JSONException d) {
+            throw new RuntimeException(d);
         }
-    }
-
-    /**
-     * This method generates a QR Code
-     * that links to a check-in fragment for an event.
-     * @param eventID The eventID of the event that is being shared.
-     * @param dbAccessor DBAccessor, interface between scANDROID and Firestore database.
-     */
-    public void generateCheckInQR(String eventID, DBAccessor dbAccessor) {
-        MultiFormatWriter writer = new MultiFormatWriter();
-        try {
-            BitMatrix matrix = writer.encode(eventID, BarcodeFormat.QR_CODE, 650, 650);
-            // removed: checkInQRCodeImgView.getWidth(), checkInQRCodeImgView.getHeight()
-
-            BarcodeEncoder encoder = new BarcodeEncoder();
-            Bitmap bitmap = encoder.createBitmap(matrix);
-
-            dbAccessor.storeQRMain(eventID, bitmap);
-
-        } catch (WriterException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * This function checks if a Check-In QR code
-     * already exists for the event in the database,
-     * and if not it will generate a new one.
-     * @param eventID The eventID of the event that is being shared.
-     * @param database DBAccessor, interface between scANDROID and Firestore database.
-     */
-    public void checkForCheckInQR(String eventID, DBAccessor database) {
-        database.accessQRMain(eventID, new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                // do not generate a QR code
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e) {
-                generateCheckInQR(eventID, database);
-                checkForCheckInQR(eventID, database);
-
-            }
-        });
-    }
-
-    /**
-     * This function checks if a Promo QR code
-     * already exists for the event in the database,
-     * and if not it will generate a new one.
-     * @param eventID The eventID of the event that is being promoted.
-     * @param database DBAccessor, interface between scANDROID and Firestore database.
-     */
-    public void checkForPromoQR(String eventID, DBAccessor database) {
-        database.accessQRPromo(eventID, new BitmapCallback() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap) {
-                // do not generate a QR code
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e) {
-                generatePromoQR(eventID, database);
-                checkForPromoQR(eventID, database);
-            }
-        });
     }
 
     /**
      * Method to share a QR code.
+     *
      * @param context Context of the activity
-     * @param bitmap Bitmap of the QR code
+     * @param bitmap  Bitmap of the QR code
      */
     // sources: https://stackoverflow.com/questions/35966487/how-to-share-image-to-social-media-with-bitmap,
     // https://stackoverflow.com/a/35966511
@@ -168,63 +124,108 @@ public class EventQRCodesActivity extends AppCompatActivity {
         if (event != null) {
             String eventID = event.getEventID();
 
-            checkForCheckInQR(eventID, database);
-            checkForPromoQR(eventID, database);
-
-            database.accessQRMain(event.getEventID(), new BitmapCallback() {
+            // CHECK FOR QRMAIN
+            database.accessQRMain(eventID, new BitmapCallback() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
+                    // If the QR code exists
                     if (bitmap != null) {
                         checkInQRCodeImgView.setImageBitmap(bitmap);
+                        shareCheckInQRButton.setOnClickListener(v -> {
+                            shareQRCode(v.getContext(), bitmap);
+                        });
                     }
                 }
 
                 @Override
                 public void onBitmapFailed(Exception e) {
-                    // bitmap load failure
+                    GenerateQRCodesTask generateCheckInQRCodeTask = new GenerateQRCodesTask() {
+                        @Override
+                        protected void onPostExecute(Bitmap bitmap) {
+                            super.onPostExecute(bitmap);
+
+                            database.storeQRMain(eventID, bitmap);
+                            // Update UI with generated Check-In QR code
+                            checkInQRCodeImgView.setImageBitmap(bitmap);
+                            shareCheckInQRButton.setOnClickListener(v -> {
+                                shareQRCode(v.getContext(), bitmap);
+                            });
+                        }
+                    };
+                    generateCheckInQRCodeTask.execute(new Pair<>(eventID, false));
                 }
             });
 
-            database.accessQRPromo(event.getEventID(), new BitmapCallback() {
+            // CHECK FOR QRPROMO
+            database.accessQRPromo(eventID, new BitmapCallback() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
+                    // If the QR code exists
                     if (bitmap != null) {
                         promoQRCodeImgView.setImageBitmap(bitmap);
+                        sharePromoQRButton.setOnClickListener(v -> {
+                            shareQRCode(v.getContext(), bitmap);
+                        });
                     }
                 }
 
                 @Override
                 public void onBitmapFailed(Exception e) {
-                    // bitmap load failure
+                    GenerateQRCodesTask generatePromoQRCodeTask = new GenerateQRCodesTask() {
+                        @Override
+                        protected void onPostExecute(Bitmap bitmap) {
+                            super.onPostExecute(bitmap);
+
+                            database.storeQRPromo(eventID, bitmap);
+                            // Update UI with generated Promo QR code
+                            promoQRCodeImgView.setImageBitmap(bitmap);
+                            sharePromoQRButton.setOnClickListener(v -> {
+                                shareQRCode(v.getContext(), bitmap);
+                            });
+                        }
+                    };
+                    generatePromoQRCodeTask.execute(new Pair<>(eventID, true));
                 }
             });
+        }
+    }
 
-            shareCheckInQRButton.setOnClickListener(v -> database.accessQRMain(event.getEventID(), new BitmapCallback() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap) {
-                    if (bitmap != null) {
-                        shareQRCode(v.getContext(), bitmap);
-                    }
+    static class GenerateQRCodesTask extends AsyncTask<Pair<String, Boolean>, Void, Bitmap> {
+
+        public GenerateQRCodesTask() {
+        }
+
+        @SafeVarargs
+        @Override
+        protected final Bitmap doInBackground(Pair<String, Boolean>... params) {
+            String eventID = params[0].first;
+            boolean isPromo = params[0].second;
+
+            return generateQRCodeTask(eventID, isPromo);
+        }
+
+        private Bitmap generateQRCodeTask(String eventID, boolean isPromo) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("eventID", eventID);
+                jsonObject.put("isPromo", isPromo);
+
+                MultiFormatWriter writer = new MultiFormatWriter();
+                BitMatrix matrix;
+                try {
+                    matrix = writer.encode(jsonObject.toString(), BarcodeFormat.QR_CODE, 650, 650);
+
+                    BarcodeEncoder encoder = new BarcodeEncoder();
+
+                    return encoder.createBitmap(matrix);
+
+                } catch (WriterException e) {
+                    throw new RuntimeException(e);
                 }
 
-                @Override
-                public void onBitmapFailed(Exception e) {
-                    // bitmap load failure
-                }
-            }));
-            sharePromoQRButton.setOnClickListener(v -> database.accessQRPromo(event.getEventID(), new BitmapCallback() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap) {
-                    if (bitmap != null) {
-                        shareQRCode(v.getContext(), bitmap);
-                    }
-                }
-
-                @Override
-                public void onBitmapFailed(Exception e) {
-                    // bitmap load failure
-                }
-            }));
+            } catch (JSONException d) {
+                throw new RuntimeException(d);
+            }
         }
     }
 }

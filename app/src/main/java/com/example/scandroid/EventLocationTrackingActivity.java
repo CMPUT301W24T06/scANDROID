@@ -42,6 +42,7 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +50,7 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
         backButton = findViewById(R.id.back_button);
         zoomInButton = findViewById(R.id.zoom_in_button);
         zoomOutButton = findViewById(R.id.zoom_out_button);
-        event = (Event)getIntent().getSerializableExtra("event");
+        event = (Event) getIntent().getSerializableExtra("event");
 
         backButton.setOnClickListener(v -> finish());
 
@@ -66,8 +67,8 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        int zoom = 5;
-        if(event != null) {
+        int zoom = 10;
+        if (event != null) {
             String eventTitle = event.getEventName();
             String eventAddress = new LocationGeocoder(EventLocationTrackingActivity.this).coordinatesToAddress(event.getEventLocation());
             LatLng eventLatLng = new LatLng(event.getEventLocation().get(0), event.getEventLocation().get(1));
@@ -80,7 +81,7 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
             ArrayList<Event.CheckIn> attendees = event.getEventAttendeeList();
             for (Event.CheckIn i : attendees) {
                 ArrayList<Double> checkInLoc = i.getCheckInLocation();
-                if(checkInLoc.size() == 2) {
+                if (checkInLoc.size() == 2) {
                     LatLng checkInLatLng = new LatLng(checkInLoc.get(0), checkInLoc.get(1));
                     String checkInAddress = new LocationGeocoder(EventLocationTrackingActivity.this).coordinatesToAddress(checkInLoc);
                     googleMap.addMarker(new MarkerOptions()
@@ -93,7 +94,7 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
         }
         zoomInButton.setOnClickListener(v -> googleMap.animateCamera(CameraUpdateFactory.zoomBy(1)));
 
-        zoomOutButton.setOnClickListener(v -> googleMap.animateCamera(CameraUpdateFactory.zoomBy(- 1)));
+        zoomOutButton.setOnClickListener(v -> googleMap.animateCamera(CameraUpdateFactory.zoomBy(-1)));
     }
 
     @Override

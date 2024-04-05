@@ -780,6 +780,7 @@ public class DBAccessor {
             // Store an QRCodeMain with EventID as key
             // Source: https://firebase.google.com/docs/storage/android/upload-files#java_1
 
+            ByteArrayOutputStream boas = new ByteArrayOutputStream();
             // set storage reference to QRCodeMain collection with EventID as key
             this.QRCodeMainRef = this.storageRef.child(this.QRCodeMainRefName + "/" + EventID);
 
@@ -804,6 +805,7 @@ public class DBAccessor {
             // Store an QRCodePromo with EventID as key
             // Source: https://firebase.google.com/docs/storage/android/upload-files#java_1
 
+            ByteArrayOutputStream boas = new ByteArrayOutputStream();
             // set storage reference to QRCodePromo collection with EventID as key
             this.QRCodePromoRef = this.storageRef.child(this.QRCodePromoRefName + "/" + EventID);
 
