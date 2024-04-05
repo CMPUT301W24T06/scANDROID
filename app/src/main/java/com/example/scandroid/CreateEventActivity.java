@@ -293,4 +293,3 @@ public class CreateEventActivity extends AppCompatActivity {
         limitAttendeesFragment.show(getSupportFragmentManager(), "LimitAttendeesFragment");
     }
 }
-
