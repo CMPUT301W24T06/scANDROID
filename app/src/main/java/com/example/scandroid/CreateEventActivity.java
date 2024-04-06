@@ -34,6 +34,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import io.github.muddz.styleabletoast.StyleableToast;
+
 
 /**
  * The view for when Users wish to create a new event or edit an existing event's parameters
@@ -270,7 +272,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        StyleableToast.makeText(this, message, R.style.customToast).show();
     }
 
     @SuppressLint("DefaultLocale")

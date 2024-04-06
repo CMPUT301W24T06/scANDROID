@@ -65,5 +65,6 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation ("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("io.github.muddz:styleabletoast:2.4.0")
 }
 apply(plugin = "com.google.gms.google-services")
