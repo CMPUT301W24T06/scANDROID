@@ -20,6 +20,16 @@
           <theme>@style/Theme.ScANDROID</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/milestone_fragment.xml">
+        <config>
+          <theme>@style/Theme.ScANDROID</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/notice_event_removed_fragment.xml">
+        <config>
+          <theme>@style/Theme.ScANDROID</theme>
+        </config>
+      </layout>
     </layouts>
   </component>
   <component name="AutoImportSettings">
@@ -27,11 +37,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f629f07b-0061-4659-af4c-9fad9b53b6d2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/MilestoneAlertFragment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/milestone_fragment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/Event.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventMilestonesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventMilestonesActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventMilestonesArrayAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/scandroid/EventMilestonesArrayAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +73,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="layoutResourceFile" />
         <option value="Class" />
       </list>
     </option>
