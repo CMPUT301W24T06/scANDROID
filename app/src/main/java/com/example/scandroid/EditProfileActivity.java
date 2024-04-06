@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.FragmentTransaction;
 
+import io.github.muddz.styleabletoast.StyleableToast;
+
 /**
  * The EditProfileActivity class allows users to edit their profile information,
  * including name, email, phone number, about me, push notification preferences,
@@ -151,11 +153,10 @@ public class EditProfileActivity extends AppCompatActivity{
         return isValid;
     }
 
+    // show toasts
     private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        StyleableToast.makeText(this, message, R.style.customToast).show();
     }
-
-    // show toast message
 
     private void showAdminKeyFragment() {
         AdminKeyFragment adminKeyFragment = new AdminKeyFragment();

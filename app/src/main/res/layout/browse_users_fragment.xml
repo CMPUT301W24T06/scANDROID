@@ -5,45 +5,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:gravity="center"
         tools:context=".BrowseUsersFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Spinner
-                android:layout_width="45dp"
-                android:layout_height="39dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="26dp"
-                android:background="@drawable/dropdown_sort_icon">
-            </Spinner>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/users_search"
-                android:layout_width="wrap_content"
+                android:layout_width="397dp"
                 android:layout_height="55dp"
-                android:layout_alignParentEnd="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/button_outline_grey"
+                android:focusable="false"
                 android:textColor="#535353"
                 app:iconifiedByDefault="false"
-                app:queryHint="@string/search_with_attendee_name_text"/>
+                app:queryHint="@string/search_with_attendee_name_text" />
         </LinearLayout>
 
         <ListView
             android:id="@+id/browse_users_list"
             android:layout_width="match_parent"
             android:layout_height="570dp"
-            android:layout_below="@+id/users_search"
-            android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:longClickable="true" />
