@@ -26,17 +26,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Thank you for checking in! Enjoy the event!"
+        android:text="Thank you for checking in!&#10;Enjoy the event!"
         android:textAppearance="@style/TextAppearance.AppCompat.Display4"
         android:textColor="@color/black"
         android:textSize="45sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_border"
-        app:layout_constraintVertical_bias="0.938" />
+        app:layout_constraintVertical_bias="0.942" />
 
     <ImageView
         android:id="@+id/imageView2"
