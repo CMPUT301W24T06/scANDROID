@@ -266,7 +266,7 @@
             android:layout_height="48dp"
             android:autofillHints="AUTOFILL_TYPE_DATE"
             android:background="@drawable/button_outline_grey"
-            android:hint="@string/enter_event_date"
+            android:hint="@string/enter_event_time"
             android:inputType="date"
             android:textColorHint="#757575"
             app:layout_constraintEnd_toEndOf="parent"

@@ -71,7 +71,7 @@
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.165"
+        app:layout_constraintHorizontal_bias="0.142"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.293" />
@@ -84,10 +84,10 @@
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.573"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.352" />
+        app:layout_constraintVertical_bias="0.351" />
 
     <TextView
         android:id="@+id/notification_schedule"
@@ -118,42 +118,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.656" />
 
-    <EditText
-        android:id="@+id/notification_minutes"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/edit_notification_time"
+        android:layout_width="170dp"
+        android:layout_height="48dp"
+        android:autofillHints="AUTOFILL_TYPE_DATE"
         android:background="@drawable/button_outline_grey"
-        android:inputType="number"
+        android:hint="Enter time"
+        android:inputType="date"
+        android:textColorHint="#757575"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.373"
+        app:layout_constraintHorizontal_bias="0.145"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.552" />
+        app:layout_constraintVertical_bias="0.542">
+    </androidx.appcompat.widget.AppCompatButton>
 
-    <EditText
-        android:id="@+id/notification_periods"
-        android:layout_width="40dp"
-        android:layout_height="50dp"
-        android:background="@drawable/button_outline_grey"
-        android:inputType="text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.256"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.552" />
-
-    <EditText
-        android:id="@+id/notification_hour"
-        android:layout_width="60dp"
-        android:layout_height="50dp"
-        android:background="@drawable/button_outline_grey"
-        android:inputType="number"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.099"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.552" />
 </androidx.constraintlayout.widget.ConstraintLayout>

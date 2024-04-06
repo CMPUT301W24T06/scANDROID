@@ -86,4 +86,5 @@
     <string name="remove_button_attendee_limit">Remove</string>
     <string name="enter_whole_number">integer value</string>
     <string name="signups">SignUps</string>
+    <string name="enter_event_time">Enter Event Time</string>
 </resources>
