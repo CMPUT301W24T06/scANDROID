@@ -66,5 +66,6 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("io.github.muddz:styleabletoast:2.4.0")
+    implementation("nl.dionsegijn:konfetti-xml:2.0.4")
 }
 apply(plugin = "com.google.gms.google-services")
