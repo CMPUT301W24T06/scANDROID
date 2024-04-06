@@ -17,10 +17,18 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/event_attendees_list_back_arrow"
-            android:layout_width="38dp"
-            android:layout_height="36dp"
+            android:layout_width="45dp"
+            android:layout_height="41dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="9dp"
+            android:layout_marginBottom="23dp"
+            android:layout_toStartOf="@+id/attendee_search"
             android:background="@drawable/back_arrow_icon"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="@color/white"
             android:contentDescription="@string/app_name"
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,23 +42,11 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/button_outline_grey"
+            android:background="@drawable/grey_outline_white_background"
             android:textColor="#535353"
             app:iconifiedByDefault="false"
             app:queryHint="@string/search_with_attendee_name_text"/>
 
-        <Spinner
-            android:id="@+id/event_attendees_list_sort_icon"
-            android:layout_width="42dp"
-            android:layout_height="36dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="2dp"
-            android:layout_marginBottom="9dp"
-            android:layout_toStartOf="@+id/attendee_search"
-            android:background="@drawable/dropdown_sort_icon"
-            app:layout_constraintEnd_toStartOf="@+id/attendee_search"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_attendees_list_back_arrow" />
     </RelativeLayout>
 
     <TextView

@@ -5,38 +5,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
-        tools:context=".BrowseUsersFragment">
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/users_search"
-                android:layout_width="397dp"
-                android:layout_height="55dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/button_outline_grey"
-                android:focusable="false"
-                android:textColor="#535353"
-                app:iconifiedByDefault="false"
-                app:queryHint="@string/search_with_attendee_name_text" />
-        </LinearLayout>
+            android:layout_height="wrap_content"/>
 
         <ListView
-            android:id="@+id/browse_users_list"
+            android:id="@+id/browse_announcement_list"
             android:layout_width="match_parent"
             android:layout_height="570dp"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:longClickable="true" />
@@ -47,7 +30,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/loading_browse_users_text"
+                android:id="@+id/loading_announcements_text"
                 android:layout_width="152dp"
                 android:layout_height="44dp"
                 android:fontFamily="@font/poppins_bold"
@@ -55,13 +38,13 @@
                 android:text="Loading. . ."
                 android:textAlignment="gravity"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                app:layout_constraintEnd_toStartOf="@+id/browse_users_previous_button"
+                app:layout_constraintEnd_toStartOf="@+id/browse_announcements_previous_button"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/browse_users_next_button"
+                android:id="@+id/browse_announcements_next_button"
                 android:layout_width="68dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="4dp"
@@ -75,11 +58,11 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/browse_users_previous_button"
+                android:id="@+id/browse_announcements_previous_button"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_marginEnd="8dp"
-                android:layout_toStartOf="@+id/browse_users_next_button"
+                android:layout_toStartOf="@+id/browse_announcements_next_button"
                 android:background="@drawable/rectangle_button"
                 android:fontFamily="@font/poppins_bold"
                 android:paddingStart="5dp"
@@ -88,7 +71,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/white"
                 android:visibility="invisible"
-                app:layout_constraintEnd_toStartOf="@+id/browse_users_next_button"
+                app:layout_constraintEnd_toStartOf="@+id/browse_announcements_next_button"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
