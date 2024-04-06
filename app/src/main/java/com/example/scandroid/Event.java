@@ -170,7 +170,9 @@ public class Event implements Serializable{
         this.EventMilestoneList.add((long) pastGreatest);
         int nextGreatest = this.MilestoneSeries.get(0).intValue() + this.MilestoneSeries.get(1).intValue();   // next milestone threshold
         this.MilestoneSeries.set(0, (long) pastGreatest);
-        this.MilestoneSeries.set(1, (long) nextGreatest);                                      // i.e. [2,3] becomes [3,5]
+        this.MilestoneSeries.set(1, (long) nextGreatest);
+        // i.e. [2,3] becomes [3,5]
+        // TODO: Send an alert (fragment?)
     }
 
     /**
