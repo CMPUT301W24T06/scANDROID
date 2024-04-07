@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.app.TimePickerDialog;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,7 +25,12 @@ import okhttp3.Response;
 
 
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+
+import io.github.muddz.styleabletoast.StyleableToast;
 
 /**
  * EventCreateAnnouncementActivity allows an event organizer
@@ -36,9 +42,8 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
     AppCompatButton backButton;
     EditText editNotificationTitle;
     EditText editNotificationInfo;
-    EditText editNotificationMinutes;
-    EditText editNotificationHour;
-    EditText editNotificationPeriods;
+    AppCompatButton editNotificationTime;
+    Calendar calendar = Calendar.getInstance();
     AppCompatButton sendNotificationButton;
     DBAccessor dbAccessor = new DBAccessor();
 
@@ -51,9 +56,7 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
         backButton = findViewById(R.id.back_button);
         editNotificationTitle = findViewById(R.id.edit_notification_title);
         editNotificationInfo = findViewById(R.id.edit_notification_info);
-        editNotificationMinutes = findViewById(R.id.notification_minutes);
-        editNotificationHour = findViewById(R.id.notification_hour);
-        editNotificationPeriods = findViewById(R.id.notification_periods);
+        editNotificationTime = findViewById(R.id.edit_notification_time);
         sendNotificationButton = findViewById(R.id.send_notification_button);
 
         // get all the attendees with getEventAttendeeList()
@@ -78,22 +81,70 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
             });
         }
 
+        editNotificationTime.setOnClickListener(v -> {
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(EventCreateAnnouncementActivity.this, R.style.TimePickerTheme,
+                    (view, hourOfDay, minute1) -> {
+                        editNotificationTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute1));
+                        calendar.set(Calendar.MINUTE, minute1);
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    }, hour, minute, false);
+            timePickerDialog.show();
+        });
+
         sendNotificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // you can replace with your own fcmToken if you wanna test it because the attendee list is glitching rn
-//                fcmTokenList.add("dPjr4-CbQaWMmXc-wppTsN:APA91bHTMdX04rlBvrltUCDSzkACgXNS-zyqTMMlyATv8LKXLBuPg-ekPE4oX0yO-Tquf2QuWELZwUIn9cSzBBlYWe0eERV1qyvAoe3n8zG_OZrX1Cbrzpy2QNyQh3gT5M6FQnktMBg6");
-                Log.d("Notification", "fcmTokenList size: " + fcmTokenList.size()); // message for testing
-                sendNotification(editNotificationTitle.getText().toString(), editNotificationInfo.getText().toString(), fcmTokenList);
+                String notificationTitle = editNotificationTitle.getText().toString();
+                String notificationBody = editNotificationInfo.getText().toString();
+                String notificationTime = editNotificationTime.getText().toString();
+                String[] parts = notificationTime.split(":");
+                int hours = Integer.parseInt(parts[0]);
+                int minutes = Integer.parseInt(parts[1]);
+
+                calendar.set(Calendar.HOUR_OF_DAY, hours);
+                calendar.set(Calendar.MINUTE, minutes);
+                calendar.set(Calendar.SECOND, 0);
+
+                Time time = new Time(calendar.getTimeInMillis());
+
+                // testing
+                fcmTokenList.add("dPjr4-CbQaWMmXc-wppTsN:APA91bHTMdX04rlBvrltUCDSzkACgXNS-zyqTMMlyATv8LKXLBuPg-ekPE4oX0yO-Tquf2QuWELZwUIn9cSzBBlYWe0eERV1qyvAoe3n8zG_OZrX1Cbrzpy2QNyQh3gT5M6FQnktMBg6");
+
+                // Handle user input validation
+                if (handleUserInput(notificationTitle, notificationBody, notificationTime)) {
+                    Log.d("Notification", "fcmTokenList size: " + fcmTokenList.size()); // message for testing
+                    event.addEventAnnouncement(notificationTitle, notificationBody, time); // add to db
+                    sendNotification(notificationTitle, notificationBody, fcmTokenList);
+                }
             }
         });
-
-        // title should be the title of the event name by default (as per UI)
-        // get sender's name and attach (as per UI)
-        // timestamp will be time now - time sent
-        // get all those attendees fcm tokens
-        // send the notification
         backButton.setOnClickListener(v -> finish());
+    }
+
+    private boolean handleUserInput(String notificationTitle, String notificationBody, String notificationTime){
+        boolean isValid = true;
+
+        // check if an event name is a string and if it is valid
+        if (notificationTitle.isEmpty() || notificationTitle.length() > 20) {
+            showToast("Please enter a valid notification title (up to 20 characters).");
+            isValid = false;
+            Log.d("Validation", "Notification title validation failed");
+        }
+        // check if the user provided a description for their event
+        if (notificationBody.isEmpty()) {
+            showToast("Please enter content for your notification.");
+            isValid = false;
+            Log.d("Validation", "Notification body failed");
+        }
+        if (notificationTime.isEmpty()) {
+            showToast("Please set a time to send your notification");
+            isValid = false;
+            Log.d("Validation", "Notification time validation failed");
+        }
+        return isValid;
     }
 
     //Sources
@@ -150,5 +201,9 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void showToast(String message) {
+        StyleableToast.makeText(this, message, R.style.customToast).show();
     }
 }
