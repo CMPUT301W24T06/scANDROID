@@ -285,6 +285,7 @@ public class CreateEventActivity extends AppCompatActivity {
         String finalAttendeeNum;
         if (enteredLimit == 0) {
             finalAttendeeNum = "N/A";
+            enteredLimit = Integer.MAX_VALUE; // assign an extremely high number
         } else if (enteredLimit == 1) {
             finalAttendeeNum = "1 Attendee";
         } else {
