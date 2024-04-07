@@ -39,7 +39,7 @@ import org.json.JSONObject;
 //                                https://chat.openai.com/share/b2327949-844d-4167-8c4c-9240492b5db6
 
 public class EventQRCodesActivity extends AppCompatActivity {
-    DBAccessor database;
+    DBAccessor database = new DBAccessor();
     Event event;
     ImageView checkInQRCodeImgView;
     ImageView promoQRCodeImgView;

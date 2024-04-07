@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.sql.Time;
 import java.util.ArrayList;
@@ -97,9 +98,21 @@ public class EventCheckInActivity extends AppCompatActivity {
                     finish();
                 });
 
+                Calendar eventDate = event.getEventDate();
+                Calendar midnight = (Calendar) eventDate.clone();
+                midnight.set(Calendar.MINUTE, 0);
+                midnight.set(Calendar.HOUR_OF_DAY, 0);
+                midnight.set(Calendar.SECOND, 0);
+                midnight.add(Calendar.DAY_OF_MONTH, 1);
+                if (Calendar.getInstance().after(midnight)){
+                    EventEndedNoticeFragment endedNoticeFragment = new EventEndedNoticeFragment();
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.add(android.R.id.content, endedNoticeFragment);
+                    transaction.commit();
+                }
+
                 confirmCheckInButton.setOnClickListener(v -> {
                     database.accessUser(userID, user -> {
-
                         checkInLocation = new ArrayList<>();
 
                         if (pushNotifBox.isChecked()) {

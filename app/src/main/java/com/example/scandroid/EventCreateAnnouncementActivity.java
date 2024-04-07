@@ -118,7 +118,9 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
                     Log.d("Notification", "fcmTokenList size: " + fcmTokenList.size()); // message for testing
                     event.addEventAnnouncement(notificationTitle, notificationBody, time); // add to db
                     sendNotification(notificationTitle, notificationBody, fcmTokenList);
+                    dbAccessor.storeEvent(event);
                 }
+                finish();
             }
         });
         backButton.setOnClickListener(v -> finish());
