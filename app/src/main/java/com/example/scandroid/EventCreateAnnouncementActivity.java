@@ -97,7 +97,9 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
         sendNotificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String notificationTitle = editNotificationTitle.getText().toString();
+                String title = editNotificationTitle.getText().toString();
+                // add the event name so we know what event the notification is associated with
+                String notificationTitle = event.getEventName() + ": " + title;
                 String notificationBody = editNotificationInfo.getText().toString();
                 String notificationTime = editNotificationTime.getText().toString();
                 String[] parts = notificationTime.split(":");
