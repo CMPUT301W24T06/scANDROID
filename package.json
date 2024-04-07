@@ -1,0 +1,14 @@
+{
+  "name": "scandroid",
+  "version": "1.0.0",
+  "description": "This is scANDROID, an event managing Android App where attendees can check in using QR codes on their mobile devices and organizers can track attendance, manage event details, and send notifications.",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
