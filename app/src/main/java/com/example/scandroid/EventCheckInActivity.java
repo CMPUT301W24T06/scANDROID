@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.ActivityCompat;
@@ -27,6 +28,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
+import io.github.muddz.styleabletoast.StyleableToast;
 
 import javax.annotation.Nullable;
 
@@ -40,6 +42,7 @@ import javax.annotation.Nullable;
 //          https://chat.openai.com/share/fa53613d-a2e6-43ee-ade9-70ff94ea22bd
 public class EventCheckInActivity extends AppCompatActivity {
     private Boolean locationAllowed = false;
+    private Boolean notificationsAllowed = false;
     private DBAccessor database;
     private TextView eventTitle;
     private TextView eventLocation;
@@ -48,6 +51,7 @@ public class EventCheckInActivity extends AppCompatActivity {
     private AppCompatButton cancelCheckInButton;
     private AppCompatButton confirmCheckInButton;
     private ArrayList<Double> checkInLocation;
+    private static final int POST_NOTIFICATION_REQUEST_CODE = 99;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private ActivityResultLauncher<String[]> locationPermissionRequest;
 
@@ -104,6 +108,7 @@ public class EventCheckInActivity extends AppCompatActivity {
 
                         if (pushNotifBox.isChecked()) {
                             user.addEventToNotifiedBy(eventID);
+                            requestPostNotificationPermission();
                         }
                         if (trackLocationBox.isChecked() && locationAllowed) {
                             Location userLocation = new LocationRetriever(getApplicationContext()).getLastKnownLocation();
@@ -141,6 +146,13 @@ public class EventCheckInActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void requestPostNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, POST_NOTIFICATION_REQUEST_CODE);
+        }
+    }
+
     private void checkAndRequestPermissions() {
         String[] permissions = {
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -170,20 +182,40 @@ public class EventCheckInActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             // Handle permission request result here
-            boolean allPermissionsGranted = true;
+            boolean locationGranted = true;
             for (int grantResult : grantResults) {
                 if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false;
+                    locationGranted = false;
                     break;
                 }
             }
-            if (allPermissionsGranted) {
+            if (locationGranted) {
                 locationAllowed = true;
             } else {
                 locationAllowed = false;
                 // Handle case when permissions are not granted
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+                showToast("Notification permission denied");
             }
         }
+        if (requestCode == POST_NOTIFICATION_REQUEST_CODE) {
+            boolean notificationsGranted = true;
+            for (int grantResult : grantResults) {
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                    notificationsGranted = false;
+                    break;
+                }
+            }
+            if (notificationsGranted) {
+                notificationsAllowed = true;
+            } else {
+                notificationsAllowed = false;
+                // Handle case when permissions are not granted
+                showToast("Notification permission denied");
+            }
+        }
+    }
+
+    private void showToast(String message) {
+        StyleableToast.makeText(this, message, R.style.customToast).show();
     }
 }
