@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 /**
  * BrowseUsersFragment handles the list of all users in BrowseActivity
@@ -148,7 +150,13 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
 
                     @Override
                     public void onBitmapFailed(Exception e) {
-                        Bitmap newProfilePicture = new ProfilePictureGenerator().generatePictureBitmap(user.getUserName());
+                        String username;
+                        if (Objects.equals(user.getUserName(), "")){
+                            username = "Guest" + new Random().nextInt(10000);
+                        } else {
+                            username = user.getUserName();
+                        }
+                        Bitmap newProfilePicture = new ProfilePictureGenerator().generatePictureBitmap(username);
                         database.storeUserProfileImage(userID, newProfilePicture);
                         allUsers.add(new Tuple<>(user, newProfilePicture));
                         if (allUsers.size() == List.size()) {
