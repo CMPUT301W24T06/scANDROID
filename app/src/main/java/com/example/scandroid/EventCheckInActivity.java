@@ -21,6 +21,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import java.sql.Time;
 import java.util.ArrayList;
@@ -124,7 +125,14 @@ public class EventCheckInActivity extends AppCompatActivity {
                         user.addEventToEventsAttending(eventID);
                         database.storeEvent(event);
                         database.storeUser(user);
-                        finish();
+                        CheckInConfirmationFragment confirmationFragment = CheckInConfirmationFragment.newInstance("param1", "param2");
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .replace(android.R.id.content, confirmationFragment)
+                                .addToBackStack(null)  // Optional: Add to back stack if you want to allow back navigation
+                                .commit();
+
+                        //finish();
                     });
                 });
             } else {
