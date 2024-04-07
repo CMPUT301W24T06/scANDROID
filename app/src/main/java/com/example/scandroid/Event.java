@@ -156,6 +156,8 @@ public class Event implements Serializable{
 
             // increment milestone if necessary
             if (this.CheckInIDs.size() == this.MilestoneSeries.get(0)) {
+                // Send a notification to the organizer
+                new EventMilestonesActivity().milestoneNotify(this.MilestoneSeries.get(0), this.EventID);
                 this.addEventMilestone();       // add next fibonacci milestone when current max is reached
             }
         }
@@ -172,7 +174,6 @@ public class Event implements Serializable{
         this.MilestoneSeries.set(0, (long) pastGreatest);
         this.MilestoneSeries.set(1, (long) nextGreatest);
         // i.e. [2,3] becomes [3,5]
-        // TODO: Send an alert (fragment?)
     }
 
     /**
