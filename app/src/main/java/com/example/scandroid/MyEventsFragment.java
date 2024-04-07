@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import org.checkerframework.checker.units.qual.A;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class MyEventsFragment extends Fragment {
             if (Objects.equals(userType, "organizer")) {
                 myEventIDs = user.getEventsOrganized();
             } else if (Objects.equals(userType, "attendee")){
-                ArrayList<String> attendingEvents = new ArrayList<>();
+                ArrayList<String> attendingEvents;
                 attendingEvents = user.getEventsAttending();
                 myEventIDs.addAll(attendingEvents);
                 ArrayList<String> signedUpEvents = user.getEventsSignedUp();
@@ -121,7 +121,7 @@ public class MyEventsFragment extends Fragment {
             database.accessEvent(anEvent, event -> {
                 if (event == null) {
                     if (Objects.equals(userType, "organizer")) {
-                        RemovalNoticeFragment removalNoticeFragment = new RemovalNoticeFragment();
+                        NoticeFragment removalNoticeFragment = new NoticeFragment("Your event was removed by our admins");
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         transaction.add(android.R.id.content, removalNoticeFragment);
                         transaction.commit();
