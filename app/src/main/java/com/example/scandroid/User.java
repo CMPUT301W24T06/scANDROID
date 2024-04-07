@@ -20,32 +20,22 @@ public class User {
     /* ------------------- *
      * ATTRIBUTES / FIELDS *
      * ------------------- */
-    private String userName;
-    private String userEmail;
-    private String userPhoneNumber;
-    //TODO - (FRONT END) set character limit for userAboutMe.
     private String userAboutMe;
-    private String adminKey = "ThisPersonIsAnAdmin1298";
+    private String userEmail;
     private String userID;
+    private String userName;
+    private String userPhoneNumber;
+    private String adminKey = "ThisPersonIsAnAdmin1298";
+    private boolean hasAdminPermissions = false;
     private ArrayList<String> eventsAttending;
+    public HashMap<String, Long> timesAttended = new HashMap<>() ;
     private ArrayList<String> eventsOrganized;
     private ArrayList<String> eventsSignedUp;
+    private String fcmToken;
     public ArrayList<String> notifiedBy;
     private String profilePictureUrl;
-    private boolean hasAdminPermissions = false;
-    private String fcmToken;
-    public HashMap<String, Long> timesAttended = new HashMap<>() ;
 
-    // Add a default constructor
-    public User() {
-        this.userID = "";  // Default to an empty string for userID
-        this.userName = ""; // Default to an empty string for userName
-        this.eventsAttending = new ArrayList<>();
-        this.eventsOrganized = new ArrayList<>();
-        this.eventsSignedUp = new ArrayList<>();
-        this.notifiedBy = new ArrayList<>();
-        this.timesAttended = new HashMap<>();
-    }
+
 
     /* ----------- *
      * CONSTRUCTOR *
@@ -66,25 +56,83 @@ public class User {
         this.eventsOrganized = new ArrayList<>();
         this.eventsSignedUp = new ArrayList<>();
         this.notifiedBy = new ArrayList<>();
+
         //set the default value of a user's name to a Guest name if no name is provided.
         if(userName == null){
             Random random_num = new Random();
             int randID = random_num.nextInt(10000);
             this.userName = "Guest" + randID;
-        }
+        } else { this.userName = userName; }
 
-        else{
-            this.userName = userName;
-        }
         this.userAboutMe = userAboutMe;
         this.userPhoneNumber = userPhoneNumber;
         this.userEmail = userEmail;
         this.profilePictureUrl = profilePictureUrl;
     }
 
+    /**
+     * Necessary empty constructor for User.unpackageUser method.
+     */
+    public User() {
+        this.userID = "";   // Default to an empty string for userID
+        this.userName = ""; // Default to an empty string for userName
+        this.eventsAttending = new ArrayList<>();
+        this.eventsOrganized = new ArrayList<>();
+        this.eventsSignedUp = new ArrayList<>();
+        this.notifiedBy = new ArrayList<>();
+        this.timesAttended = new HashMap<>();
+    }
+
     /* ------- *
      * METHODS *
      * ------- */
+    /**
+     * Adds an event to the user's list of events they are attending.
+     * @param eventID An eventID.
+     */
+    public void addEventToEventsAttending(String eventID){
+        Log.d("User", "Adding event to eventsAttending: " + eventID);
+        if(eventsAttending.contains(eventID)){
+            Integer timesAttendedValue = Math.toIntExact(timesAttended.get(eventID));
+            if(timesAttendedValue != null){
+                this.timesAttended.replace(eventID, (long) (timesAttendedValue+1));
+                Log.d("User", "Incrementing attendance count for event " + eventID + ": " + (timesAttendedValue + 1));
+            } else {
+                this.timesAttended.put(eventID, 1L);
+                Log.d("User", "Initializing attendance count for event " + eventID + " to 1");
+            }
+        } else {
+            this.eventsAttending.add(eventID);
+            this.timesAttended.put(eventID, 1L);
+            Log.d("User", "Adding new event " + eventID + " to eventsAttending with attendance count 1");
+        }
+        Log.d("User", "timesAttended after adding event " + eventID + ": " + timesAttended.get(eventID));
+    }
+
+    /**
+     * Adds an event to the user's list of events they have organized.
+     * @param eventID An event's ID.
+     */
+    public void addEventToEventsOrganized(String eventID){
+        eventsOrganized.add(eventID);
+    }
+
+    /**
+     * Adds an event to the user's list of events they are signed up to
+     * @param eventID an event's ID
+     */
+    public void addEventToEventsSignedUp(String eventID){
+        this.eventsSignedUp.add(eventID);
+    }
+
+    /**
+     * Adds an event to a user's list of events they wish to receive notifications from.
+     * @param eventID an event's ID.
+     */
+    public void addEventToNotifiedBy(String eventID){
+        notifiedBy.add(eventID);
+        //user will get notifications for this event.
+    }
 
     /**
      * A user enters an admin key in order to get admin permissions
@@ -94,80 +142,6 @@ public class User {
         if (Objects.equals(userAdminKey, adminKey)){
             this.hasAdminPermissions = true;
         }
-    }
-
-    /**
-     * Adds an event to the user's list of events they are attending.
-     * @param event An eventID.
-     */
-    public void addEventToEventsAttending(String event){
-        Log.d("User", "Adding event to eventsAttending: " + event);
-        if(eventsAttending.contains(event)){
-            Integer timesAttendedValue = Math.toIntExact(timesAttended.get(event));
-            if(timesAttendedValue != null){
-                this.timesAttended.replace(event, (long) (timesAttendedValue+1));
-                Log.d("User", "Incrementing attendance count for event " + event + ": " + (timesAttendedValue + 1));
-            } else {
-                this.timesAttended.put(event, 1L);
-                Log.d("User", "Initializing attendance count for event " + event + " to 1");
-            }
-        }
-
-        else{
-            this.eventsAttending.add(event);
-            this.timesAttended.put(event, 1L);
-            Log.d("User", "Adding new event " + event + " to eventsAttending with attendance count 1");
-        }
-        Log.d("User", "timesAttended after adding event " + event + ": " + timesAttended.get(event));
-
-    }
-
-    /**
-     * Adds an event to the user's list of events they are signed up to
-     * @param event an event's ID
-     */
-    public void addEventToEventsSignedUp(String event){
-        this.eventsSignedUp.add(event);
-    }
-
-    /**
-     * Adds an event to the user's list of events they have organized.
-     * @param event An event's ID.
-     */
-    public void addEventToEventsOrganized(String event){
-        eventsOrganized.add(event);
-    }
-
-    /**
-     * Remove an event from the user's list of event's they are signed up to
-     * @param event an event's ID
-     */
-    public void removeEventToEventsSignedUp(String event){
-        eventsSignedUp.remove(event);
-    }
-
-    /**
-     * Remove an event from the user's list of events they have organized.
-     * @param event An event's ID.
-     */
-    public void removeEventToEventsOrganized(String event){
-        eventsOrganized.remove(event);
-    }
-
-    /**
-     * Remove an event from the user's list of events they are attending.
-     * @param event An event's ID.
-     */
-    public void removeEventToEventsAttending(String event){
-        eventsAttending.remove(event);
-    }
-    /**
-     * Adds an event to a user's list of events they wish to receive notifications from.
-     * @param event an event's ID.
-     */
-    public void addEventToNotifiedBy(String event){
-        notifiedBy.add(event);
-        //user will get notifications for this event.
     }
 
     /**
@@ -196,6 +170,30 @@ public class User {
 
         // return fully detailed event map
         return packagedUser;
+    }
+
+    /**
+     * Remove an event from the user's list of events they are attending.
+     * @param eventID An event's ID.
+     */
+    public void removeEventToEventsAttending(String eventID){
+        eventsAttending.remove(eventID);
+    }
+
+    /**
+     * Remove an event from the user's list of events they have organized.
+     * @param eventID An event's ID.
+     */
+    public void removeEventToEventsOrganized(String eventID){
+        eventsOrganized.remove(eventID);
+    }
+
+    /**
+     * Remove an event from the user's list of event's they are signed up to
+     * @param eventID an event's ID
+     */
+    public void removeEventToEventsSignedUp(String eventID){
+        eventsSignedUp.remove(eventID);
     }
 
     /**
@@ -239,57 +237,6 @@ public class User {
     }
 
     /**
-     * @return the URL of the user's profile picture
-     */
-    public String getProfilePictureUrl() {
-        return profilePictureUrl;
-    }
-
-    /**
-     * @return the user's userID
-     */
-    public String getUserID() {
-        return userID;
-    }
-
-    /**
-     * @return the user's name
-     */
-    public String getUserName() {
-        return userName;
-    }
-
-    //TODO - figure out how to calculate total number of times a user has checked in. May have to use some sort of button and track how many times it is  hit.
-
-    /**
-     * @return the user's email.
-     */
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    /**
-     * @return the user's phone number
-     */
-    public String getUserPhoneNumber() {
-        return userPhoneNumber;
-    }
-
-    /**
-     * @return The information in the user's 'About Me' section of their profile.
-     */
-    public String getUserAboutMe() {
-        return userAboutMe;
-    }
-
-    /**
-     * @return A list of eventIDs that the user may be notified by.
-     */
-    public ArrayList<String> getNotifiedBy() {
-        return notifiedBy;
-    }
-
-    /**
      * @return the list of events (eventIDs) a user is attending
      */
     public ArrayList<String> getEventsAttending() {
@@ -311,19 +258,11 @@ public class User {
     }
 
     /**
-     * @param event an eventID
-     * @return The number of times a User has attended a given event.
+     * Retrieves a Firebase Cloud Messaging token which allows for the user to receive post notifications from organizers
+     * @return String value which is the user's token
      */
-    public Integer getTimesAttended(String event){
-
-        Log.d("Your tag","Event ID: " + event);
-        Integer attendanceCount = Math.toIntExact(timesAttended.get(event));
-        Log.d("Your tag","Attendance Count: " + attendanceCount);
-        if (attendanceCount != null) {
-            return attendanceCount;
-        } else {
-            return 0;
-        }
+    public String getFCMToken() {
+        return fcmToken;
     }
 
     /**
@@ -333,22 +272,114 @@ public class User {
     public boolean getHasAdminPermissions(){
         return this.hasAdminPermissions;
     }
+
     /**
-     * Retrieves a Firebase Cloud Messaging token which allows for the user to receive post notifications from organizers
-     * @return String value which is the user's token
+     * @return A list of eventIDs that the user may be notified by.
      */
-    public String getFCMToken() {
-        return fcmToken;
+    public ArrayList<String> getNotifiedBy() {
+        return notifiedBy;
     }
+
+    /**
+     * @return the URL of the user's profile picture
+     */
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    /**
+     * @param eventID an eventID
+     * @return The number of times a User has attended a given event.
+     */
+    public Integer getTimesAttended(String eventID){
+
+        Log.d("Your tag","Event ID: " + eventID);
+        Integer attendanceCount = Math.toIntExact(timesAttended.get(eventID));
+        Log.d("Your tag","Attendance Count: " + attendanceCount);
+        if (attendanceCount != null) {
+            return attendanceCount;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * @return The information in the user's 'About Me' section of their profile.
+     */
+    public String getUserAboutMe() {
+        return userAboutMe;
+    }
+
+    /**
+     * @return the user's email.
+     */
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    /**
+     * @return the user's userID
+     */
+    public String getUserID() {
+        return userID;
+    }
+
+    /**
+     * @return the user's name
+     */
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * @return the user's phone number
+     */
+    public String getUserPhoneNumber() {
+        return userPhoneNumber;
+    }
+
 
     /* ------- *
      * SETTERS *
      * ------- */
+    /**
+     * @param FCMToken string that allows the user to receive post notifications
+     */
+    public void setFCMToken(String FCMToken) {
+        this.fcmToken = FCMToken;
+    }
+
+    /**
+     * @param adminPermissions boolean for whether user has admin permissions
+     */
+    public void setHasAdminPermissions(boolean adminPermissions){
+        this.hasAdminPermissions = adminPermissions;
+    }
+
+    /**
+     * @param profilePictureUrl the URL of the user's profile picture
+     */
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
+    }
+
+    /**
+     * @param userAboutMe the about-me section the user inputs in their profile.
+     */
+    public void setUserAboutMe(String userAboutMe) {
+        this.userAboutMe = userAboutMe;
+    }
+
+    /**
+     * @param userEmail the email inputted by the user.
+     */
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 
     /**
      * @param userID an ID retrieved by the device's ID.
      */
-
     public void setUserID(String userID) {
         this.userID = userID;
     }
@@ -360,43 +391,10 @@ public class User {
     }
 
     /**
-     * @param userEmail the email inputted by the user.
-     */
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    /**
      * @param userPhoneNumber the phone number inputted by the user.
      */
     public void setUserPhoneNumber(String userPhoneNumber) {
         this.userPhoneNumber = userPhoneNumber;
     }
 
-    /**
-     * @param userAboutMe the about-me section the user inputs in their profile.
-     */
-    public void setUserAboutMe(String userAboutMe) {
-        this.userAboutMe = userAboutMe;
-    }
-    /**
-     * @param profilePictureUrl the URL of the user's profile picture
-     */
-    public void setProfilePictureUrl(String profilePictureUrl) {
-        this.profilePictureUrl = profilePictureUrl;
-    }
-
-    /**
-     * @param adminPermissions boolean for whether user has admin permissions
-     */
-    public void setHasAdminPermissions(boolean adminPermissions){
-        this.hasAdminPermissions = adminPermissions;
-    }
-
-    /**
-     * @param FCMToken string that allows the user to receive post notifications
-     */
-    public void setFCMToken(String FCMToken) {
-        this.fcmToken = FCMToken;
-    }
 }
