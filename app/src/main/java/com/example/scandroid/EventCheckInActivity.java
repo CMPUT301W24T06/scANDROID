@@ -127,8 +127,14 @@ public class EventCheckInActivity extends AppCompatActivity {
                     }
                     //If not already an attendee, check if event still has capacity for more check ins
                     if(!alreadyAttendee){
-                        if (event.getEventHasCapacity() && event.getEventAttendeesTotal() < event.getEventCapacity()){
-                            canCheckIn = true;
+                        if (event.getEventHasCapacity()) {
+                            if (event.getEventAttendeesTotal() < event.getEventCapacity()) {
+                                canCheckIn = true;
+                            } else {
+                                canCheckIn = false;
+                            }
+                        } else {
+                            canCheckIn = true; // Event has no capacity limit
                         }
                     }
                     if (canCheckIn){
@@ -166,7 +172,7 @@ public class EventCheckInActivity extends AppCompatActivity {
                                     .commit();
                         });
                     } else {
-                        NoticeFragment fullEventNotice = new NoticeFragment("This event has reached maximum capacity");
+                        NoticeFragment fullEventNotice = new NoticeFragment("Sorry! This event has reached maximum capacity");
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         transaction.add(android.R.id.content, fullEventNotice);
                         transaction.commit();
