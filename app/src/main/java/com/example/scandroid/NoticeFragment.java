@@ -10,21 +10,23 @@ import android.widget.TextView;
 import androidx.fragment.app.DialogFragment;
 
 /**
- * Popup fragment to alert users attempting to check into an event that has already ended
+ * Popup fragment for the purpose of alerting users
  */
-public class EventEndedNoticeFragment extends DialogFragment {
+public class NoticeFragment extends DialogFragment {
 
+    String noticeText;
     /**
-     * Default constructor for the EventEndedNoticeFragment
+     * Default constructor for the NoticeFragment
      */
-    EventEndedNoticeFragment(){
-
+    NoticeFragment(String noticeText){
+        this.noticeText = noticeText;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.notice_event_ended_fragment, container, false);
-        TextView removalText = view.findViewById(R.id.ended_notice_text);
-        Button confirmButton = view.findViewById(R.id.confirm_ended_notice_button);
+        View view = inflater.inflate(R.layout.notice_fragment, container, false);
+        TextView removalText = view.findViewById(R.id.notice_text);
+        Button confirmButton = view.findViewById(R.id.confirm_notice_button);
+        removalText.setText(noticeText);
         //confirmButton.setOnClickListener(v -> dismiss());
         confirmButton.setOnClickListener(v -> {
             requireActivity().finish();

@@ -1,14 +1,9 @@
 package com.example.scandroid;
 
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,18 +13,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Calendar;
-
-import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * EventCheckInActivity is shown when a check-in QR code
@@ -105,48 +96,70 @@ public class EventCheckInActivity extends AppCompatActivity {
                 midnight.set(Calendar.SECOND, 0);
                 midnight.add(Calendar.DAY_OF_MONTH, 1);
                 if (Calendar.getInstance().after(midnight)){
-                    EventEndedNoticeFragment endedNoticeFragment = new EventEndedNoticeFragment();
+                    NoticeFragment endedNoticeFragment = new NoticeFragment("This event has already ended");
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.add(android.R.id.content, endedNoticeFragment);
                     transaction.commit();
                 }
 
                 confirmCheckInButton.setOnClickListener(v -> {
+                    boolean alreadyAttendee = false;
+                    boolean canCheckIn = false;
+                    //Check if user is already an attendee of event
+                    ArrayList<Event.CheckIn> attendeeList = event.getEventAttendeeList();
+                    for (Event.CheckIn attendee: attendeeList){
+                        if (Objects.equals(attendee.getUserID(), userID)){
+                            alreadyAttendee = true;
+                            canCheckIn = true;
+                            break;
+                        }
+                    }
+                    //If not already an attendee, check if event still has capacity for more check ins
+                    if(!alreadyAttendee){
+                        if (event.getEventHasCapacity() && event.getEventAttendeesTotal() < event.getEventCapacity()){
+                            canCheckIn = true;
+                        }
+                    }
+                    if (canCheckIn){
                     database.accessUser(userID, user -> {
-                        checkInLocation = new ArrayList<>();
+                                checkInLocation = new ArrayList<>();
 
-                        if (pushNotifBox.isChecked()) {
-                            user.addEventToNotifiedBy(eventID);
-                        }
-                        if (trackLocationBox.isChecked() && locationAllowed) {
-                            Location userLocation = new LocationRetriever(getApplicationContext()).getLastKnownLocation();
-                            checkInLocation.add(userLocation.getLatitude());
-                            checkInLocation.add(userLocation.getLongitude());
-                        }
-                        if (!trackLocationBox.isChecked()) {
-                            checkInLocation.add(0.0);
-                            checkInLocation.add(0.0);
-                        }
+                                if (pushNotifBox.isChecked()) {
+                                    user.addEventToNotifiedBy(eventID);
+                                }
+                                if (trackLocationBox.isChecked() && locationAllowed) {
+                                    Location userLocation = new LocationRetriever(getApplicationContext()).getLastKnownLocation();
+                                    checkInLocation.add(userLocation.getLatitude());
+                                    checkInLocation.add(userLocation.getLongitude());
+                                }
+                                if (!trackLocationBox.isChecked()) {
+                                    checkInLocation.add(0.0);
+                                    checkInLocation.add(0.0);
+                                }
 
-                        // source: https://stackoverflow.com/a/5369753
-                        Time time = new Time(Calendar.getInstance().getTime().getTime());
-                        if (user.getEventsAttending().contains(eventID)) {
-                            event.addExistingEventAttendee(userID, time, checkInLocation);
-                        } else {
-                            event.addEventAttendee(userID, time, checkInLocation);
-                        }
-                        user.addEventToEventsAttending(eventID);
-                        database.storeEvent(event);
-                        database.storeUser(user);
-                        CheckInConfirmationFragment confirmationFragment = CheckInConfirmationFragment.newInstance("param1", "param2");
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        fragmentManager.beginTransaction()
-                                .replace(android.R.id.content, confirmationFragment)
-                                .addToBackStack(null)  // Optional: Add to back stack if you want to allow back navigation
-                                .commit();
-
-                        //finish();
+                                // source: https://stackoverflow.com/a/5369753
+                                Time time = new Time(Calendar.getInstance().getTime().getTime());
+                                if (user.getEventsAttending().contains(eventID)) {
+                                    event.addExistingEventAttendee(userID, time, checkInLocation);
+                                } else {
+                                    event.addEventAttendee(userID, time, checkInLocation);
+                                }
+                                user.addEventToEventsAttending(eventID);
+                                database.storeEvent(event);
+                                database.storeUser(user);
+                                CheckInConfirmationFragment confirmationFragment = CheckInConfirmationFragment.newInstance("param1", "param2");
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(android.R.id.content, confirmationFragment)
+                                        .addToBackStack(null)  // Optional: Add to back stack if you want to allow back navigation
+                                        .commit();
                     });
+                    } else {
+                        NoticeFragment fullEventNotice = new NoticeFragment("This event has reached maximum capacity");
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.add(android.R.id.content, fullEventNotice);
+                        transaction.commit();
+                    }
                 });
             } else {
                 finish();
