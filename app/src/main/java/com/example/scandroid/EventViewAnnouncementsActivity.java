@@ -67,33 +67,29 @@ public class EventViewAnnouncementsActivity extends AppCompatActivity {
             ArrayList<Event.EventAnnouncement> pastAnnouncementList = new ArrayList<>();
             numberOfEvents = attendingEvents.size();
             for (String eventID: attendingEvents){
-                database.accessEvent(eventID, new EventCallback() {
-                    @Override
-                    public void onEventReceived(Event event) {
-                        announcementList.addAll(event.getEventAnnouncements());
-                        checkedEvents += 1;
-                        if (checkedEvents == numberOfEvents){
-                            for (Event.EventAnnouncement announcement: announcementList){
-                                Time announcementTime = announcement.getAnnouncementTime();
-                                Date currentDate = new Date();
-                                Calendar eventDate = event.getEventDate();
-                                eventDate.setTime(new Date(announcementTime.getTime()));
-                                if (currentDate.after(eventDate.getTime())){
-                                    pastAnnouncementList.add(announcement);
-                                }
+                database.accessEvent(eventID, event -> {
+                    announcementList.addAll(event.getEventAnnouncements());
+                    checkedEvents += 1;
+                    if (checkedEvents == numberOfEvents){
+                        for (Event.EventAnnouncement announcement: announcementList){
+                            Time announcementTime = announcement.getAnnouncementTime();
+                            Date currentDate = new Date();
+                            Date eventDate = new Date(announcementTime.getTime());
+                            if (currentDate.after(eventDate)){
+                                pastAnnouncementList.add(announcement);
                             }
-                            TextView loadingTextView = findViewById(R.id.loading_view_announcements_text);
-                            if (pastAnnouncementList.size() == 0){
-                                loadingTextView.setText("No announcements");
-                            } else {
-                                eventAnnouncementsAdapter = new AnnouncementsArrayAdapter(EventViewAnnouncementsActivity.this, pastAnnouncementList);
-                                announcementListView.setAdapter(eventAnnouncementsAdapter);
-                                loadingTextView.setVisibility(View.INVISIBLE);
-                            }
-
+                        }
+                        TextView loadingTextView = findViewById(R.id.loading_view_announcements_text);
+                        if (pastAnnouncementList.size() == 0){
+                            loadingTextView.setText("No announcements");
+                        } else {
+                            eventAnnouncementsAdapter = new AnnouncementsArrayAdapter(EventViewAnnouncementsActivity.this, pastAnnouncementList);
+                            announcementListView.setAdapter(eventAnnouncementsAdapter);
+                            loadingTextView.setVisibility(View.INVISIBLE);
                         }
 
                     }
+
                 });
             }
         });

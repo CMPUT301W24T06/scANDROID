@@ -16,11 +16,28 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+/**
+ * AnnouncementsArrayAdapter is an ArrayAdapter used for displaying event announcements in a list view
+ */
 public class AnnouncementsArrayAdapter extends ArrayAdapter<Event.EventAnnouncement> {
+
+    /**
+     * Constructor for a new AnnouncementsArrayAdapter
+     * @param context context where the Adapter is being used
+     * @param announcementList list of event announcements to be displayed
+     */
     public AnnouncementsArrayAdapter(Context context, ArrayList<Event.EventAnnouncement> announcementList) {
         super(context, 0, announcementList);
     }
 
+    /**
+     * Gets a View that displays the data of a specific announcement in the data set
+     *
+     * @param position position of the item within the adapter's data set
+     * @param convertView old view to reuse (if possible)
+     * @param parent parent that this view will eventually be attached to
+     * @return a View that corresponds to the data at the specified position
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
