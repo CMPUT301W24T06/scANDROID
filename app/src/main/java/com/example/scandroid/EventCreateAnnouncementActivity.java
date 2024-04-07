@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 import io.github.muddz.styleabletoast.StyleableToast;
 
@@ -86,7 +87,7 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
 
             TimePickerDialog timePickerDialog = new TimePickerDialog(EventCreateAnnouncementActivity.this, R.style.TimePickerTheme,
                     (view, hourOfDay, minute1) -> {
-                        editNotificationTime.setText(hourOfDay + ":" + minute1);
+                        editNotificationTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute1));
                         calendar.set(Calendar.MINUTE, minute1);
                         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     }, hour, minute, false);
@@ -103,13 +104,11 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
                 int hours = Integer.parseInt(parts[0]);
                 int minutes = Integer.parseInt(parts[1]);
 
-                Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.HOUR_OF_DAY, hours);
                 calendar.set(Calendar.MINUTE, minutes);
                 calendar.set(Calendar.SECOND, 0);
 
                 Time time = new Time(calendar.getTimeInMillis());
-
 
                 // testing
                 fcmTokenList.add("dPjr4-CbQaWMmXc-wppTsN:APA91bHTMdX04rlBvrltUCDSzkACgXNS-zyqTMMlyATv8LKXLBuPg-ekPE4oX0yO-Tquf2QuWELZwUIn9cSzBBlYWe0eERV1qyvAoe3n8zG_OZrX1Cbrzpy2QNyQh3gT5M6FQnktMBg6");
@@ -117,8 +116,8 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
                 // Handle user input validation
                 if (handleUserInput(notificationTitle, notificationBody, notificationTime)) {
                     Log.d("Notification", "fcmTokenList size: " + fcmTokenList.size()); // message for testing
+                    event.addEventAnnouncement(notificationTitle, notificationBody, time); // add to db
                     sendNotification(notificationTitle, notificationBody, fcmTokenList);
-                    event.addEventAnnouncement(notificationTitle, notificationBody, time);
                 }
             }
         });
@@ -198,7 +197,6 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
                         // Handle unsuccessful response, e.g., show a toast to the user
                     } else {
                         Log.d("Notification", "Sent successfully!");
-                        showToast("Notification sent!");
                     }
                 }
             });
