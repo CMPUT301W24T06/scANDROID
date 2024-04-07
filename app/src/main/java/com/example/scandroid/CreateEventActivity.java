@@ -33,6 +33,7 @@ import androidx.fragment.app.FragmentTransaction;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 import io.github.muddz.styleabletoast.StyleableToast;
 
@@ -169,7 +170,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
             TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this, R.style.TimePickerTheme,
                     (view, hourOfDay, minute1) -> {
-                        editEventTime.setText(hourOfDay + ":" + minute1);
+                        editEventTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute1));
                         calendar.set(Calendar.MINUTE, minute1);
                         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     }, hour, minute, false);

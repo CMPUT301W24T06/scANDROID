@@ -110,9 +110,6 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
 
                 Time time = new Time(calendar.getTimeInMillis());
 
-                // testing
-                fcmTokenList.add("dPjr4-CbQaWMmXc-wppTsN:APA91bHTMdX04rlBvrltUCDSzkACgXNS-zyqTMMlyATv8LKXLBuPg-ekPE4oX0yO-Tquf2QuWELZwUIn9cSzBBlYWe0eERV1qyvAoe3n8zG_OZrX1Cbrzpy2QNyQh3gT5M6FQnktMBg6");
-
                 // Handle user input validation
                 if (handleUserInput(notificationTitle, notificationBody, notificationTime)) {
                     Log.d("Notification", "fcmTokenList size: " + fcmTokenList.size()); // message for testing
