@@ -1,14 +1,9 @@
 package com.example.scandroid;
 
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,18 +11,16 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Objects;
 import io.github.muddz.styleabletoast.StyleableToast;
 
 import javax.annotation.Nullable;
@@ -101,56 +94,82 @@ public class EventCheckInActivity extends AppCompatActivity {
                     finish();
                 });
 
+                Calendar eventDate = event.getEventDate();
+                Calendar midnight = (Calendar) eventDate.clone();
+                midnight.set(Calendar.MINUTE, 0);
+                midnight.set(Calendar.HOUR_OF_DAY, 0);
+                midnight.set(Calendar.SECOND, 0);
+                midnight.add(Calendar.DAY_OF_MONTH, 1);
+                if (Calendar.getInstance().after(midnight)){
+                    NoticeFragment endedNoticeFragment = new NoticeFragment("This event has already ended");
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.add(android.R.id.content, endedNoticeFragment);
+                    transaction.commit();
+                }
+
                 confirmCheckInButton.setOnClickListener(v -> {
+                    boolean alreadyAttendee = false;
+                    boolean canCheckIn = false;
+                    //Check if user is already an attendee of event
+                    ArrayList<Event.CheckIn> attendeeList = event.getEventAttendeeList();
+                    for (Event.CheckIn attendee: attendeeList){
+                        if (Objects.equals(attendee.getUserID(), userID)){
+                            alreadyAttendee = true;
+                            canCheckIn = true;
+                            break;
+                        }
+                    }
+                    //If not already an attendee, check if event still has capacity for more check ins
+                    if(!alreadyAttendee){
+                        if (event.getEventHasCapacity() && event.getEventAttendeesTotal() < event.getEventCapacity()){
+                            canCheckIn = true;
+                        }
+                    }
+                    if (canCheckIn){
                     database.accessUser(userID, user -> {
+                                checkInLocation = new ArrayList<>();
 
-                        checkInLocation = new ArrayList<>();
+                                if (pushNotifBox.isChecked()) {
+                                    user.addEventToNotifiedBy(eventID);
+                                }
+                                if (trackLocationBox.isChecked() && locationAllowed) {
+                                    Location userLocation = new LocationRetriever(getApplicationContext()).getLastKnownLocation();
+                                    checkInLocation.add(userLocation.getLatitude());
+                                    checkInLocation.add(userLocation.getLongitude());
+                                }
+                                if (!trackLocationBox.isChecked()) {
+                                    checkInLocation.add(0.0);
+                                    checkInLocation.add(0.0);
+                                }
 
-                        if (pushNotifBox.isChecked()) {
-                            user.addEventToNotifiedBy(eventID);
-                            requestPostNotificationPermission();
-                        }
-                        if (trackLocationBox.isChecked() && locationAllowed) {
-                            Location userLocation = new LocationRetriever(getApplicationContext()).getLastKnownLocation();
-                            checkInLocation.add(userLocation.getLatitude());
-                            checkInLocation.add(userLocation.getLongitude());
-                        }
-                        if (!trackLocationBox.isChecked()) {
-                            checkInLocation.add(0.0);
-                            checkInLocation.add(0.0);
-                        }
-
-                        // source: https://stackoverflow.com/a/5369753
-                        Time time = new Time(Calendar.getInstance().getTime().getTime());
-                        if (user.getEventsAttending().contains(eventID)) {
-                            event.addExistingEventAttendee(userID, time, checkInLocation);
-                        } else {
-                            event.addEventAttendee(userID, time, checkInLocation);
-                        }
-                        user.addEventToEventsAttending(eventID);
-                        database.storeEvent(event);
-                        database.storeUser(user);
-                        CheckInConfirmationFragment confirmationFragment = CheckInConfirmationFragment.newInstance("param1", "param2");
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        fragmentManager.beginTransaction()
-                                .replace(android.R.id.content, confirmationFragment)
-                                .addToBackStack(null)  // Optional: Add to back stack if you want to allow back navigation
-                                .commit();
-
-                        //finish();
+                                // source: https://stackoverflow.com/a/5369753
+                                Time time = new Time(Calendar.getInstance().getTime().getTime());
+                                if (user.getEventsAttending().contains(eventID)) {
+                                    event.addExistingEventAttendee(userID, time, checkInLocation);
+                                } else {
+                                    event.addEventAttendee(userID, time, checkInLocation);
+                                }
+                                user.addEventToEventsAttending(eventID);
+                                database.storeEvent(event);
+                                database.storeUser(user);
+                                CheckInConfirmationFragment confirmationFragment = CheckInConfirmationFragment.newInstance("param1", "param2");
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(android.R.id.content, confirmationFragment)
+                                        .addToBackStack(null)  // Optional: Add to back stack if you want to allow back navigation
+                                        .commit();
                     });
+                    } else {
+                        NoticeFragment fullEventNotice = new NoticeFragment("This event has reached maximum capacity");
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.add(android.R.id.content, fullEventNotice);
+                        transaction.commit();
+                    }
                 });
             } else {
                 finish();
             }
         });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void requestPostNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, POST_NOTIFICATION_REQUEST_CODE);
-        }
     }
 
     private void checkAndRequestPermissions() {
@@ -182,40 +201,20 @@ public class EventCheckInActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             // Handle permission request result here
-            boolean locationGranted = true;
+            boolean allPermissionsGranted = true;
             for (int grantResult : grantResults) {
                 if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    locationGranted = false;
+                    allPermissionsGranted = false;
                     break;
                 }
             }
-            if (locationGranted) {
+            if (allPermissionsGranted) {
                 locationAllowed = true;
             } else {
                 locationAllowed = false;
                 // Handle case when permissions are not granted
-                showToast("Notification permission denied");
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
             }
         }
-        if (requestCode == POST_NOTIFICATION_REQUEST_CODE) {
-            boolean notificationsGranted = true;
-            for (int grantResult : grantResults) {
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    notificationsGranted = false;
-                    break;
-                }
-            }
-            if (notificationsGranted) {
-                notificationsAllowed = true;
-            } else {
-                notificationsAllowed = false;
-                // Handle case when permissions are not granted
-                showToast("Notification permission denied");
-            }
-        }
-    }
-
-    private void showToast(String message) {
-        StyleableToast.makeText(this, message, R.style.customToast).show();
     }
 }

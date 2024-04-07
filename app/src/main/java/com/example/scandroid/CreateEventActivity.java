@@ -80,7 +80,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 event = retrievedEvent;
                 editEventName.setText(event.getEventName());
                 calendar = event.getEventDate();
-                String eventDate = calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH) + 1;
+                String eventDate = calendar.get(Calendar.YEAR) + "-" + month + "-" + calendar.get(Calendar.DAY_OF_MONTH);
                 editEventDate.setText(eventDate);
                 String eventTime = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
                 editEventTime.setText(eventTime);
@@ -211,6 +212,8 @@ public class CreateEventActivity extends AppCompatActivity {
                         return;
                     }
                     eventID = event.getEventID();
+                    new EventQRCodesActivity().generateQRCode(eventID, false);
+                    new EventQRCodesActivity().generateQRCode(eventID, true);
 
 
                     database.accessUser(new DeviceIDRetriever(CreateEventActivity.this).getDeviceId(), user -> {

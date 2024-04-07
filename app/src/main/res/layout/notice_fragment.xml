@@ -35,12 +35,12 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/removal_notice_text"
+            android:id="@+id/notice_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/inter_bold"
-            android:text="Your event was removed by our admins."
+            android:text="Notice content text"
             android:textSize="28sp"
             android:textStyle="bold" />
 
@@ -54,7 +54,7 @@
             android:layout_marginTop="10dp">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/confirm_removal_notice_button"
+                android:id="@+id/confirm_notice_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
