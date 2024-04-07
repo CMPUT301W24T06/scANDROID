@@ -13,11 +13,16 @@ import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasData;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasType;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+
+import static java.util.EnumSet.allOf;
 
 import android.app.Activity;
 import android.app.Instrumentation;
@@ -27,6 +32,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -76,7 +82,13 @@ public class CreateEventActivityTests {
 
         onView(withId(R.id.event_description_edit_text)).perform(click(), clearText(), typeText("Making a Test Event"));
         closeSoftKeyboard();
+
+        onView(withId(R.id.attendee_limit_button)).perform(click());
+        onView(withId(R.id.enter_limit_editText)).perform(click(), typeText("12"));
+        onView(withId(R.id.confirm_button_limit_attendees)).perform(click());
+
         onView(withId(R.id.create_event_confirm_button)).perform(click());
+
     }
 
     public static ViewAction setHour(final int hour) {
@@ -127,10 +139,15 @@ public class CreateEventActivityTests {
 
         // open gallery
         onView(withId(R.id.create_event_change_poster)).perform(click());
+        onView(withId(R.id.camera_roll_access_button)).perform(click());
 
         // verify that the intent to pick an image is sent
-        intended(hasAction(Intent.ACTION_PICK));
-        intended(hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
+        //intended(hasAction(Intent.ACTION_PICK));
+        //intended(hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
+
+        //verify that an intent to get the content is sent from the user's camera roll
+        intended(hasAction(Intent.ACTION_GET_CONTENT));
+        intended(hasType("image/*"));
     }
 
     //OpenAI, 2024, ChatGPT, How to test TimePickerDialogs and DatePickerDialogs with custom view actions

@@ -48,7 +48,7 @@ public class CheckInConfirmationFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private KonfettiView konfettiView = null;
-    private Shape.DrawableShape drawableShape = null;
+    //private Shape.DrawableShape drawableShape = null;
 
     public CheckInConfirmationFragment() {
         // Required empty public constructor
@@ -95,7 +95,7 @@ public class CheckInConfirmationFragment extends Fragment {
                         .spread(90)
                         .setSpeedBetween(1f, 5f)
                         .timeToLive(2000L)
-                        .shapes(new Shape.Rectangle(0.2f), drawableShape)
+                        .shapes(new Shape.Rectangle(0.2f))
                         .sizes(new Size(12, 5f, 0.2f))
                         .position(0.0, 0.0, 1.0, 0.0)
                         .build();
