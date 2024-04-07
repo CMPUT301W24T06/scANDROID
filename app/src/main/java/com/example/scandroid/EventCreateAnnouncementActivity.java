@@ -96,7 +96,9 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
         sendNotificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String notificationTitle = editNotificationTitle.getText().toString();
+                String title = editNotificationTitle.getText().toString();
+                // add the event name so we know what event the notification is associated with
+                String notificationTitle = event.getEventName() + ": " + title;
                 String notificationBody = editNotificationInfo.getText().toString();
                 String notificationTime = editNotificationTime.getText().toString();
                 String[] parts = notificationTime.split(":");
@@ -109,15 +111,14 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
 
                 Time time = new Time(calendar.getTimeInMillis());
 
-                // testing
-                fcmTokenList.add("dPjr4-CbQaWMmXc-wppTsN:APA91bHTMdX04rlBvrltUCDSzkACgXNS-zyqTMMlyATv8LKXLBuPg-ekPE4oX0yO-Tquf2QuWELZwUIn9cSzBBlYWe0eERV1qyvAoe3n8zG_OZrX1Cbrzpy2QNyQh3gT5M6FQnktMBg6");
-
                 // Handle user input validation
                 if (handleUserInput(notificationTitle, notificationBody, notificationTime)) {
                     Log.d("Notification", "fcmTokenList size: " + fcmTokenList.size()); // message for testing
                     event.addEventAnnouncement(notificationTitle, notificationBody, time); // add to db
                     sendNotification(notificationTitle, notificationBody, fcmTokenList);
+                    dbAccessor.storeEvent(event);
                 }
+                finish();
             }
         });
         backButton.setOnClickListener(v -> finish());

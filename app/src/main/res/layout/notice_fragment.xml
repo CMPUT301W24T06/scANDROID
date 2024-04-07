@@ -17,15 +17,33 @@
         android:background="#FFF"
         android:padding="12dp">
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/removal_notice_bell" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:layout_gravity="center"
             android:layout_marginBottom="8dp"
             android:fontFamily="@font/inter_bold"
-            android:text="Check In or Promo?"
+            android:textColor="#EC1A1A"
+            android:text="Notice"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/notice_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/inter_bold"
+            android:text="Notice content text"
             android:textSize="28sp"
             android:textStyle="bold" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,27 +54,14 @@
             android:layout_marginTop="10dp">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/check_in_frag_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="0.6"
-                android:background="@drawable/rectangle_button"
-                android:text="Check-In"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/promo_frag_button"
+                android:id="@+id/confirm_notice_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginStart="5dp"
                 android:layout_weight="0.6"
                 android:background="@drawable/rectangle_button"
-                android:text="Promo"
+                android:text="OK"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textStyle="bold" />

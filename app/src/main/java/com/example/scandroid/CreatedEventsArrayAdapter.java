@@ -82,10 +82,12 @@ public class CreatedEventsArrayAdapter extends ArrayAdapter<Tuple<Event, Bitmap>
         midnight.set(Calendar.MINUTE, 0);
         midnight.set(Calendar.HOUR_OF_DAY, 0);
         midnight.set(Calendar.SECOND, 0);
+        midnight.add(Calendar.DAY_OF_MONTH, 1);
+        Calendar currentTime = Calendar.getInstance();
         //Check if event date earlier than today
-        if (Calendar.getInstance().after(tuple.first.getEventDate())){
+        if (currentTime.after(eventDate)){
             //Check if event date is after midnight of that day
-            if (tuple.first.getEventDate().after(midnight)){
+            if (currentTime.after(midnight)){
                 eventStatusText.setText("Ended");
                 Drawable blackCircleDrawable = ContextCompat.getDrawable(getContext(), R.drawable.black_circle_status);
                 eventStatusCircle.setImageDrawable(blackCircleDrawable);
