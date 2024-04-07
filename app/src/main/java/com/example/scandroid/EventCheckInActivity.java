@@ -21,9 +21,6 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
-import io.github.muddz.styleabletoast.StyleableToast;
-
-import javax.annotation.Nullable;
 
 /**
  * EventCheckInActivity is shown when a check-in QR code
@@ -35,7 +32,6 @@ import javax.annotation.Nullable;
 //          https://chat.openai.com/share/fa53613d-a2e6-43ee-ade9-70ff94ea22bd
 public class EventCheckInActivity extends AppCompatActivity {
     private Boolean locationAllowed = false;
-    private Boolean notificationsAllowed = false;
     private DBAccessor database;
     private TextView eventTitle;
     private TextView eventLocation;
@@ -44,7 +40,6 @@ public class EventCheckInActivity extends AppCompatActivity {
     private AppCompatButton cancelCheckInButton;
     private AppCompatButton confirmCheckInButton;
     private ArrayList<Double> checkInLocation;
-    private static final int POST_NOTIFICATION_REQUEST_CODE = 99;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private ActivityResultLauncher<String[]> locationPermissionRequest;
 
@@ -126,39 +121,39 @@ public class EventCheckInActivity extends AppCompatActivity {
                         }
                     }
                     if (canCheckIn){
-                    database.accessUser(userID, user -> {
-                                checkInLocation = new ArrayList<>();
+                        database.accessUser(userID, user -> {
+                            checkInLocation = new ArrayList<>();
 
-                                if (pushNotifBox.isChecked()) {
-                                    user.addEventToNotifiedBy(eventID);
-                                }
-                                if (trackLocationBox.isChecked() && locationAllowed) {
-                                    Location userLocation = new LocationRetriever(getApplicationContext()).getLastKnownLocation();
-                                    checkInLocation.add(userLocation.getLatitude());
-                                    checkInLocation.add(userLocation.getLongitude());
-                                }
-                                if (!trackLocationBox.isChecked()) {
-                                    checkInLocation.add(0.0);
-                                    checkInLocation.add(0.0);
-                                }
+                            if (pushNotifBox.isChecked()) {
+                                user.addEventToNotifiedBy(eventID);
+                            }
+                            if (trackLocationBox.isChecked() && locationAllowed) {
+                                Location userLocation = new LocationRetriever(getApplicationContext()).getLastKnownLocation();
+                                checkInLocation.add(userLocation.getLatitude());
+                                checkInLocation.add(userLocation.getLongitude());
+                            }
+                            if (!trackLocationBox.isChecked()) {
+                                checkInLocation.add(0.0);
+                                checkInLocation.add(0.0);
+                            }
 
-                                // source: https://stackoverflow.com/a/5369753
-                                Time time = new Time(Calendar.getInstance().getTime().getTime());
-                                if (user.getEventsAttending().contains(eventID)) {
-                                    event.addExistingEventAttendee(userID, time, checkInLocation);
-                                } else {
-                                    event.addEventAttendee(userID, time, checkInLocation);
-                                }
-                                user.addEventToEventsAttending(eventID);
-                                database.storeEvent(event);
-                                database.storeUser(user);
-                                CheckInConfirmationFragment confirmationFragment = CheckInConfirmationFragment.newInstance("param1", "param2");
-                                FragmentManager fragmentManager = getSupportFragmentManager();
-                                fragmentManager.beginTransaction()
-                                        .replace(android.R.id.content, confirmationFragment)
-                                        .addToBackStack(null)  // Optional: Add to back stack if you want to allow back navigation
-                                        .commit();
-                    });
+                            // source: https://stackoverflow.com/a/5369753
+                            Time time = new Time(Calendar.getInstance().getTime().getTime());
+                            if (user.getEventsAttending().contains(eventID)) {
+                                event.addExistingEventAttendee(userID, time, checkInLocation);
+                            } else {
+                                event.addEventAttendee(userID, time, checkInLocation);
+                            }
+                            user.addEventToEventsAttending(eventID);
+                            database.storeEvent(event);
+                            database.storeUser(user);
+                            CheckInConfirmationFragment confirmationFragment = CheckInConfirmationFragment.newInstance("param1", "param2");
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            fragmentManager.beginTransaction()
+                                    .replace(android.R.id.content, confirmationFragment)
+                                    .addToBackStack(null)  // Optional: Add to back stack if you want to allow back navigation
+                                    .commit();
+                        });
                     } else {
                         NoticeFragment fullEventNotice = new NoticeFragment("This event has reached maximum capacity");
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

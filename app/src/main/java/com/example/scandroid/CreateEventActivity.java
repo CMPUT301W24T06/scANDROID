@@ -144,6 +144,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     Calendar selectedDate = Calendar.getInstance();
                     selectedDate.set(year, monthOfYear, dayOfMonth);
                     Calendar currentDate = Calendar.getInstance();
+                    currentDate.add(Calendar.DAY_OF_MONTH, -1); // allows for an event to happen today
 
                     if (selectedDate.before(currentDate)) {
                         showToast("Please select a date in the future");
