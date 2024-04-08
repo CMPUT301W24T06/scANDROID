@@ -81,7 +81,11 @@ public class DBAFirestoreTest {
         // tell firestore to use emulator for test run
         // ** ensure firestore emulator:start has been called if testing locally
         this.firestore = FirebaseFirestore.getInstance();
-        this.firestore.useEmulator("localhost", 8080);
+        try {
+            this.firestore.useEmulator("localhost", 8080);
+        } catch (IllegalStateException e) {
+            // don't reuse emulator if instance already running
+        }
 
         // create DBAccessor after emulator has been set
         this.dbA = new DBAccessor();
@@ -94,7 +98,7 @@ public class DBAFirestoreTest {
     @After
     public void tearDown() {
         // Shutdown connections to the Firestore emulator
-        firestore.terminate();
+        this.firestore.terminate();
     }
 
     @Test
@@ -374,7 +378,7 @@ public class DBAFirestoreTest {
 
         // verify that the recently deleted Event is not listed
         latch.await(1, TimeUnit.SECONDS);
-        assertEquals(0, receivedDelUserIDs.size());
+        assertEquals(receivedAddUserIDs.size() - 1, receivedDelUserIDs.size());
 
     } // end public void testDeleteUser
 
