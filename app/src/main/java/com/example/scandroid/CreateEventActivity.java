@@ -318,6 +318,7 @@ public class CreateEventActivity extends AppCompatActivity {
     /**
      * Displays the LimitAttendeesFragment dialog.
      * This dialog allows users to set the attendee limit for an event.
+     * Shows the "Limit Attendee Fragment".
      */
     private void showLimitAttendeesFragment() {
         LimitAttendeesFragment limitAttendeesFragment = new LimitAttendeesFragment();

@@ -24,7 +24,6 @@ import java.util.HashMap;
 
 public class EventAttendeesArrayAdapter extends ArrayAdapter<Event.CheckIn> {
     private String currentEventID;
-    private HashMap<String, User> userMap; // Store user instances based on their IDs
 
     User attendeeUser;
 
@@ -38,7 +37,6 @@ public class EventAttendeesArrayAdapter extends ArrayAdapter<Event.CheckIn> {
     public EventAttendeesArrayAdapter(Context context, ArrayList<Event.CheckIn> attendees, String eventID) {
         super(context,0, attendees);
         currentEventID = eventID;
-        userMap = new HashMap<>();
     }
 
     /**

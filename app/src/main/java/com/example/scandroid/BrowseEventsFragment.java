@@ -42,7 +42,6 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
     int listSize = 0;
     TextView loadingTextView;
     androidx.appcompat.widget.SearchView searchEventsView;
-    int position;
 
     /**
      * Default constructor for BrowseEventsFragment
@@ -89,7 +88,6 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
             isAdmin = user.getHasAdminPermissions();
             if (isAdmin){
                 allEventsList.setOnItemLongClickListener((parent, view12, position, id) -> {
-                    this.position = position;
                     DialogFragment eventInspectPrompt = new AdminInspectEventFragment(BrowseEventsFragment.this);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("event", allEventsAdapter.getItem(position).first);
