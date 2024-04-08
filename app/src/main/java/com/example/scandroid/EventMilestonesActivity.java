@@ -32,8 +32,11 @@ public class EventMilestonesActivity extends AppCompatActivity {
         Event event = (Event)getIntent().getSerializableExtra("event");
         if (event!=null) {
             milestoneList = event.getEventMilestones();
+            milestoneList.remove(milestoneList.size() - 1);
             milestonesArrayAdapter = new EventMilestonesArrayAdapter(this, milestoneList);
-            milestoneListView.setAdapter(milestonesArrayAdapter);
+            if (event.getEventAttendeesTotal() > 0) {
+                milestoneListView.setAdapter(milestonesArrayAdapter);
+            }
         }
     }
 }
