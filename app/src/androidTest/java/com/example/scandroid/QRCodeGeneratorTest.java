@@ -38,11 +38,11 @@ import org.junit.runner.RunWith;
 @LargeTest
 public class QRCodeGeneratorTest {
     @Rule
-    public ActivityScenarioRule<CheckInScreenActivity> scenario = new ActivityScenarioRule<>(CheckInScreenActivity.class);
+    public
+    ActivityScenarioRule<HomepageActivity> scenario = new ActivityScenarioRule<HomepageActivity>(HomepageActivity.class);
 
     @Test
     public void addEvent() {
-        onView(withId(R.id.check_in_button)).perform(click());
         onView(withId(R.id.create_event_button)).perform(click());
         //initialize event
         onView(withId(R.id.event_name_edit_text)).perform(typeText("Test Event"));
@@ -57,12 +57,33 @@ public class QRCodeGeneratorTest {
         onView(withId(R.id.event_description_edit_text)).perform(typeText("Making a Test Event"));
         closeSoftKeyboard();
         onView(withId(R.id.create_event_confirm_button)).perform(click());
-        //click on the events list for any event
-        onView(withId(R.id.my_events_list)).perform(click());
-        onView(withId(R.id.QR_code_info_button)).perform(click());
-        onView(withId(R.id.check_in_qr_code_textview)).check(matches(withText("Check-In QR Code")));
-
     }
+
+    @Test
+    public void testQRCodeButton(){
+        // Mock Firebase data loading process
+        mockFirebaseDataLoading();
+        // check if Firebase list is loaded before performing a click
+        onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
+        onView(withId(R.id.my_events_list)).perform(click());
+
+        onView(withId(R.id.QR_code_info_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.QR_code_info_button)).perform(click());
+
+        onView(withId(R.id.check_in_qr_code_textview)).check(matches(withText("Check-In QR Code")));
+    }
+
+    // OpenAI ChatGPT 2024: how to simulate a mock delay to wait for firebase to load
+    private void mockFirebaseDataLoading() {
+        // Introduce a delay to simulate Firebase data loading
+        // Adjust the delay time according to your app's actual loading time
+        try {
+            Thread.sleep(7000); // Simulating a 3-second delay
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static class PickerAction {
 
         public static ViewAction setTimeInTimePicker(final int hour, final int minute) {
