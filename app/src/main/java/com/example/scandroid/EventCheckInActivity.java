@@ -136,8 +136,8 @@ public class EventCheckInActivity extends AppCompatActivity {
                                 checkInLocation.add(userLocation.getLongitude());
                             }
                             if (!trackLocationBox.isChecked()) {
-                                checkInLocation.add(0.0);
-                                checkInLocation.add(0.0);
+                                checkInLocation.add(32.909630);
+                                checkInLocation.add(-117.181930);
                             }
 
                             // source: https://stackoverflow.com/a/5369753
