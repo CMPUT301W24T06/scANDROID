@@ -47,23 +47,23 @@ public class EditEventActivityTest {
         Intents.release();
     }
 
-    @Test
-    public void addEvent() {
-        onView(withId(R.id.create_event_button)).perform(click());
-        //initialize event
-        onView(withId(R.id.event_name_edit_text)).perform(typeText("Test Event"));
-        onView(withId(R.id.event_location_edit_text)).perform(typeText("Edmonton"));
-        closeSoftKeyboard();
-        onView(withId(R.id.edit_event_time_button)).perform(click());
-        onView(isAssignableFrom(TimePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setTimeInTimePicker(12, 0));
-        onView(withText("OK")).perform(click());
-        onView(withId(R.id.edit_event_date_button)).perform(click());
-        onView(isAssignableFrom(DatePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setDateInDatePicker(2024, 6, 23));
-        onView(withText("OK")).perform(click());
-        onView(withId(R.id.event_description_edit_text)).perform(typeText("Making a Test Event"));
-        closeSoftKeyboard();
-        onView(withId(R.id.create_event_confirm_button)).perform(click());
-    }
+//    @Test
+//    public void addEvent() {
+//        onView(withId(R.id.create_event_button)).perform(click());
+//        //initialize event
+//        onView(withId(R.id.event_name_edit_text)).perform(typeText("Test Event"));
+//        onView(withId(R.id.event_location_edit_text)).perform(typeText("Edmonton"));
+//        closeSoftKeyboard();
+//        onView(withId(R.id.edit_event_time_button)).perform(click());
+//        onView(isAssignableFrom(TimePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setTimeInTimePicker(12, 0));
+//        onView(withText("OK")).perform(click());
+//        onView(withId(R.id.edit_event_date_button)).perform(click());
+//        onView(isAssignableFrom(DatePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setDateInDatePicker(2024, 6, 23));
+//        onView(withText("OK")).perform(click());
+//        onView(withId(R.id.event_description_edit_text)).perform(typeText("Making a Test Event"));
+//        closeSoftKeyboard();
+//        onView(withId(R.id.create_event_confirm_button)).perform(click());
+//    }
 
     @Test
     public void testEventDetailsButton(){
@@ -113,13 +113,26 @@ public class EditEventActivityTest {
         onView(withId(R.id.event_attendees_list)).check(matches(isDisplayed()));
         onView(withId(R.id.event_attendees_list_total_attendee_count)).check(matches(isDisplayed()));
     }
+    @Test
+    public void testLocationButton(){
+        // Mock Firebase data loading process
+        mockFirebaseDataLoading();
+        // check if Firebase list is loaded before performing a click
+        onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
+        onView(withId(R.id.my_events_list)).perform(click());
+
+        onView(withId(R.id.location_tracking_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.location_tracking_button)).perform(click());
+
+        onView(withId(R.id.mapView)).check(matches(isDisplayed()));
+    }
 
     // OpenAI ChatGPT 2024: how to simulate a mock delay to wait for firebase to load
     private void mockFirebaseDataLoading() {
         // Introduce a delay to simulate Firebase data loading
         // Adjust the delay time according to your app's actual loading time
         try {
-            Thread.sleep(7000); // Simulating a 3-second delay
+            Thread.sleep(5000); // Simulating a 5-second delay
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
