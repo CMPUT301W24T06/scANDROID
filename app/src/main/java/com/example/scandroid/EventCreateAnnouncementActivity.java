@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.app.TimePickerDialog;
 
@@ -42,7 +43,7 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
     AppCompatButton backButton;
     EditText editNotificationTitle;
     EditText editNotificationInfo;
-    AppCompatButton editNotificationTime;
+    TextView editNotificationTime;
     Calendar calendar = Calendar.getInstance();
     AppCompatButton sendNotificationButton;
     DBAccessor dbAccessor = new DBAccessor();
@@ -58,6 +59,10 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
         editNotificationInfo = findViewById(R.id.edit_notification_info);
         editNotificationTime = findViewById(R.id.edit_notification_time);
         sendNotificationButton = findViewById(R.id.send_notification_button);
+
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = calendar.get(Calendar.MINUTE);
+        editNotificationTime.setText(String.format(Locale.getDefault(), "%02d:%02d", currentHour, currentMinute));
 
         // get all the attendees with getEventAttendeeList()
         assert event != null;
@@ -81,19 +86,6 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
             });
         }
 
-        editNotificationTime.setOnClickListener(v -> {
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
-
-            TimePickerDialog timePickerDialog = new TimePickerDialog(EventCreateAnnouncementActivity.this, R.style.TimePickerTheme,
-                    (view, hourOfDay, minute1) -> {
-                        editNotificationTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute1));
-                        calendar.set(Calendar.MINUTE, minute1);
-                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    }, hour, minute, false);
-            timePickerDialog.show();
-        });
-
         sendNotificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,7 +105,7 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
                 Time time = new Time(calendar.getTimeInMillis());
 
                 // Handle user input validation
-                if (handleUserInput(notificationTitle, notificationBody, notificationTime)) {
+                if (handleUserInput(title, notificationBody)) {
                     Log.d("Notification", "fcmTokenList size: " + fcmTokenList.size()); // message for testing
                     event.addEventAnnouncement(notificationTitle, notificationBody, time); // add to db
                     sendNotification(notificationTitle, notificationBody, fcmTokenList);
@@ -125,7 +117,7 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
     }
 
-    private boolean handleUserInput(String notificationTitle, String notificationBody, String notificationTime){
+    private boolean handleUserInput(String notificationTitle, String notificationBody){
         boolean isValid = true;
 
         // check if an event name is a string and if it is valid
@@ -139,11 +131,6 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
             showToast("Please enter content for your notification.");
             isValid = false;
             Log.d("Validation", "Notification body failed");
-        }
-        if (notificationTime.isEmpty()) {
-            showToast("Please set a time to send your notification");
-            isValid = false;
-            Log.d("Validation", "Notification time validation failed");
         }
         return isValid;
     }
