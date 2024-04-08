@@ -124,7 +124,7 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
      * @param notificationTime  Time at which the notification will be sent.
      * @return True if the input is valid, false otherwise.
      */
-    private boolean handleUserInput(String notificationTitle, String notificationBody, String notificationTime){
+    private boolean handleUserInput(String notificationTitle, String notificationBody){
         boolean isValid = true;
 
         // check if an event name is a string and if it is valid
