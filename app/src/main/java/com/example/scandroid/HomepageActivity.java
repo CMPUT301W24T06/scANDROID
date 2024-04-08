@@ -10,7 +10,13 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Context;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import io.github.muddz.styleabletoast.StyleableToast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -230,9 +236,6 @@ public class HomepageActivity extends AppCompatActivity {
         // OpenAI ChatGPT 2024, how to implement shared preferences
         SharedPreferences sharedPreferences = getSharedPreferences("MilestonesNotify", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        // TODO: notify unnotified events, update notified events to next milestone, delete events that are not in organized
-        // TODO: when about to notify, do a check to make sure number of attendees matches milestoneSeries[0] value
-        // TODO: notify using a little toast, don't need an entire fragment for that
 
         // KEY: eventID, VALUES: Set<String> [currentMilestone, reachedBool]
         database.accessUser(userID, user -> {
@@ -285,7 +288,7 @@ public class HomepageActivity extends AppCompatActivity {
                                 // if reached false, check if it has reached the current milestone
                                 if (event.getEventAttendeesTotal() >= currentMilestone.intValue()) {
                                     reachedBool = "true";
-                                    showToast(event.getEventName() + " has reached a new milestone: " + currentMilestone.toString() + "!");
+                                    showToast(event.getEventName() + " has reached a new milestone: " + currentMilestone.toString() + "attendees!");
                                     Log.d("Milestones", event.getEventName() + " has reached a new milestone: " + currentMilestone.toString());
                                 }
                             }
