@@ -191,9 +191,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
      */
     @Override
     public void onClick() {
-        allUsers.remove(position);
-        listSize-=1;
-        switchPage();
+        createInitialPage(this::switchPage);
     }
 
     /**

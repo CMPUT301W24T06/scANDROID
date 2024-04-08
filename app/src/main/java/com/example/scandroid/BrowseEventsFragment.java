@@ -191,9 +191,7 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
      */
     @Override
     public void onClick() {
-        allEvents.remove(position);
-        listSize -= 1;
-        switchPage();
+        createInitialPage(this::switchPage);
     }
 
     /**
