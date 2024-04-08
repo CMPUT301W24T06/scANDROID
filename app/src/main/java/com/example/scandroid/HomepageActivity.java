@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import io.github.muddz.styleabletoast.StyleableToast;
+
 /**
  * HomepageActivity is the main page of the app, and deals with displaying and updating the user's profile.
  * It interacts with the database in order to keep all information in the UI and
@@ -174,7 +176,7 @@ public class HomepageActivity extends AppCompatActivity {
                 displayWelcomeFragment();
                 database.storeUser(user);
             } else {
-                updateSharedPreferences();
+                updateSharedPreferences(userID);
             }
 
 
@@ -224,7 +226,7 @@ public class HomepageActivity extends AppCompatActivity {
                 .update("name", userName);
     }
 
-    private void updateSharedPreferences() {
+    private void updateSharedPreferences(String userID) {
         // OpenAI ChatGPT 2024, how to implement shared preferences
         SharedPreferences sharedPreferences = getSharedPreferences("MilestonesNotify", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -248,7 +250,7 @@ public class HomepageActivity extends AppCompatActivity {
                             Integer attendeesTotal = event.getEventAttendeesTotal();
                             if (attendeesTotal >= currentMilestone) {
                                 reachedBool = "true";
-                                // TODO: send a toast!
+                                showToast(event.getEventName() + " has reached a new milestone: " + currentMilestone.toString() + "!");
                                 Log.d("Milestones", event.getEventName() + " has reached a new milestone: " + currentMilestone.toString());
                             } else {
                                 reachedBool = "false";
@@ -272,7 +274,7 @@ public class HomepageActivity extends AppCompatActivity {
                                     currentMilestone = event.getEventMilestoneSeries().get(0);
                                     if (event.getEventAttendeesTotal() >= currentMilestone.intValue()) {
                                         reachedBool = "true";
-                                        // TODO: send a toast!
+                                        showToast(event.getEventName() + " has reached a new milestone: " + currentMilestone.toString() + "!");
                                         Log.d("Milestones", event.getEventName() + " has reached a new milestone: " + currentMilestone.toString());
                                     } else {
                                         reachedBool = "false";
@@ -283,7 +285,7 @@ public class HomepageActivity extends AppCompatActivity {
                                 // if reached false, check if it has reached the current milestone
                                 if (event.getEventAttendeesTotal() >= currentMilestone.intValue()) {
                                     reachedBool = "true";
-                                    // TODO: send a toast!
+                                    showToast(event.getEventName() + " has reached a new milestone: " + currentMilestone.toString() + "!");
                                     Log.d("Milestones", event.getEventName() + " has reached a new milestone: " + currentMilestone.toString());
                                 }
                             }
@@ -305,5 +307,9 @@ public class HomepageActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void showToast(String message) {
+        StyleableToast.makeText(this, message, R.style.customToast).show();
     }
 }
