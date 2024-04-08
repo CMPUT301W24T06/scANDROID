@@ -85,6 +85,8 @@ public class CreateEventActivityTests {
 
         onView(withId(R.id.attendee_limit_button)).perform(click());
         onView(withId(R.id.enter_limit_editText)).perform(click(), typeText("12"));
+        closeSoftKeyboard();
+
         onView(withId(R.id.confirm_button_limit_attendees)).perform(click());
 
         onView(withId(R.id.create_event_confirm_button)).perform(click());

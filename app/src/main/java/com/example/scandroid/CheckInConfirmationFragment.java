@@ -109,6 +109,10 @@ public class CheckInConfirmationFragment extends Fragment {
             requireActivity().finish();
         });
     }
+
+    /**
+     * Starts a parade animation using KonfettiView.
+     */
     public void parade() {
         EmitterConfig emitterConfig = new Emitter(5, TimeUnit.SECONDS).perSecond(30);
         konfettiView.start(
@@ -132,6 +136,11 @@ public class CheckInConfirmationFragment extends Fragment {
         // Bring KonfettiView to the front
         konfettiView.bringToFront();
     }
+
+    /**
+     * Resumes the fragment and starts the parade animation.
+     * Overrides the method from {@link android.app.Fragment}.
+     */
     @Override
     public void onResume() {
         super.onResume();
