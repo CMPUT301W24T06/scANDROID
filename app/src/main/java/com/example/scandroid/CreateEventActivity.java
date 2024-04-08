@@ -270,10 +270,20 @@ public class CreateEventActivity extends AppCompatActivity {
         return isValid;
     }
 
+    /**
+     * Shows a toast message.
+     *
+     * @param message The message we want to show.
+     */
     private void showToast(String message) {
         StyleableToast.makeText(this, message, R.style.customToast).show();
     }
 
+
+    /**
+     * This method describes actions that need to be carried out on receipt of data from an activity or intent.
+     * @param data
+     */
     @SuppressLint("DefaultLocale")
     public void onDataReceived(Bundle data) {
         int enteredLimit = data.getInt("attendeeLimit");
@@ -290,6 +300,9 @@ public class CreateEventActivity extends AppCompatActivity {
         attendeeLimitNum = enteredLimit;
     }
 
+    /**
+     * Shows the "Limit Attendee Fragment".
+     */
     private void showLimitAttendeesFragment() {
         LimitAttendeesFragment limitAttendeesFragment = new LimitAttendeesFragment();
         limitAttendeesFragment.show(getSupportFragmentManager(), "LimitAttendeesFragment");

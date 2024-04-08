@@ -1,6 +1,7 @@
 package com.example.scandroid;
 
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -9,6 +10,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.CoreMatchers.anything;
 
 import android.view.View;
 import android.widget.DatePicker;
@@ -71,7 +74,8 @@ public class EditEventActivityTest {
         mockFirebaseDataLoading();
         // check if Firebase list is loaded before performing a click
         onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
-        onView(withId(R.id.my_events_list)).perform(click());
+        //onView(withId(R.id.my_events_list)).perform(click());
+        onData(anything()).inAdapterView(withId(R.id.my_events_list)).atPosition(0).perform(click());
 
         onView(withId(R.id.event_details_button)).check(matches(isDisplayed()));
         onView(withId(R.id.event_details_button)).perform(click());
@@ -90,7 +94,9 @@ public class EditEventActivityTest {
         mockFirebaseDataLoading();
         // check if Firebase list is loaded before performing a click
         onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
-        onView(withId(R.id.my_events_list)).perform(click());
+        //onView(withId(R.id.my_events_list)).perform(click());
+        onData(anything()).inAdapterView(withId(R.id.my_events_list)).atPosition(0).perform(click());
+
 
         onView(withId(R.id.attendees_button)).check(matches(isDisplayed()));
         onView(withId(R.id.attendees_button)).perform(click());
@@ -105,7 +111,8 @@ public class EditEventActivityTest {
         mockFirebaseDataLoading();
         // check if Firebase list is loaded before performing a click
         onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
-        onView(withId(R.id.my_events_list)).perform(click());
+        //onView(withId(R.id.my_events_list)).perform(click());
+        onData(anything()).inAdapterView(withId(R.id.my_events_list)).atPosition(0).perform(click());
 
         onView(withId(R.id.signups_button)).check(matches(isDisplayed()));
         onView(withId(R.id.signups_button)).perform(click());
@@ -119,7 +126,8 @@ public class EditEventActivityTest {
         mockFirebaseDataLoading();
         // check if Firebase list is loaded before performing a click
         onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
-        onView(withId(R.id.my_events_list)).perform(click());
+        //onView(withId(R.id.my_events_list)).perform(click());
+        onData(anything()).inAdapterView(withId(R.id.my_events_list)).atPosition(0).perform(click());
 
         onView(withId(R.id.location_tracking_button)).check(matches(isDisplayed()));
         onView(withId(R.id.location_tracking_button)).perform(click());
@@ -132,7 +140,7 @@ public class EditEventActivityTest {
         // Introduce a delay to simulate Firebase data loading
         // Adjust the delay time according to your app's actual loading time
         try {
-            Thread.sleep(5000); // Simulating a 5-second delay
+            Thread.sleep(15000); // Simulating a 15-second delay
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
