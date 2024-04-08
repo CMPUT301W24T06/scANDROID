@@ -97,6 +97,23 @@ public class HomepageActivityTest {
         onView(withId(R.id.browse_pager)).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void testQRButton(){
+        // press the button
+        onView(withId(R.id.qr_button)).perform(click());
+        // check if the activity switched by confirming that the unique UI elements appear
+        onView(withId(R.id.QR_scan_code_button)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testNotificationsButton(){
+        // press the button
+        onView(withId(R.id.notification_button)).perform(click());
+        // check if the activity switched by confirming that the unique UI elements
+        onView(withId(R.id.announcements_list)).check(matches(isDisplayed()));
+        onView(withId(R.id.loading_view_announcements_text)).check(matches(isDisplayed()));
+    }
+
     // tests if edited profile changes have been added to be displayed on homepage
     @Test
     public void testEditProfileName(){

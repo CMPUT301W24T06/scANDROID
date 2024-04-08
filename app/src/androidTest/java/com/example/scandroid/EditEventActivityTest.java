@@ -2,25 +2,18 @@ package com.example.scandroid;
 
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasData;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.TimePicker;
 
-import androidx.core.content.ContextCompat;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.intent.Intents;
@@ -28,9 +21,6 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -46,6 +36,17 @@ public class EditEventActivityTest {
     @Rule
     public
     ActivityScenarioRule<HomepageActivity> scenario = new ActivityScenarioRule<HomepageActivity>(HomepageActivity.class);
+
+    @Before
+    public void setUp() {
+        Intents.init();
+    }
+
+    @After
+    public void tearDown() {
+        Intents.release();
+    }
+
     @Test
     public void addEvent() {
         onView(withId(R.id.create_event_button)).perform(click());
@@ -62,6 +63,25 @@ public class EditEventActivityTest {
         onView(withId(R.id.event_description_edit_text)).perform(typeText("Making a Test Event"));
         closeSoftKeyboard();
         onView(withId(R.id.create_event_confirm_button)).perform(click());
+    }
+
+    @Test
+    public void testEventDetailsButton(){
+        // Mock Firebase data loading process
+        mockFirebaseDataLoading();
+        // check if Firebase list is loaded before performing a click
+        onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
+        onView(withId(R.id.my_events_list)).perform(click());
+
+        onView(withId(R.id.event_details_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.event_details_button)).perform(click());
+
+        onView(withId(R.id.event_name_edit_text)).check(matches(isDisplayed()));
+        onView(withId(R.id.event_location_edit_text)).check(matches(isDisplayed()));
+        onView(withId(R.id.edit_event_date_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.edit_event_time_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.event_description_edit_text)).check(matches(isDisplayed()));
+        onView(withId(R.id.create_event_confirm_button)).check(matches(isDisplayed()));
     }
 
     @Test

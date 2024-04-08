@@ -23,6 +23,7 @@ import android.widget.TimePicker;
 import androidx.annotation.StringDef;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -30,6 +31,8 @@ import androidx.test.filters.LargeTest;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +43,16 @@ public class QRCodeGeneratorTest {
     @Rule
     public
     ActivityScenarioRule<HomepageActivity> scenario = new ActivityScenarioRule<HomepageActivity>(HomepageActivity.class);
+
+    @Before
+    public void setUp() {
+        Intents.init();
+    }
+
+    @After
+    public void tearDown() {
+        Intents.release();
+    }
 
     @Test
     public void addEvent() {
