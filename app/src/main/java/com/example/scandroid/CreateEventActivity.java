@@ -191,12 +191,6 @@ public class CreateEventActivity extends AppCompatActivity {
             String eventTime = editEventTime.getText().toString();
             String attendeeLim = attendeeLimit.getText().toString();
 
-//            ArrayList<Double> coords = new LocationGeocoder(CreateEventActivity.this).addressToCoordinates(eventLocation);
-//            if (coords.size() == 0){
-//                Toast.makeText(CreateEventActivity.this, "Invalid event location", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-
             posterBitmap = new BitmapConfigurator().drawableToBitmap(eventPoster.getDrawable());
 
             // validate input before performing database operations
