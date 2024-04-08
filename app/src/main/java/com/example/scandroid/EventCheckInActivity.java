@@ -105,6 +105,7 @@ public class EventCheckInActivity extends AppCompatActivity {
                     transaction.commit();
                 }
 
+                // https://www.youtube.com/watch?v=96IBhBs-k1M&t=189s
                 pushNotifBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -236,6 +237,7 @@ public class EventCheckInActivity extends AppCompatActivity {
     }
 
     // Method to handle location permission request result
+    // OpenAI ChatGPT 2024: How to handle different types of permissions
     private void handleLocationPermissionResult(int[] grantResults) {
         // Check if all location permissions are granted
         boolean allPermissionsGranted = true;

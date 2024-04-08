@@ -169,7 +169,9 @@ public class MyEventsFragment extends Fragment {
                                 allMyEvents.add(new Tuple<>(event1, bitmap));
                                 if (allMyEvents.size() == myEventIDs.size()){
                                     allMyEvents.sort(dateComparator);
-                                    myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), allMyEvents);
+                                    if (isAdded()) {
+                                        myEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), allMyEvents);
+                                    }
                                     myEventsList.setAdapter(myEventsAdapter);
                                     loadingTextView.setVisibility(View.INVISIBLE);
                                 }
