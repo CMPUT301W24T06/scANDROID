@@ -121,7 +121,6 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
      *
      * @param notificationTitle Title of the notification.
      * @param notificationBody  Body/content of the notification.
-     * @param notificationTime  Time at which the notification will be sent.
      * @return True if the input is valid, false otherwise.
      */
     private boolean handleUserInput(String notificationTitle, String notificationBody){
