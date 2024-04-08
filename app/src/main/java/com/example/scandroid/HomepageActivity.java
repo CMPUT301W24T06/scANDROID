@@ -1,5 +1,6 @@
 package com.example.scandroid;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -24,8 +25,14 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * HomepageActivity is the main page of the app, and deals with displaying and updating the user's profile.
@@ -60,6 +67,71 @@ public class HomepageActivity extends AppCompatActivity {
         //userID = "testID";
         //userID = "e9256b128bd8fb6a";
         //userID = "dac1f387416d7ffb";
+
+
+
+
+        // OpenAI ChatGPT 2024, how to implement shared preferences
+        SharedPreferences sharedPreferences = getSharedPreferences("MilestonesNotify", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        // TODO: notify unnotified events, update notified events to next milestone, delete events that are not in organized
+        // TODO: when about to notify, do a check to make sure number of attendees matches milestoneSeries[0] value
+        // TODO: notify using a little toast, don't need an entire fragment for that
+
+        // KEY: eventID, VALUES: Set<String> [currentMilestone, reachedBool]
+        database.accessUser(userID, user -> {
+            ArrayList<String> eventsOrganized = user.getEventsOrganized();
+            if (!eventsOrganized.isEmpty()) {
+                // the user is organizing some events
+                for (String eventID : eventsOrganized) {
+                    // going event by event
+                    if (!sharedPreferences.contains(eventID)) {
+                        // adding a new event and notifying if possible
+                        database.accessEvent(eventID, event -> {
+                            Set<String> eventDetails = new HashSet<>();
+                            Integer currentMilestone = event.getEventMilestoneSeries().get(0).intValue();
+                            Integer nextMilestone = event.getEventMilestoneSeries().get(1).intValue();
+                            String reachedBool;
+                            Integer attendeesTotal = event.getEventAttendeesTotal();
+                            if (attendeesTotal >= currentMilestone && attendeesTotal < nextMilestone) {
+                                reachedBool = "true";
+                                // TODO: send a toast!
+                            } else {
+                                reachedBool = "false";
+                            }
+                            eventDetails.add(currentMilestone.toString());
+                            eventDetails.add(reachedBool);
+                            editor.putStringSet(eventID, eventDetails);
+                            editor.apply();
+                        });
+                    } else {
+                        // if event already exists, notifying and updating if possible
+                        Set<String> retrievedSet = new HashSet<>();
+                        Set<String> eventDetails = sharedPreferences.getStringSet(eventID, retrievedSet);
+                        List<String> eventDetailsList = new ArrayList<>(eventDetails);
+                        Long currentMilestone =  Long.parseLong(eventDetailsList.get(0));
+                        String reachedBool = eventDetailsList.get(1);
+                        database.accessEvent(eventID, new EventCallback() {
+                            @Override
+                            public void onEventReceived(Event event) {
+                                if (Objects.equals(reachedBool, "true")) {
+                                    // if reached true, check if theres a new milestone to update it
+
+
+                                } else {
+                                    // if reached false, check if it has reached the current milestone
+                                }
+                            }
+                        });
+                    }
+                }
+            } else {
+                // delete all stored events bc there's nothing in organized
+            }
+        });
+
+
+
 
         // deals with the bottom bar
         navigationBar = findViewById(R.id.navigation_bar);
