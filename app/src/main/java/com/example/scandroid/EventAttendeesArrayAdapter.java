@@ -26,11 +26,27 @@ public class EventAttendeesArrayAdapter extends ArrayAdapter<Event.CheckIn> {
     private String currentEventID;
 
     User attendeeUser;
+
+    /**
+     * Constructs a new EventAttendeesArrayAdapter.
+     *
+     * @param context    The context in which the adapter is being used.
+     * @param attendees  The list of attendees to be displayed.
+     * @param eventID    The ID of the current event.
+     */
     public EventAttendeesArrayAdapter(Context context, ArrayList<Event.CheckIn> attendees, String eventID) {
         super(context,0, attendees);
         currentEventID = eventID;
     }
 
+    /**
+     * Get a View that displays the data at the specified position in the data set.
+     *
+     * @param position    The position of the item within the adapter's data set.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent      The parent that this view will eventually be attached to.
+     * @return A View corresponding to the data at the specified position.
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
