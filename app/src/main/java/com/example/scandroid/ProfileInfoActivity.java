@@ -63,7 +63,7 @@ public class ProfileInfoActivity extends AppCompatActivity implements onClickLis
             profileAboutMeText.setText(user.getUserAboutMe());
             if (isAttendee){
                 String eventID = getIntent().getStringExtra("eventID");
-                profileCountText.setText(user.getTimesAttended(eventID));
+                profileCountText.setText(user.getTimesAttended(eventID).toString());
             }
 
             database.accessUserProfileImage(userID, new BitmapCallback() {
