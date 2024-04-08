@@ -1,25 +1,36 @@
 package com.example.scandroid;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Calendar;
+
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 /**
@@ -40,10 +51,9 @@ public class EventCheckInActivity extends AppCompatActivity {
     private AppCompatButton cancelCheckInButton;
     private AppCompatButton confirmCheckInButton;
     private ArrayList<Double> checkInLocation;
+    private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 99;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private ActivityResultLauncher<String[]> locationPermissionRequest;
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,13 +64,11 @@ public class EventCheckInActivity extends AppCompatActivity {
         trackLocationBox = findViewById(R.id.location_track_check_box);
         cancelCheckInButton = findViewById(R.id.cancel_check_in_button);
         confirmCheckInButton = findViewById(R.id.check_in_button);
-
         database = new DBAccessor();
-
+        
         String eventID = (String) getIntent().getSerializableExtra("eventID");
         String userID = new DeviceIDRetriever(EventCheckInActivity.this).getDeviceId();
         // (String) getIntent().getSerializableExtra("userID");
-
         locationPermissionRequest = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
                 result -> {
                     Boolean fineLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
@@ -74,21 +82,16 @@ public class EventCheckInActivity extends AppCompatActivity {
                         // No location access granted.
                     }
                 });
-
-
+        
         checkAndRequestPermissions();
-
-
+        
         database.accessEvent(eventID, event -> {
-
             if (event != null) {
                 eventTitle.setText(event.getEventName());
                 eventLocation.setText(new LocationGeocoder(EventCheckInActivity.this).coordinatesToAddress(event.getEventLocation()));
-
                 cancelCheckInButton.setOnClickListener(v -> {
                     finish();
                 });
-
                 Calendar eventDate = event.getEventDate();
                 Calendar midnight = (Calendar) eventDate.clone();
                 midnight.set(Calendar.MINUTE, 0);
@@ -101,6 +104,18 @@ public class EventCheckInActivity extends AppCompatActivity {
                     transaction.add(android.R.id.content, endedNoticeFragment);
                     transaction.commit();
                 }
+
+                pushNotifBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            // If the checkbox is checked, request notification permissions
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                requestNotificationPermissions();
+                            }
+                        }
+                    }
+                });
 
                 confirmCheckInButton.setOnClickListener(v -> {
                     boolean alreadyAttendee = false;
@@ -116,44 +131,50 @@ public class EventCheckInActivity extends AppCompatActivity {
                     }
                     //If not already an attendee, check if event still has capacity for more check ins
                     if(!alreadyAttendee){
-                        if (event.getEventHasCapacity() && event.getEventAttendeesTotal() < event.getEventCapacity()){
-                            canCheckIn = true;
+                        if (event.getEventHasCapacity()) {
+                            if (event.getEventAttendeesTotal() < event.getEventCapacity()) {
+                                canCheckIn = true;
+                            } else {
+                                canCheckIn = false;
+                            }
+                        } else {
+                            canCheckIn = true; // Event has no capacity limit
                         }
                     }
                     if (canCheckIn){
-                    database.accessUser(userID, user -> {
-                                checkInLocation = new ArrayList<>();
+                        database.accessUser(userID, user -> {
+                            checkInLocation = new ArrayList<>();
 
-                                if (pushNotifBox.isChecked()) {
-                                    user.addEventToNotifiedBy(eventID);
-                                }
-                                if (trackLocationBox.isChecked() && locationAllowed) {
-                                    Location userLocation = new LocationRetriever(getApplicationContext()).getLastKnownLocation();
-                                    checkInLocation.add(userLocation.getLatitude());
-                                    checkInLocation.add(userLocation.getLongitude());
-                                }
-                                if (!trackLocationBox.isChecked()) {
-                                    checkInLocation.add(0.0);
-                                    checkInLocation.add(0.0);
-                                }
+                            if (pushNotifBox.isChecked()) {
+                                user.addEventToNotifiedBy(eventID);
+                            }
+                            if (trackLocationBox.isChecked() && locationAllowed) {
+                                Location userLocation = new LocationRetriever(getApplicationContext()).getLastKnownLocation();
+                                checkInLocation.add(userLocation.getLatitude());
+                                checkInLocation.add(userLocation.getLongitude());
+                            }
+                            if (!trackLocationBox.isChecked()) {
+                                checkInLocation.add(32.909630);
+                                checkInLocation.add(-117.181930);
+                            }
 
-                                // source: https://stackoverflow.com/a/5369753
-                                Time time = new Time(Calendar.getInstance().getTime().getTime());
-                                if (user.getEventsAttending().contains(eventID)) {
-                                    event.addExistingEventAttendee(userID, time, checkInLocation);
-                                } else {
-                                    event.addEventAttendee(userID, time, checkInLocation);
-                                }
-                                user.addEventToEventsAttending(eventID);
-                                database.storeEvent(event);
-                                database.storeUser(user);
-                                CheckInConfirmationFragment confirmationFragment = CheckInConfirmationFragment.newInstance("param1", "param2");
-                                FragmentManager fragmentManager = getSupportFragmentManager();
-                                fragmentManager.beginTransaction()
-                                        .replace(android.R.id.content, confirmationFragment)
-                                        .addToBackStack(null)  // Optional: Add to back stack if you want to allow back navigation
-                                        .commit();
-                    });
+                            // source: https://stackoverflow.com/a/5369753
+                            Time time = new Time(Calendar.getInstance().getTime().getTime());
+                            if (user.getEventsAttending().contains(eventID)) {
+                                event.addExistingEventAttendee(userID, time, checkInLocation);
+                            } else {
+                                event.addEventAttendee(userID, time, checkInLocation);
+                            }
+                            user.addEventToEventsAttending(eventID);
+                            database.storeEvent(event);
+                            database.storeUser(user);
+                            CheckInConfirmationFragment confirmationFragment = CheckInConfirmationFragment.newInstance("param1", "param2");
+                            FragmentManager fragmentManager = getSupportFragmentManager();
+                            fragmentManager.beginTransaction()
+                                    .replace(android.R.id.content, confirmationFragment)
+                                    .addToBackStack(null)  // Optional: Add to back stack if you want to allow back navigation
+                                    .commit();
+                        });
                     } else {
                         NoticeFragment fullEventNotice = new NoticeFragment("This event has reached maximum capacity");
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -165,6 +186,17 @@ public class EventCheckInActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void requestNotificationPermissions() {
+        // Check if the notification permission is already granted
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Notification permission is not granted, request it
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_REQUEST_CODE);
+        }
     }
 
     private void checkAndRequestPermissions() {
@@ -189,27 +221,46 @@ public class EventCheckInActivity extends AppCompatActivity {
         }
     }
 
-    // Handle permission request result (if needed)
+    // Method to handle permission request results
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            // Handle permission request result here
-            boolean allPermissionsGranted = true;
-            for (int grantResult : grantResults) {
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false;
-                    break;
-                }
+            // Handle location permission request result
+            handleLocationPermissionResult(grantResults);
+        } else if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
+            // Handle notification permission request result
+            handleNotificationPermissionResult(grantResults);
+        }
+    }
+
+    // Method to handle location permission request result
+    private void handleLocationPermissionResult(int[] grantResults) {
+        // Check if all location permissions are granted
+        boolean allPermissionsGranted = true;
+        for (int grantResult : grantResults) {
+            if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                allPermissionsGranted = false;
+                break;
             }
-            if (allPermissionsGranted) {
-                locationAllowed = true;
-            } else {
-                locationAllowed = false;
-                // Handle case when permissions are not granted
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
-            }
+        }
+        if (!allPermissionsGranted) {
+            // Handle case when location permissions are not granted
+            Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Method to handle notification permission request result
+    private void handleNotificationPermissionResult(int[] grantResults) {
+        // Check if notification permission is granted
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Notification permission is granted
+            Toast.makeText(this, "Notification permissions granted", Toast.LENGTH_SHORT).show();
+        } else {
+            // Handle case when notification permission is not granted
+            Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
         }
     }
 }
+

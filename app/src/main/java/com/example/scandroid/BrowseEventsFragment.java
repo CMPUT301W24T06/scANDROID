@@ -42,6 +42,7 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
     int listSize = 0;
     TextView loadingTextView;
     androidx.appcompat.widget.SearchView searchEventsView;
+    int position;
 
     /**
      * Default constructor for BrowseEventsFragment
@@ -88,6 +89,7 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
             isAdmin = user.getHasAdminPermissions();
             if (isAdmin){
                 allEventsList.setOnItemLongClickListener((parent, view12, position, id) -> {
+                    this.position = position;
                     DialogFragment eventInspectPrompt = new AdminInspectEventFragment(BrowseEventsFragment.this);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("event", allEventsAdapter.getItem(position).first);
@@ -142,14 +144,22 @@ public class BrowseEventsFragment extends Fragment implements onClickListener, C
                     public void onBitmapLoaded(Bitmap bitmap) {
                         allEvents.add(new Tuple<>(event, bitmap));
                         if (allEvents.size() == List.size()) { //Looped through all event IDs and retrieved all event objects
-                            List<Tuple<Event, Bitmap>> subList = allEvents.subList(0, pageSize);
-                            ArrayList<Tuple<Event, Bitmap>> currentPageList = new ArrayList<>(subList);
-                            allEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), currentPageList, BrowseEventsFragment.this);
-                            allEventsList.setAdapter(allEventsAdapter);
-                            nextButton.setVisibility(View.VISIBLE);
-                            prevButton.setVisibility(View.VISIBLE);
-                            loadingTextView.setVisibility(View.INVISIBLE);
-                            callback.run();
+                            if (allEvents.size() < 5) {
+                                ArrayList<Tuple<Event, Bitmap>> currentPageList = new ArrayList<>(allEvents);
+                                allEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), currentPageList, BrowseEventsFragment.this);
+                                allEventsList.setAdapter(allEventsAdapter);
+                                loadingTextView.setVisibility(View.INVISIBLE);
+                                callback.run();
+                            } else {
+                                List<Tuple<Event, Bitmap>> subList = allEvents.subList(0, pageSize);
+                                ArrayList<Tuple<Event, Bitmap>> currentPageList = new ArrayList<>(subList);
+                                allEventsAdapter = new CreatedEventsArrayAdapter(requireContext(), currentPageList, BrowseEventsFragment.this);
+                                allEventsList.setAdapter(allEventsAdapter);
+                                nextButton.setVisibility(View.VISIBLE);
+                                prevButton.setVisibility(View.VISIBLE);
+                                loadingTextView.setVisibility(View.INVISIBLE);
+                                callback.run();
+                            }
                         }
                     }
 

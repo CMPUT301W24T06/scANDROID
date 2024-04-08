@@ -33,6 +33,7 @@ import androidx.fragment.app.FragmentTransaction;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 import io.github.muddz.styleabletoast.StyleableToast;
 
@@ -144,6 +145,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     Calendar selectedDate = Calendar.getInstance();
                     selectedDate.set(year, monthOfYear, dayOfMonth);
                     Calendar currentDate = Calendar.getInstance();
+                    currentDate.add(Calendar.DAY_OF_MONTH, -1); // allows for an event to happen today
 
                     if (selectedDate.before(currentDate)) {
                         showToast("Please select a date in the future");
@@ -168,7 +170,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
             TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this, R.style.TimePickerTheme,
                     (view, hourOfDay, minute1) -> {
-                        editEventTime.setText(hourOfDay + ":" + minute1);
+                        editEventTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute1));
                         calendar.set(Calendar.MINUTE, minute1);
                         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     }, hour, minute, false);
@@ -188,12 +190,6 @@ public class CreateEventActivity extends AppCompatActivity {
             String eventDate = editEventDate.getText().toString();
             String eventTime = editEventTime.getText().toString();
             String attendeeLim = attendeeLimit.getText().toString();
-
-//            ArrayList<Double> coords = new LocationGeocoder(CreateEventActivity.this).addressToCoordinates(eventLocation);
-//            if (coords.size() == 0){
-//                Toast.makeText(CreateEventActivity.this, "Invalid event location", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
 
             posterBitmap = new BitmapConfigurator().drawableToBitmap(eventPoster.getDrawable());
 
@@ -239,8 +235,8 @@ public class CreateEventActivity extends AppCompatActivity {
         boolean isValid = true;
 
         // check if an event name is a string and if it is valid
-        if (eventName.isEmpty() || eventName.length() > 20) {
-            showToast("Please enter a valid event name (up to 20 characters)");
+        if (eventName.isEmpty() || eventName.length() > 35) {
+            showToast("Please enter a valid event name (up to 35 characters)");
             isValid = false;
             Log.d("Validation", "Event name validation failed");
         }
@@ -284,6 +280,7 @@ public class CreateEventActivity extends AppCompatActivity {
         String finalAttendeeNum;
         if (enteredLimit == 0) {
             finalAttendeeNum = "N/A";
+            enteredLimit = Integer.MAX_VALUE; // assign an extremely high number
         } else if (enteredLimit == 1) {
             finalAttendeeNum = "1 Attendee";
         } else {

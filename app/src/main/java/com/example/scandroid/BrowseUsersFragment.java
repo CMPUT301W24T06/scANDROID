@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 /**
  * BrowseUsersFragment handles the list of all users in BrowseActivity
@@ -39,6 +41,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
     Button prevButton, nextButton;
     TextView loadingTextView;
     androidx.appcompat.widget.SearchView searchUsersView;
+    int position;
 
     /**
      * Default constructor for BrowseUsersFragment
@@ -81,6 +84,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
             isAdmin = user.getHasAdminPermissions();
             if (isAdmin){
                 allUsersList.setOnItemLongClickListener((parent, view12, position, id) -> {
+                    this.position = position;
                     DialogFragment userInspectPrompt = new AdminInspectUserFragment(BrowseUsersFragment.this);
                     Bundle bundle = new Bundle();
                     bundle.putString("userID", allUserAdapter.getItem(position).first.getUserID());
@@ -148,7 +152,13 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
 
                     @Override
                     public void onBitmapFailed(Exception e) {
-                        Bitmap newProfilePicture = new ProfilePictureGenerator().generatePictureBitmap(user.getUserName());
+                        String username;
+                        if (Objects.equals(user.getUserName(), "")){
+                            username = "Guest" + new Random().nextInt(10000);
+                        } else {
+                            username = user.getUserName();
+                        }
+                        Bitmap newProfilePicture = new ProfilePictureGenerator().generatePictureBitmap(username);
                         database.storeUserProfileImage(userID, newProfilePicture);
                         allUsers.add(new Tuple<>(user, newProfilePicture));
                         if (allUsers.size() == List.size()) {
