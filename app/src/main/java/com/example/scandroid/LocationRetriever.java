@@ -33,7 +33,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 /**
- * Retrieves current location of user
+ * class for retrieving the current location of the device
  */
 //OpenAI, 2024, ChatGPT, How to get current location
 public class LocationRetriever {
@@ -41,17 +41,28 @@ public class LocationRetriever {
     private final FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
 
+    /**
+     * constructs a new LocationRetriever instance
+     *
+     * @param context
+     */
     public LocationRetriever(Context context) {
         this.context = context;
         this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
     }
 
-
+    /**
+     * checks if the app has been granted the nevessary location permissions
+     * @return true if successful
+     */
     private boolean hasLocationPermission() {
         return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     * request location permissions from the user
+     */
     private void getLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -64,6 +75,10 @@ public class LocationRetriever {
         }
     }
 
+    /**
+     * retrieves the last known location of the device
+     * @return
+     */
     Location getLastKnownLocation() {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         if (!hasLocationPermission()){
