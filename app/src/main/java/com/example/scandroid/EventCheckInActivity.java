@@ -189,6 +189,10 @@ public class EventCheckInActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Requests notification permissions for posting notifications.
+     * Requires Tiramisu (Android 18).
+     */
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private void requestNotificationPermissions() {
         // Check if the notification permission is already granted
@@ -200,6 +204,9 @@ public class EventCheckInActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Checks and requests location permissions if not already granted.
+     */
     private void checkAndRequestPermissions() {
         String[] permissions = {
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -222,7 +229,15 @@ public class EventCheckInActivity extends AppCompatActivity {
         }
     }
 
-    // Method to handle permission request results
+    /**
+     * Callback for the result of a permission request.
+     * Handles location and notification permission requests.
+     *
+     * @param requestCode  The request code passed to requestPermissions().
+     * @param permissions  The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions.
+     *                     Either PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -236,6 +251,13 @@ public class EventCheckInActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Handles the result of a location permission request.
+     *
+     * @param grantResults The grant results for the corresponding permissions.
+     *                     Either PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
+     */
+    // OpenAI ChatGPT 2024: How to handle different types of permissions
     // Method to handle location permission request result
     // OpenAI ChatGPT 2024: How to handle different types of permissions
     private void handleLocationPermissionResult(int[] grantResults) {
@@ -253,7 +275,12 @@ public class EventCheckInActivity extends AppCompatActivity {
         }
     }
 
-    // Method to handle notification permission request result
+    /**
+     * Handles the result of a notification permission request.
+     *
+     * @param grantResults The grant results for the corresponding permissions.
+     *                     Either PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
+     */
     private void handleNotificationPermissionResult(int[] grantResults) {
         // Check if notification permission is granted
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

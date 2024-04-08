@@ -16,6 +16,9 @@ import androidx.appcompat.widget.SearchView;
 
 import java.util.ArrayList;
 
+/**
+ * Activity to display attendees signed up for an event
+ */
 public class EventSignUpsActivity extends AppCompatActivity implements UsersArrayAdapter.OnProfileImageClickListener{
     ArrayAdapter<Tuple<User, Bitmap>> signUpsListAdapter;
     ArrayList<Tuple<User, Bitmap>> allSignUps = new ArrayList<>();
@@ -79,7 +82,7 @@ public class EventSignUpsActivity extends AppCompatActivity implements UsersArra
         } else {
             totalSignUpCount.setText("Total SignUps: 0");
         }
-
+        // handle search functionality
         searchSignUpsView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

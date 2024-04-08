@@ -86,6 +86,9 @@ public class BrowseActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Initializes UI components when the activity resumes.
+     */
     @Override
     protected void onResume() {
         super.onResume();

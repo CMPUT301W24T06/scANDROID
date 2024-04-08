@@ -115,7 +115,13 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
         });
         backButton.setOnClickListener(v -> finish());
     }
-
+    /**
+     * Validates user input for notification creation.
+     *
+     * @param notificationTitle Title of the notification.
+     * @param notificationBody  Body/content of the notification.
+     * @return True if the input is valid, false otherwise.
+     */
     private boolean handleUserInput(String notificationTitle, String notificationBody){
         boolean isValid = true;
 
@@ -138,6 +144,13 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
     // OpenAI ChatGPT 2024, How do I send a notification to a list of tokens not just one
     // https://www.youtube.com/watch?v=YjNZO90yVsE
     // https://www.youtube.com/watch?v=6_t87WW6_Gc
+    /**
+     * Sends a notification to the specified FCM tokens.
+     *
+     * @param title           Title of the notification.
+     * @param body            Body/content of the notification.
+     * @param receiverTokens  List of FCM tokens to which the notification will be sent.
+     */
     private void sendNotification(String title, String body, ArrayList<String> receiverTokens) {
         Log.d("Notification", "Sending notification..."); // testing message
 
@@ -189,7 +202,11 @@ public class EventCreateAnnouncementActivity extends AppCompatActivity {
             });
         }
     }
-
+    /**
+     * Displays a toast message.
+     *
+     * @param message The message to display.
+     */
     private void showToast(String message) {
         StyleableToast.makeText(this, message, R.style.customToast).show();
     }

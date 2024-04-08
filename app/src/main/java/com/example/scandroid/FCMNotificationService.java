@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * instance of FCMN notification class allows for token retrieval
+ */
 public class FCMNotificationService extends FirebaseMessagingService {
 
 }

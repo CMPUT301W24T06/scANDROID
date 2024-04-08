@@ -15,9 +15,28 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.DialogFragment;
 
+
+/**
+ * Code for the Limit Attendees Fragment that is called upon clicking a button within the creation of an event.
+ * @author Moyo Dawodu
+ */
 public class LimitAttendeesFragment extends DialogFragment {
     public LimitAttendeesFragment(){
     }
+
+    /**
+     * onCreate method overridden to customize behaviour.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return a View object.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.set_or_edit_attendee_limit_fragment, container, false);
