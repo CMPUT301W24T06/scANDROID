@@ -103,10 +103,10 @@ public class HomepageActivityTest {
         // press the button
         onView(withId(R.id.edit_profile_button)).perform(click());
         // change the name
-        onView(withId(R.id.nameEditText)).perform(click(), clearText(), typeText("Test Name"));
+        onView(withId(R.id.nameEditText)).perform(click(), clearText(), typeText("Test"));
         closeSoftKeyboard();
         onView(withId(R.id.updateButton)).perform(click());
-        onView(withId(R.id.homepage_name_text)).check(matches(withText("Test Name")));
+        onView(withId(R.id.homepage_name_text)).check(matches(withText("Test")));
     }
 
     @Test
@@ -143,6 +143,7 @@ public class HomepageActivityTest {
             }
         };
     }
+
     @Test
     public void testRemoveProfilePicture(){
         // press the button
