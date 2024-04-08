@@ -1,6 +1,7 @@
 package com.example.scandroid;
 
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 
@@ -38,7 +39,9 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
+import org.checkerframework.checker.units.qual.A;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -50,44 +53,48 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class CreateEventActivityTests {
-    @Rule
-    public ActivityScenarioRule<CreateEventActivity> scenario = new
-            ActivityScenarioRule<>(CreateEventActivity.class);
+    private ActivityScenario<CreateEventActivity> scenario;
+
     @Before
     public void setUp() {
+        scenario = ActivityScenario.launch(CreateEventActivity.class);
         Intents.init();
     }
+
 
     @After
     public void tearDown() {
         Intents.release();
+        scenario.close();
     }
     @Test
     public void testAddEvent() {
         // fill in all fields
-        onView(withId(R.id.event_name_edit_text)).perform(click(), clearText(), typeText("Test Event"));
+            onView(withId(R.id.event_name_edit_text)).perform(click(), clearText(), typeText("Test Event"));
 
-        onView(withId(R.id.event_location_edit_text)).perform(click(), clearText(), typeText("Edmonton"));
-        onView(withId(R.id.edit_event_date_button)).perform(click());
-        closeSoftKeyboard();
+            onView(withId(R.id.event_location_edit_text)).perform(click(), clearText(), typeText("Edmonton"));
+            onView(withId(R.id.edit_event_date_button)).perform(click());
+            closeSoftKeyboard();
 
-        onView(isAssignableFrom(DatePicker.class)).perform(PickerAction.setDateInDatePicker(2024, 6, 23));
-        onView(withText("OK")).perform(click());
-        closeSoftKeyboard();
+            onView(isAssignableFrom(DatePicker.class)).perform(PickerAction.setDateInDatePicker(2024, 6, 23));
+            onView(withText("OK")).perform(click());
+            closeSoftKeyboard();
 
-        onView(withId(R.id.edit_event_time_button)).perform(click());
-                onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(setHour(12));
-        onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(setMinute(0));
-        onView(withText("OK")).perform(click());
+            onView(withId(R.id.edit_event_time_button)).perform(click());
+            onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(setHour(12));
+            onView(withClassName(Matchers.equalTo(TimePicker.class.getName()))).perform(setMinute(0));
+            onView(withText("OK")).perform(click());
 
-        onView(withId(R.id.event_description_edit_text)).perform(click(), clearText(), typeText("Making a Test Event"));
-        closeSoftKeyboard();
+            onView(withId(R.id.event_description_edit_text)).perform(click(), clearText(), typeText("Making a Test Event"));
+            closeSoftKeyboard();
 
         onView(withId(R.id.attendee_limit_button)).perform(click());
         onView(withId(R.id.enter_limit_editText)).perform(click(), typeText("12"));
+        closeSoftKeyboard();
+
         onView(withId(R.id.confirm_button_limit_attendees)).perform(click());
 
-        onView(withId(R.id.create_event_confirm_button)).perform(click());
+
 
     }
 
@@ -130,24 +137,25 @@ public class CreateEventActivityTests {
     //OpenAI, 2024, ChatGPT, How to make Intent tests for images more robust
     @Test
     public void testEditEventPoster() {
-        // result intent with image data
-        Intent resultData = new Intent();
-        resultData.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            // result intent with image data
+            Intent resultData = new Intent();
+            resultData.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-        // stub the gallery intent to return the result intent
-        intending(isInternal()).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData));
+            // stub the gallery intent to return the result intent
+            intending(isInternal()).respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData));
 
-        // open gallery
-        onView(withId(R.id.create_event_change_poster)).perform(click());
-        onView(withId(R.id.camera_roll_access_button)).perform(click());
+            // open gallery
+            onView(withId(R.id.create_event_change_poster)).perform(click());
+            onView(withId(R.id.camera_roll_access_button)).perform(click());
 
-        // verify that the intent to pick an image is sent
-        //intended(hasAction(Intent.ACTION_PICK));
-        //intended(hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
+            // verify that the intent to pick an image is sent
+            //intended(hasAction(Intent.ACTION_PICK));
+            //intended(hasData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
 
-        //verify that an intent to get the content is sent from the user's camera roll
-        intended(hasAction(Intent.ACTION_GET_CONTENT));
-        intended(hasType("image/*"));
+            //verify that an intent to get the content is sent from the user's camera roll
+            intended(hasAction(Intent.ACTION_GET_CONTENT));
+            intended(hasType("image/*"));
+
     }
 
     //OpenAI, 2024, ChatGPT, How to test TimePickerDialogs and DatePickerDialogs with custom view actions

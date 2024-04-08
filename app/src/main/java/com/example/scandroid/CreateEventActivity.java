@@ -191,12 +191,6 @@ public class CreateEventActivity extends AppCompatActivity {
             String eventTime = editEventTime.getText().toString();
             String attendeeLim = attendeeLimit.getText().toString();
 
-//            ArrayList<Double> coords = new LocationGeocoder(CreateEventActivity.this).addressToCoordinates(eventLocation);
-//            if (coords.size() == 0){
-//                Toast.makeText(CreateEventActivity.this, "Invalid event location", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-
             posterBitmap = new BitmapConfigurator().drawableToBitmap(eventPoster.getDrawable());
 
             // validate input before performing database operations
@@ -237,6 +231,18 @@ public class CreateEventActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
     }
 
+    /**
+     * Validates user input for creating an event.
+     * Checks if the event name, location, description, date, time, and attendee limit are valid.
+     *
+     * @param eventName        The name of the event.
+     * @param location         The location of the event.
+     * @param date             The date of the event.
+     * @param time             The time of the event.
+     * @param eventDescription The description of the event.
+     * @param eventLimit       The attendee limit of the event.
+     * @return True if all inputs are valid, false otherwise.
+     */
     private boolean handleUserInput(String eventName, String location, String date, String time, String eventDescription, String eventLimit) {
         boolean isValid = true;
 
@@ -276,10 +282,23 @@ public class CreateEventActivity extends AppCompatActivity {
         return isValid;
     }
 
+    /**
+     * Displays a custom toast message.
+     *
+     * @param message The message to be displayed in the toast.
+     */
     private void showToast(String message) {
         StyleableToast.makeText(this, message, R.style.customToast).show();
     }
 
+    /**
+     * Updates the attendee limit based on received data.
+     * If the attendee limit is 0, sets it to "N/A".
+     * If the attendee limit is 1, sets it to "1 Attendee".
+     * Otherwise, sets it to the number of attendees.
+     *
+     * @param data The data bundle containing the attendee limit.
+     */
     @SuppressLint("DefaultLocale")
     public void onDataReceived(Bundle data) {
         int enteredLimit = data.getInt("attendeeLimit");
@@ -296,6 +315,11 @@ public class CreateEventActivity extends AppCompatActivity {
         attendeeLimitNum = enteredLimit;
     }
 
+    /**
+     * Displays the LimitAttendeesFragment dialog.
+     * This dialog allows users to set the attendee limit for an event.
+     * Shows the "Limit Attendee Fragment".
+     */
     private void showLimitAttendeesFragment() {
         LimitAttendeesFragment limitAttendeesFragment = new LimitAttendeesFragment();
         limitAttendeesFragment.show(getSupportFragmentManager(), "LimitAttendeesFragment");

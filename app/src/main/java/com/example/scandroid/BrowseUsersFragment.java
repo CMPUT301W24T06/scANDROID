@@ -41,7 +41,6 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
     Button prevButton, nextButton;
     TextView loadingTextView;
     androidx.appcompat.widget.SearchView searchUsersView;
-    int position;
 
     /**
      * Default constructor for BrowseUsersFragment
@@ -84,7 +83,6 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
             isAdmin = user.getHasAdminPermissions();
             if (isAdmin){
                 allUsersList.setOnItemLongClickListener((parent, view12, position, id) -> {
-                    this.position = position;
                     DialogFragment userInspectPrompt = new AdminInspectUserFragment(BrowseUsersFragment.this);
                     Bundle bundle = new Bundle();
                     bundle.putString("userID", allUserAdapter.getItem(position).first.getUserID());
@@ -137,16 +135,18 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
                 database.accessUser(userID, user -> database.accessUserProfileImage(user.getUserID(), new BitmapCallback() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap) {
-                        allUsers.add(new Tuple<>(user, bitmap));
-                        if (allUsers.size() == List.size()) {
-                            List<Tuple<User, Bitmap>> subList = allUsers.subList(0, pageSize);
-                            ArrayList<Tuple<User, Bitmap>> currentPageList = new ArrayList<>(subList);
-                            allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, BrowseUsersFragment.this);
-                            allUsersList.setAdapter(allUserAdapter);
-                            nextButton.setVisibility(View.VISIBLE);
-                            prevButton.setVisibility(View.VISIBLE);
-                            loadingTextView.setVisibility(View.INVISIBLE);
-                            callback.run();
+                        if (isAdded()){
+                            allUsers.add(new Tuple<>(user, bitmap));
+                            if (allUsers.size() == List.size()) {
+                                List<Tuple<User, Bitmap>> subList = allUsers.subList(0, pageSize);
+                                ArrayList<Tuple<User, Bitmap>> currentPageList = new ArrayList<>(subList);
+                                allUserAdapter = new UsersArrayAdapter(requireContext(), currentPageList, BrowseUsersFragment.this);
+                                allUsersList.setAdapter(allUserAdapter);
+                                nextButton.setVisibility(View.VISIBLE);
+                                prevButton.setVisibility(View.VISIBLE);
+                                loadingTextView.setVisibility(View.INVISIBLE);
+                                callback.run();
+                            }
                         }
                     }
 

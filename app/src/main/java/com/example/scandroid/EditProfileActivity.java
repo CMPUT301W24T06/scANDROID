@@ -131,6 +131,14 @@ public class EditProfileActivity extends AppCompatActivity{
     // sources:
     // https://www.geeksforgeeks.org/implement-email-validator-in-android/
     // https://www.geeksforgeeks.org/implement-phone-number-validator-in-android/
+    /**
+     * Validates user input for name, email, and phone number.
+     *
+     * @param name  The name entered by the user.
+     * @param email The email entered by the user.
+     * @param phone The phone number entered by the user.
+     * @return True if all inputs are valid, false otherwise.
+     */
     private boolean handleUserInput(String name, String email, String phone){
         boolean isValid = true;
         // check if name is a string
@@ -153,15 +161,29 @@ public class EditProfileActivity extends AppCompatActivity{
         return isValid;
     }
 
-    // show toasts
+    /**
+     * Displays a custom toast message.
+     *
+     * @param message The message to be displayed in the toast.
+     */
     private void showToast(String message) {
         StyleableToast.makeText(this, message, R.style.customToast).show();
     }
 
+    /**
+     * Displays the AdminKeyFragment dialog.
+     * This dialog prompts the user to enter an admin key for authentication.
+     */
     private void showAdminKeyFragment() {
         AdminKeyFragment adminKeyFragment = new AdminKeyFragment();
         adminKeyFragment.show(getSupportFragmentManager(), "AdminKeyFragment");
     }
+
+    /**
+     * Updates the current user's admin key based on received data.
+     *
+     * @param data The data bundle containing the entered admin key.
+     */
     public void onDataReceived(Bundle data) {
         String enteredAdminKey = data.getString("enteredAdminKey");
         currentUser.enterAdminKey(enteredAdminKey);

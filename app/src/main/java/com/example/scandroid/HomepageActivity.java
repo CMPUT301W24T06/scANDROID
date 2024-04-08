@@ -9,7 +9,13 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Context;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import io.github.muddz.styleabletoast.StyleableToast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -166,6 +172,8 @@ public class HomepageActivity extends AppCompatActivity {
                 user.setUserID(userID);
                 displayWelcomeFragment();
                 database.storeUser(user);
+            } else {
+                updateSharedPreferences(userID);
             }
 
 
@@ -213,5 +221,89 @@ public class HomepageActivity extends AppCompatActivity {
         database.storeUserProfileImage(userID, newProfilePicture);
         db.collection("Users").document(userID)
                 .update("name", userName);
+    }
+
+    private void updateSharedPreferences(String userID) {
+        // OpenAI ChatGPT 2024, how to implement shared preferences
+        SharedPreferences sharedPreferences = getSharedPreferences("MilestonesNotify", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // KEY: eventID, VALUES: Set<String> [currentMilestone, reachedBool]
+        database.accessUser(userID, user -> {
+            ArrayList<String> eventsOrganized = user.getEventsOrganized();
+            if (!eventsOrganized.isEmpty()) {
+                // the user is organizing some events
+                for (String eventID : eventsOrganized) {
+                    // going event by event
+                    if (!sharedPreferences.contains(eventID)) {
+                        // adding a new event and notifying if possible
+                        database.accessEvent(eventID, event -> {
+                            Set<String> eventDetails = new HashSet<>();
+                            Integer currentMilestone = event.getEventMilestoneSeries().get(0).intValue();
+                            String reachedBool;
+                            Integer attendeesTotal = event.getEventAttendeesTotal();
+                            if (attendeesTotal >= currentMilestone) {
+                                reachedBool = "true";
+                                showToast(event.getEventName() + " has reached a new milestone: " + currentMilestone.toString() + "!");
+                                Log.d("Milestones", event.getEventName() + " has reached a new milestone: " + currentMilestone.toString());
+                            } else {
+                                reachedBool = "false";
+                            }
+                            eventDetails.add(currentMilestone.toString());
+                            eventDetails.add(reachedBool);
+                            editor.putStringSet(eventID, eventDetails);
+                            editor.apply();
+                        });
+                    } else {
+                        // if event already exists, notifying and updating if possible
+                        Set<String> retrievedSet = new HashSet<>();
+                        Set<String> eventDetails = sharedPreferences.getStringSet(eventID, retrievedSet);
+                        List<String> eventDetailsList = new ArrayList<>(eventDetails);
+                        database.accessEvent(eventID, event -> {
+                            Long currentMilestone = Long.parseLong(eventDetailsList.get(0));
+                            String reachedBool = eventDetailsList.get(1);
+                            if (Objects.equals(reachedBool, "true")) {
+                                // if reached true, check if theres a new milestone to update it
+                                if (currentMilestone.intValue() < event.getEventMilestoneSeries().get(0).intValue()) {
+                                    currentMilestone = event.getEventMilestoneSeries().get(0);
+                                    if (event.getEventAttendeesTotal() >= currentMilestone.intValue()) {
+                                        reachedBool = "true";
+                                        showToast(event.getEventName() + " has reached a new milestone: " + currentMilestone.toString() + "!");
+                                        Log.d("Milestones", event.getEventName() + " has reached a new milestone: " + currentMilestone.toString());
+                                    } else {
+                                        reachedBool = "false";
+                                    }
+                                }
+
+                            } else {
+                                // if reached false, check if it has reached the current milestone
+                                if (event.getEventAttendeesTotal() >= currentMilestone.intValue()) {
+                                    reachedBool = "true";
+                                    showToast(event.getEventName() + " has reached a new milestone: " + currentMilestone.toString() + "attendees!");
+                                    Log.d("Milestones", event.getEventName() + " has reached a new milestone: " + currentMilestone.toString());
+                                }
+                            }
+                            Set<String> updatedEventDetails = new HashSet<>();
+                            updatedEventDetails.add(currentMilestone.toString());
+                            updatedEventDetails.add(reachedBool);
+                            editor.putStringSet(eventID, updatedEventDetails);
+                            editor.apply();
+                        });
+                    }
+                }
+            } else {
+                // delete all stored events bc there's nothing in organized
+                Map<String, ?> allEvents = sharedPreferences.getAll();
+                for (Map.Entry<String, ?> anEvent : allEvents.entrySet()) {
+                    editor.remove(anEvent.getKey());
+                    editor.apply();
+                }
+
+            }
+        });
+    }
+
+    private void showToast(String message) {
+        StyleableToast.makeText(this, message, R.style.customToast).show();
     }
 }
