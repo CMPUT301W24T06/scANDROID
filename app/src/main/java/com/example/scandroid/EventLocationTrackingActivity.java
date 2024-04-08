@@ -32,16 +32,13 @@ import java.util.ArrayList;
 //          https://github.com/googlemaps-samples/android-samples/blob/main/ApiDemos/java/app/src/gms/java/com/example/mapdemo/RawMapViewDemoActivity.java
 //          https://stackoverflow.com/a/18481305
 //          https://developers.google.com/maps/documentation/android-sdk/marker
+//          https://www.youtube.com/watch?v=pOKPQ8rYe6g&list=PLHQRWugvckFrWppucVnQ6XhiJyDbaCU79
 
 public class EventLocationTrackingActivity extends AppCompatActivity implements OnMapReadyCallback {
     Event event;
     AppCompatButton backButton;
     AppCompatButton zoomInButton;
     AppCompatButton zoomOutButton;
-    private MapView mapView;
-
-    private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
-    private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,20 +51,14 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
 
         backButton.setOnClickListener(v -> finish());
 
-        Bundle mapViewBundle = null;
-        if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
-        }
-        mapView = (MapView) findViewById(R.id.mapView);
-        mapView.onCreate(mapViewBundle);
-
-        mapView.getMapAsync(this);
-
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
+        assert mapFragment != null;
+        mapFragment.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        int zoom = 10;
+
         if (event != null) {
             String eventTitle = event.getEventName();
             String eventAddress = new LocationGeocoder(EventLocationTrackingActivity.this).coordinatesToAddress(event.getEventLocation());
@@ -76,7 +67,7 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
                     .position(eventLatLng)
                     .snippet(eventAddress)
                     .title(eventTitle));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(eventLatLng, zoom));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(eventLatLng));
 
             ArrayList<Event.CheckIn> attendees = event.getEventAttendeeList();
             for (Event.CheckIn i : attendees) {
@@ -92,26 +83,9 @@ public class EventLocationTrackingActivity extends AppCompatActivity implements 
                 }
             }
         }
-        zoomInButton.setOnClickListener(v -> googleMap.animateCamera(CameraUpdateFactory.zoomBy(1)));
+        zoomInButton.setOnClickListener(v -> googleMap.moveCamera(CameraUpdateFactory.zoomBy(1)));
 
-        zoomOutButton.setOnClickListener(v -> googleMap.animateCamera(CameraUpdateFactory.zoomBy(-1)));
-    }
+        zoomOutButton.setOnClickListener(v -> googleMap.moveCamera(CameraUpdateFactory.zoomBy(-1)));
 
-    @Override
-    protected void onPause() {
-        mapView.onPause();
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        mapView.onDestroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
     }
 }
