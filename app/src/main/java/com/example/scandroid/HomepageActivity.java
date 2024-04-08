@@ -90,12 +90,12 @@ public class HomepageActivity extends AppCompatActivity {
                         database.accessEvent(eventID, event -> {
                             Set<String> eventDetails = new HashSet<>();
                             Integer currentMilestone = event.getEventMilestoneSeries().get(0).intValue();
-                            Integer nextMilestone = event.getEventMilestoneSeries().get(1).intValue();
                             String reachedBool;
                             Integer attendeesTotal = event.getEventAttendeesTotal();
-                            if (attendeesTotal >= currentMilestone && attendeesTotal < nextMilestone) {
+                            if (attendeesTotal >= currentMilestone) {
                                 reachedBool = "true";
                                 // TODO: send a toast!
+                                Log.d("Milestones", event.getEventName() + " has reached a new milestone: " + currentMilestone.toString());
                             } else {
                                 reachedBool = "false";
                             }
@@ -109,24 +109,46 @@ public class HomepageActivity extends AppCompatActivity {
                         Set<String> retrievedSet = new HashSet<>();
                         Set<String> eventDetails = sharedPreferences.getStringSet(eventID, retrievedSet);
                         List<String> eventDetailsList = new ArrayList<>(eventDetails);
-                        Long currentMilestone =  Long.parseLong(eventDetailsList.get(0));
-                        String reachedBool = eventDetailsList.get(1);
-                        database.accessEvent(eventID, new EventCallback() {
-                            @Override
-                            public void onEventReceived(Event event) {
-                                if (Objects.equals(reachedBool, "true")) {
-                                    // if reached true, check if theres a new milestone to update it
+                        database.accessEvent(eventID, event -> {
+                            Long currentMilestone =  Long.parseLong(eventDetailsList.get(0));
+                            String reachedBool = eventDetailsList.get(1);
+                            if (Objects.equals(reachedBool, "true")) {
+                                // if reached true, check if theres a new milestone to update it
+                                if (currentMilestone.intValue() < event.getEventMilestoneSeries().get(0).intValue()) {
+                                    currentMilestone = event.getEventMilestoneSeries().get(0);
+                                    if (event.getEventAttendeesTotal() >= currentMilestone.intValue()) {
+                                        reachedBool = "true";
+                                        // TODO: send a toast!
+                                        Log.d("Milestones", event.getEventName() + " has reached a new milestone: " + currentMilestone.toString());
+                                    } else {
+                                        reachedBool = "false";
+                                    }
+                                }
 
-
-                                } else {
-                                    // if reached false, check if it has reached the current milestone
+                            } else {
+                                // if reached false, check if it has reached the current milestone
+                                if (event.getEventAttendeesTotal() >= currentMilestone.intValue()) {
+                                    reachedBool = "true";
+                                    // TODO: send a toast!
+                                    Log.d("Milestones", event.getEventName() + " has reached a new milestone: " + currentMilestone.toString());
                                 }
                             }
+                            Set<String> updatedEventDetails = new HashSet<>();
+                            updatedEventDetails.add(currentMilestone.toString());
+                            updatedEventDetails.add(reachedBool);
+                            editor.putStringSet(eventID, updatedEventDetails);
+                            editor.apply();
                         });
                     }
                 }
             } else {
                 // delete all stored events bc there's nothing in organized
+                Map<String,?> allEvents = sharedPreferences.getAll();
+                for (Map.Entry<String,?> anEvent : allEvents.entrySet()) {
+                    editor.remove(anEvent.getKey());
+                    editor.apply();
+                }
+
             }
         });
 
