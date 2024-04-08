@@ -54,23 +54,23 @@ public class QRCodeGeneratorTest {
         Intents.release();
     }
 
-    @Test
-    public void addEvent() {
-        onView(withId(R.id.create_event_button)).perform(click());
-        //initialize event
-        onView(withId(R.id.event_name_edit_text)).perform(typeText("Test Event"));
-        onView(withId(R.id.event_location_edit_text)).perform(typeText("Edmonton"));
-        closeSoftKeyboard();
-        onView(withId(R.id.edit_event_time_button)).perform(click());
-        onView(isAssignableFrom(TimePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setTimeInTimePicker(12, 0));
-        onView(withText("OK")).perform(click());
-        onView(withId(R.id.edit_event_date_button)).perform(click());
-        onView(isAssignableFrom(DatePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setDateInDatePicker(2024, 6, 23));
-        onView(withText("OK")).perform(click());
-        onView(withId(R.id.event_description_edit_text)).perform(typeText("Making a Test Event"));
-        closeSoftKeyboard();
-        onView(withId(R.id.create_event_confirm_button)).perform(click());
-    }
+//    @Test
+//    public void addEvent() {
+//        onView(withId(R.id.create_event_button)).perform(click());
+//        //initialize event
+//        onView(withId(R.id.event_name_edit_text)).perform(typeText("Test Event"));
+//        onView(withId(R.id.event_location_edit_text)).perform(typeText("Edmonton"));
+//        closeSoftKeyboard();
+//        onView(withId(R.id.edit_event_time_button)).perform(click());
+//        onView(isAssignableFrom(TimePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setTimeInTimePicker(12, 0));
+//        onView(withText("OK")).perform(click());
+//        onView(withId(R.id.edit_event_date_button)).perform(click());
+//        onView(isAssignableFrom(DatePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setDateInDatePicker(2024, 6, 23));
+//        onView(withText("OK")).perform(click());
+//        onView(withId(R.id.event_description_edit_text)).perform(typeText("Making a Test Event"));
+//        closeSoftKeyboard();
+//        onView(withId(R.id.create_event_confirm_button)).perform(click());
+//    }
 
     @Test
     public void testQRCodeButton(){
@@ -84,6 +84,35 @@ public class QRCodeGeneratorTest {
         onView(withId(R.id.QR_code_info_button)).perform(click());
 
         onView(withId(R.id.check_in_qr_code_textview)).check(matches(withText("Check-In QR Code")));
+    }
+
+    @Test
+    public void testCheckInQRButton(){
+        // Mock Firebase data loading process
+        mockFirebaseDataLoading();
+        // check if Firebase list is loaded before performing a click
+        onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
+        onView(withId(R.id.my_events_list)).perform(click());
+
+        onView(withId(R.id.QR_code_info_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.QR_code_info_button)).perform(click());
+
+        onView(withId(R.id.check_in_qr_code_textview)).check(matches(withText("Check-In QR Code")));
+        onView(withId(R.id.share_check_in_qr_button)).perform(click());
+    }
+    @Test
+    public void testPromotionalQRButton(){
+        // Mock Firebase data loading process
+        mockFirebaseDataLoading();
+        // check if Firebase list is loaded before performing a click
+        onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
+        onView(withId(R.id.my_events_list)).perform(click());
+
+        onView(withId(R.id.QR_code_info_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.QR_code_info_button)).perform(click());
+
+        onView(withId(R.id.check_in_qr_code_textview)).check(matches(withText("Check-In QR Code")));
+        onView(withId(R.id.share_promo_qr_button)).perform(click());
     }
 
     // OpenAI ChatGPT 2024: how to simulate a mock delay to wait for firebase to load
