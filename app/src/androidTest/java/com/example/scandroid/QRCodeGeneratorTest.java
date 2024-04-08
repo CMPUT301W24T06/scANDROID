@@ -54,23 +54,23 @@ public class QRCodeGeneratorTest {
         Intents.release();
     }
 
-//    @Test
-//    public void addEvent() {
-//        onView(withId(R.id.create_event_button)).perform(click());
-//        //initialize event
-//        onView(withId(R.id.event_name_edit_text)).perform(typeText("Test Event"));
-//        onView(withId(R.id.event_location_edit_text)).perform(typeText("Edmonton"));
-//        closeSoftKeyboard();
-//        onView(withId(R.id.edit_event_time_button)).perform(click());
-//        onView(isAssignableFrom(TimePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setTimeInTimePicker(12, 0));
-//        onView(withText("OK")).perform(click());
-//        onView(withId(R.id.edit_event_date_button)).perform(click());
-//        onView(isAssignableFrom(DatePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setDateInDatePicker(2024, 6, 23));
-//        onView(withText("OK")).perform(click());
-//        onView(withId(R.id.event_description_edit_text)).perform(typeText("Making a Test Event"));
-//        closeSoftKeyboard();
-//        onView(withId(R.id.create_event_confirm_button)).perform(click());
-//    }
+    @Test
+    public void addEvent() {
+        onView(withId(R.id.create_event_button)).perform(click());
+        //initialize event
+        onView(withId(R.id.event_name_edit_text)).perform(typeText("Test Event"));
+        onView(withId(R.id.event_location_edit_text)).perform(typeText("Edmonton"));
+        closeSoftKeyboard();
+        onView(withId(R.id.edit_event_time_button)).perform(click());
+        onView(isAssignableFrom(TimePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setTimeInTimePicker(12, 0));
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.edit_event_date_button)).perform(click());
+        onView(isAssignableFrom(DatePicker.class)).perform(QRCodeGeneratorTest.PickerAction.setDateInDatePicker(2024, 6, 23));
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.event_description_edit_text)).perform(typeText("Making a Test Event"));
+        closeSoftKeyboard();
+        onView(withId(R.id.create_event_confirm_button)).perform(click());
+    }
 
     @Test
     public void testQRCodeButton(){
