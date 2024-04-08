@@ -18,7 +18,7 @@
     <string name="notification_send_text">Send to all attendees</string>
     <string name="notification_title_text">Notification Title</string>
     <string name="notification_info_text">Notification Info</string>
-    <string name="notification_schedule_text">Notification Schedule</string>
+    <string name="notification_schedule_text">Notification Time</string>
     <string name="camera_roll_confirm">Confirm</string>
     <string name="camera_roll_cancel">Cancel</string>
     <string name="home_text">Home</string>
@@ -87,4 +87,5 @@
     <string name="enter_whole_number">integer value</string>
     <string name="signups">SignUps</string>
     <string name="enter_event_time">Enter Event Time</string>
+    <string name="time_text">Time</string>
 </resources>

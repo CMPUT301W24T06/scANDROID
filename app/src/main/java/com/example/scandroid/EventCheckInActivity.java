@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.ActivityCompat;
@@ -49,6 +51,7 @@ public class EventCheckInActivity extends AppCompatActivity {
     private AppCompatButton cancelCheckInButton;
     private AppCompatButton confirmCheckInButton;
     private ArrayList<Double> checkInLocation;
+    private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 99;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private ActivityResultLauncher<String[]> locationPermissionRequest;
     @Override
@@ -62,6 +65,7 @@ public class EventCheckInActivity extends AppCompatActivity {
         cancelCheckInButton = findViewById(R.id.cancel_check_in_button);
         confirmCheckInButton = findViewById(R.id.check_in_button);
         database = new DBAccessor();
+        
         String eventID = (String) getIntent().getSerializableExtra("eventID");
         String userID = new DeviceIDRetriever(EventCheckInActivity.this).getDeviceId();
         // (String) getIntent().getSerializableExtra("userID");
@@ -78,7 +82,9 @@ public class EventCheckInActivity extends AppCompatActivity {
                         // No location access granted.
                     }
                 });
+        
         checkAndRequestPermissions();
+        
         database.accessEvent(eventID, event -> {
             if (event != null) {
                 eventTitle.setText(event.getEventName());
@@ -98,6 +104,18 @@ public class EventCheckInActivity extends AppCompatActivity {
                     transaction.add(android.R.id.content, endedNoticeFragment);
                     transaction.commit();
                 }
+
+                pushNotifBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            // If the checkbox is checked, request notification permissions
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                requestNotificationPermissions();
+                            }
+                        }
+                    }
+                });
 
                 confirmCheckInButton.setOnClickListener(v -> {
                     boolean alreadyAttendee = false;
@@ -136,8 +154,8 @@ public class EventCheckInActivity extends AppCompatActivity {
                                 checkInLocation.add(userLocation.getLongitude());
                             }
                             if (!trackLocationBox.isChecked()) {
-                                checkInLocation.add(0.0);
-                                checkInLocation.add(0.0);
+                                checkInLocation.add(32.909630);
+                                checkInLocation.add(-117.181930);
                             }
 
                             // source: https://stackoverflow.com/a/5369753
@@ -169,6 +187,18 @@ public class EventCheckInActivity extends AppCompatActivity {
             }
         });
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void requestNotificationPermissions() {
+        // Check if the notification permission is already granted
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Notification permission is not granted, request it
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_REQUEST_CODE);
+        }
+    }
+
     private void checkAndRequestPermissions() {
         String[] permissions = {
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -190,27 +220,46 @@ public class EventCheckInActivity extends AppCompatActivity {
             locationPermissionRequest.launch(permissions);
         }
     }
-    // Handle permission request result (if needed)
+
+    // Method to handle permission request results
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            // Handle permission request result here
-            boolean allPermissionsGranted = true;
-            for (int grantResult : grantResults) {
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false;
-                    break;
-                }
+            // Handle location permission request result
+            handleLocationPermissionResult(grantResults);
+        } else if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
+            // Handle notification permission request result
+            handleNotificationPermissionResult(grantResults);
+        }
+    }
+
+    // Method to handle location permission request result
+    private void handleLocationPermissionResult(int[] grantResults) {
+        // Check if all location permissions are granted
+        boolean allPermissionsGranted = true;
+        for (int grantResult : grantResults) {
+            if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                allPermissionsGranted = false;
+                break;
             }
-            if (allPermissionsGranted) {
-                locationAllowed = true;
-            } else {
-                locationAllowed = false;
-                // Handle case when permissions are not granted
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
-            }
+        }
+        if (!allPermissionsGranted) {
+            // Handle case when location permissions are not granted
+            Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Method to handle notification permission request result
+    private void handleNotificationPermissionResult(int[] grantResults) {
+        // Check if notification permission is granted
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Notification permission is granted
+            Toast.makeText(this, "Notification permissions granted", Toast.LENGTH_SHORT).show();
+        } else {
+            // Handle case when notification permission is not granted
+            Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
         }
     }
 }
