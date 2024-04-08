@@ -41,6 +41,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
     Button prevButton, nextButton;
     TextView loadingTextView;
     androidx.appcompat.widget.SearchView searchUsersView;
+    int position;
 
     /**
      * Default constructor for BrowseUsersFragment
@@ -83,6 +84,7 @@ public class BrowseUsersFragment extends Fragment implements onClickListener, Us
             isAdmin = user.getHasAdminPermissions();
             if (isAdmin){
                 allUsersList.setOnItemLongClickListener((parent, view12, position, id) -> {
+                    this.position = position;
                     DialogFragment userInspectPrompt = new AdminInspectUserFragment(BrowseUsersFragment.this);
                     Bundle bundle = new Bundle();
                     bundle.putString("userID", allUserAdapter.getItem(position).first.getUserID());
