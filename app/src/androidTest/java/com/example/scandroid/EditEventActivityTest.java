@@ -1,26 +1,19 @@
 package com.example.scandroid;
 
-
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import static org.junit.Assert.assertTrue;
-
-import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-import androidx.annotation.StringDef;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.intent.Intents;
@@ -39,7 +32,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class QRCodeGeneratorTest {
+public class EditEventActivityTest {
     @Rule
     public
     ActivityScenarioRule<HomepageActivity> scenario = new ActivityScenarioRule<HomepageActivity>(HomepageActivity.class);
@@ -73,17 +66,52 @@ public class QRCodeGeneratorTest {
     }
 
     @Test
-    public void testQRCodeButton(){
+    public void testEventDetailsButton(){
         // Mock Firebase data loading process
         mockFirebaseDataLoading();
         // check if Firebase list is loaded before performing a click
         onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
         onView(withId(R.id.my_events_list)).perform(click());
 
-        onView(withId(R.id.QR_code_info_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.QR_code_info_button)).perform(click());
+        onView(withId(R.id.event_details_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.event_details_button)).perform(click());
 
-        onView(withId(R.id.check_in_qr_code_textview)).check(matches(withText("Check-In QR Code")));
+        onView(withId(R.id.event_name_edit_text)).check(matches(isDisplayed()));
+        onView(withId(R.id.event_location_edit_text)).check(matches(isDisplayed()));
+        onView(withId(R.id.edit_event_date_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.edit_event_time_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.event_description_edit_text)).check(matches(isDisplayed()));
+        onView(withId(R.id.create_event_confirm_button)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testAttendeeButton(){
+        // Mock Firebase data loading process
+        mockFirebaseDataLoading();
+        // check if Firebase list is loaded before performing a click
+        onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
+        onView(withId(R.id.my_events_list)).perform(click());
+
+        onView(withId(R.id.attendees_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.attendees_button)).perform(click());
+
+        onView(withId(R.id.attendee_search)).check(matches(isDisplayed()));
+        onView(withId(R.id.event_attendees_list_total_attendee_count)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testSignUpsButton(){
+        // Mock Firebase data loading process
+        mockFirebaseDataLoading();
+        // check if Firebase list is loaded before performing a click
+        onView(withId(R.id.my_events_list)).check(matches(isDisplayed()));
+        onView(withId(R.id.my_events_list)).perform(click());
+
+        onView(withId(R.id.signups_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.signups_button)).perform(click());
+
+        onView(withId(R.id.event_attendees_list)).check(matches(isDisplayed()));
+        onView(withId(R.id.event_attendees_list_total_attendee_count)).check(matches(isDisplayed()));
     }
 
     // OpenAI ChatGPT 2024: how to simulate a mock delay to wait for firebase to load
@@ -148,4 +176,3 @@ public class QRCodeGeneratorTest {
         }
     }
 }
-
