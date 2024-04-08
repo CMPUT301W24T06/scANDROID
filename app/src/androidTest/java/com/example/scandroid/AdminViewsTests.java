@@ -71,7 +71,7 @@ public class AdminViewsTests {
     }
 
     @Test
-    public void testAdminDeleteUserDisplay(){
+    public void testAdminViewAndDeleteUserDisplay(){
         onView(withId(R.id.browse_button)).perform(click());
         //maybe click the first item in the view
         waitForViewToDisappear(R.id.loading_browse_users_text,60000);
@@ -80,19 +80,17 @@ public class AdminViewsTests {
     }
 
     @Test
-    public void testAdminDeleteEventDisplay(){
+    public void testAdminViewAndDeleteEventDisplay(){
         onView(withId(R.id.browse_button)).perform(click());
         //maybe click the first item in the view
         onView(withText("Events")).perform(click());
         waitForViewToDisappear(R.id.loading_browse_events_text,60000);
-        //onData(instanceOf(Event.class)).atPosition(0).perform(longClick());
-        //waitForViewToAppear(R.id.browse_event_list, 60000);
         onData(anything()).inAdapterView(withId(R.id.browse_event_list)).atPosition(0).perform(longClick());
-        onView(withId(R.id.remove_event_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.inspect_remove_event_button)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void testAdminDeleteImagesDisplay(){
+    public void testAdminViewAndDeleteImagesDisplay(){
         onView(withId(R.id.browse_button)).perform(click());
         waitForViewToDisappear(R.id.loading_browse_users_text,60000);
         onData(anything()).inAdapterView(withId(R.id.browse_users_list)).atPosition(0).onChildView(withId(R.id.user_content_profile_picture)).perform(click());
